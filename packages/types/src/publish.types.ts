@@ -29,7 +29,16 @@ export interface PublishedSite extends Entity {
   subdomain: string;
   /** Whether the site is currently live (false after unpublish). */
   live: boolean;
+  /** If set and in the future, the site stays hidden publicly until this time. */
+  scheduledAt?: ISODateString;
   versions: PublishedSnapshot[];
+}
+
+/** Publish state for the editor dialog. */
+export interface PublishStatus {
+  versions: PublishedVersionMeta[];
+  /** A future go-live time, or null when publishing immediately. */
+  scheduledAt: ISODateString | null;
 }
 
 /** Public-facing shape served to the renderer (current live version). */

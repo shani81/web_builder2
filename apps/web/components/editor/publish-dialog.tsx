@@ -1,14 +1,30 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ExternalLink, RotateCcw } from 'lucide-react';
+import { CalendarClock, ExternalLink, RotateCcw } from 'lucide-react';
 import type { PublishedVersionMeta } from '@buildr/types';
 import { timeAgo } from '@buildr/utils';
 import { Modal } from '@/components/ui/modal';
 import { Button } from '@/components/ui/button';
 import { useEditorStore } from '@/stores/editor.store';
 import { env } from '@/lib/env';
-import { listSiteVersions, publishSite, rollbackSite } from '@/lib/sites';
+import { getPublishStatus, publishSite, rollbackSite } from '@/lib/sites';
+
+/** A `datetime-local` value (local time) → ISO string, or undefined if empty. */
+function toIso(localValue: string): string | undefined {
+  if (!localValue) return undefined;
+  const t = new Date(localValue);
+  return Number.isNaN(t.getTime()) ? undefined : t.toISOString();
+}
+
+/** Now + 1 hour as a `datetime-local` value, used as a sensible default/min. */
+function defaultScheduleValue(): string {
+  const d = new Date(Date.now() + 60 * 60 * 1000);
+  d.setSeconds(0, 0);
+  // Trim to "YYYY-MM-DDTHH:mm" in local time.
+  const tzOffset = d.getTimezoneOffset() * 60 * 1000;
+  return new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
+}
 
 export function PublishDialog({
   open,
@@ -22,20 +38,31 @@ export function PublishDialog({
 
   const [busy, setBusy] = useState(false);
   const [versions, setVersions] = useState<PublishedVersionMeta[]>([]);
+  const [scheduledAt, setScheduledAt] = useState<string | null>(null);
+  const [scheduleMode, setScheduleMode] = useState(false);
+  const [scheduleValue, setScheduleValue] = useState(defaultScheduleValue);
   const [error, setError] = useState<string | null>(null);
 
-  const liveUrl = site
-    ? `${env.NEXT_PUBLIC_SITE_URL}/s/${site.subdomain}`
-    : '';
+  const liveUrl = site ? `${env.NEXT_PUBLIC_SITE_URL}/s/${site.subdomain}` : '';
+
+  const refresh = async (siteId: string) => {
+    const status = await getPublishStatus(siteId);
+    setVersions(status.versions);
+    setScheduledAt(status.scheduledAt);
+  };
 
   useEffect(() => {
     if (!open || !site) return;
-    listSiteVersions(site.id)
-      .then((v) => {
-        setVersions(v);
+    getPublishStatus(site.id)
+      .then((status) => {
+        setVersions(status.versions);
+        setScheduledAt(status.scheduledAt);
         setError(null);
       })
-      .catch(() => setVersions([]));
+      .catch(() => {
+        setVersions([]);
+        setScheduledAt(null);
+      });
   }, [open, site]);
 
   if (!site) return null;
@@ -45,8 +72,12 @@ export function PublishDialog({
     setError(null);
     try {
       await save();
-      await publishSite(site.id);
-      setVersions(await listSiteVersions(site.id));
+      await publishSite(
+        site.id,
+        scheduleMode ? toIso(scheduleValue) : undefined,
+      );
+      await refresh(site.id);
+      setScheduleMode(false);
     } catch {
       setError('Could not publish. Please try again.');
     } finally {
@@ -59,6 +90,7 @@ export function PublishDialog({
     setError(null);
     try {
       setVersions(await rollbackSite(site.id, version));
+      setScheduledAt(null);
     } catch {
       setError('Could not restore that version.');
     } finally {
@@ -67,6 +99,11 @@ export function PublishDialog({
   };
 
   const isLive = versions.length > 0;
+  const publishLabel = scheduleMode
+    ? 'Schedule'
+    : isLive
+      ? 'Publish changes'
+      : 'Publish now';
 
   return (
     <Modal
@@ -82,7 +119,16 @@ export function PublishDialog({
           </p>
         ) : null}
 
-        {isLive ? (
+        {scheduledAt ? (
+          <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+            <CalendarClock className="mt-0.5 size-4 shrink-0" aria-hidden />
+            <span>
+              Scheduled to go live{' '}
+              <strong>{new Date(scheduledAt).toLocaleString()}</strong>. It
+              stays hidden until then. Publishing now goes live immediately.
+            </span>
+          </div>
+        ) : isLive ? (
           <div className="rounded-lg border border-black/10 p-3">
             <p className="text-xs text-black/50">Your site is live at</p>
             <div className="mt-1 flex items-center justify-between gap-2">
@@ -107,8 +153,29 @@ export function PublishDialog({
           </div>
         ) : null}
 
+        <div className="flex flex-col gap-2">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={scheduleMode}
+              onChange={(e) => setScheduleMode(e.target.checked)}
+              className="size-4"
+            />
+            Schedule for later
+          </label>
+          {scheduleMode ? (
+            <input
+              type="datetime-local"
+              value={scheduleValue}
+              min={defaultScheduleValue()}
+              onChange={(e) => setScheduleValue(e.target.value)}
+              className="rounded-lg border border-black/15 px-3 py-2 text-sm outline-none focus:border-[var(--color-brand)]"
+            />
+          ) : null}
+        </div>
+
         <Button onClick={doPublish} disabled={busy}>
-          {busy ? 'Publishing…' : isLive ? 'Publish changes' : 'Publish now'}
+          {busy ? 'Working…' : publishLabel}
         </Button>
 
         {isLive ? (
@@ -126,8 +193,14 @@ export function PublishDialog({
                       · {timeAgo(v.publishedAt)}
                     </span>
                     {i === 0 ? (
-                      <span className="ml-2 rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700">
-                        live
+                      <span
+                        className={`ml-2 rounded-full px-2 py-0.5 text-xs ${
+                          scheduledAt
+                            ? 'bg-amber-100 text-amber-700'
+                            : 'bg-green-100 text-green-700'
+                        }`}
+                      >
+                        {scheduledAt ? 'scheduled' : 'live'}
                       </span>
                     ) : null}
                   </span>

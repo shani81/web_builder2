@@ -12,6 +12,9 @@ import { submissionService } from '../../services/submission.service.js';
 import { ok } from '../../utils/response.js';
 
 const rollbackSchema = z.object({ version: z.number().int().positive() });
+const publishSchema = z.object({
+  scheduledAt: z.string().datetime().optional(),
+});
 
 /**
  * Site CRUD. Every route in this plugin requires authentication and operates
@@ -58,13 +61,23 @@ export async function siteRoutes(app: FastifyInstance): Promise<void> {
 
   app.post('/sites/:id/publish', async (request) => {
     const { id } = idParamSchema.parse(request.params);
-    const site = await publishService.publish(id, request.user!.sub);
+    const { scheduledAt } = publishSchema.parse(request.body ?? {});
+    const site = await publishService.publish(
+      id,
+      request.user!.sub,
+      scheduledAt,
+    );
     return ok(site);
   });
 
   app.get('/sites/:id/versions', async (request) => {
     const { id } = idParamSchema.parse(request.params);
     return ok(await publishService.listVersions(id, request.user!.sub));
+  });
+
+  app.get('/sites/:id/publish-status', async (request) => {
+    const { id } = idParamSchema.parse(request.params);
+    return ok(await publishService.status(id, request.user!.sub));
   });
 
   app.post('/sites/:id/rollback', async (request) => {

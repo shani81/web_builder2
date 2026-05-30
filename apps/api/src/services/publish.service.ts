@@ -6,6 +6,7 @@ import type {
   PublishedSite,
   PublishedSnapshot,
   PublishedVersionMeta,
+  PublishStatus,
   Site,
 } from '@buildr/types';
 import { siteRepository } from '../repositories/site.repository.js';
@@ -36,13 +37,29 @@ function meta(record: PublishedSite | null): PublishedVersionMeta[] {
   }));
 }
 
+/** A scheduled time still in the future, or undefined. Past times are ignored. */
+function futureSchedule(scheduledAt?: string | null): string | undefined {
+  if (!scheduledAt) return undefined;
+  const t = new Date(scheduledAt).getTime();
+  return Number.isFinite(t) && t > Date.now() ? scheduledAt : undefined;
+}
+
 export class PublishService {
-  /** Snapshot the site's current content as a new live version. */
-  async publish(siteId: string, userId: string): Promise<Site> {
+  /**
+   * Snapshot the site's current content as a new version. With `scheduledAt`
+   * in the future the version is stored but stays hidden publicly until then;
+   * otherwise it goes live immediately (clearing any prior schedule).
+   */
+  async publish(
+    siteId: string,
+    userId: string,
+    scheduledAt?: string,
+  ): Promise<Site> {
     const site = await siteService.getOwned(siteId, userId);
     const timestamp = now();
     const existing = await publishedRepository.findById(siteId);
     const nextVersion = (existing?.versions[0]?.version ?? 0) + 1;
+    const schedule = futureSchedule(scheduledAt);
 
     const pages = structuredClone(site.pages);
     const snapshot: PublishedSnapshot = {
@@ -64,16 +81,27 @@ export class PublishService {
       userId,
       subdomain: site.subdomain,
       live: true,
+      scheduledAt: schedule,
       versions,
       createdAt: existing?.createdAt ?? timestamp,
       updatedAt: timestamp,
     });
 
+    // The site is "published"; the scheduled gate lives on the published record.
     const updated = await siteRepository.update(siteId, {
       status: 'published',
       publishedAt: timestamp,
     });
     return updated ?? site;
+  }
+
+  async status(siteId: string, userId: string): Promise<PublishStatus> {
+    await siteService.getOwned(siteId, userId);
+    const record = await publishedRepository.findById(siteId);
+    return {
+      versions: meta(record),
+      scheduledAt: futureSchedule(record?.scheduledAt) ?? null,
+    };
   }
 
   async listVersions(
@@ -104,7 +132,14 @@ export class PublishService {
     };
     const versions = [restored, ...record.versions].slice(0, MAX_VERSIONS);
 
-    const updated = { ...record, live: true, versions, updatedAt: now() };
+    // Restoring goes live immediately — drop any pending schedule.
+    const updated = {
+      ...record,
+      live: true,
+      scheduledAt: undefined,
+      versions,
+      updatedAt: now(),
+    };
     await publishedRepository.upsert(updated);
     return meta(updated);
   }
@@ -121,6 +156,8 @@ export class PublishService {
   async getPublic(subdomain: string): Promise<PublicSite | null> {
     const record = await publishedRepository.findBySubdomain(subdomain);
     if (!record || !record.live || record.versions.length === 0) return null;
+    // Scheduled-but-not-yet-live sites stay hidden until their go-live time.
+    if (futureSchedule(record.scheduledAt)) return null;
     const current = record.versions[0]!;
     return {
       id: record.id,

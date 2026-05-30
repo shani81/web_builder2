@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { UpdateSiteInput } from '@buildr/schemas';
 import {
   createSite,
@@ -53,7 +49,10 @@ export function useDuplicateSite() {
 
 export function usePublishSite() {
   const invalidate = useSitesInvalidator();
-  return useMutation({ mutationFn: publishSite, onSuccess: invalidate });
+  return useMutation({
+    mutationFn: (id: string) => publishSite(id),
+    onSuccess: invalidate,
+  });
 }
 
 export function useUpdateSite() {

@@ -1,5 +1,6 @@
 import type {
   PublishedVersionMeta,
+  PublishStatus,
   Site,
   SiteSummary,
 } from '@buildr/types';
@@ -33,8 +34,15 @@ export function duplicateSite(id: string): Promise<Site> {
   return apiFetch(`/sites/${id}/duplicate`, { method: 'POST' });
 }
 
-export function publishSite(id: string): Promise<Site> {
-  return apiFetch(`/sites/${id}/publish`, { method: 'POST' });
+export function publishSite(id: string, scheduledAt?: string): Promise<Site> {
+  return apiFetch(`/sites/${id}/publish`, {
+    method: 'POST',
+    body: JSON.stringify(scheduledAt ? { scheduledAt } : {}),
+  });
+}
+
+export function getPublishStatus(id: string): Promise<PublishStatus> {
+  return apiFetch(`/sites/${id}/publish-status`);
 }
 
 export function listSiteVersions(id: string): Promise<PublishedVersionMeta[]> {
