@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { str, type BlockComponentProps } from './types';
-import { alignCss, toAlign } from './responsive-grid';
+import { alignCss, toAlign, type AlignValue } from './responsive-grid';
 import { ApiClientError } from '@/lib/api-client';
 import { submitForm, subdomainFromBase } from '@/lib/forms';
 
@@ -58,11 +58,27 @@ export function NewsletterBlock({
     }
   };
 
+  // On mobile the input + button stack (input full-width, button aligned per
+  // the mobile setting); on desktop (≥768 container) they sit inline.
+  const selfOf = (a: AlignValue) =>
+    a === 'left' ? 'flex-start' : a === 'right' ? 'flex-end' : 'center';
+  const rowSel = `[data-nlrow="${blockId}"]`;
+  const rowCss = [
+    `${rowSel}{display:flex;flex-direction:column;gap:8px;}`,
+    `${rowSel} .nl-input{width:100%;}`,
+    `${rowSel} .nl-button{align-self:${selfOf(alignMobile)};}`,
+    `@container (min-width:768px){`,
+    `${rowSel}{flex-direction:row;}`,
+    `${rowSel} .nl-input{flex:1 1 auto;width:auto;}`,
+    `${rowSel} .nl-button{align-self:auto;}`,
+    `}`,
+  ].join('');
+
   return (
     <section style={style} className="px-8 py-20">
       <style
         dangerouslySetInnerHTML={{
-          __html: alignCss(blockId, alignMobile, align),
+          __html: alignCss(blockId, alignMobile, align) + rowCss,
         }}
       />
       <div data-align={blockId} className="flex max-w-xl flex-col gap-4">
@@ -77,7 +93,7 @@ export function NewsletterBlock({
             onSubmit={onSubmit}
             className="mt-2 flex w-full max-w-md flex-col gap-2"
           >
-            <div className="flex gap-2">
+            <div data-nlrow={blockId}>
               <input
                 type="email"
                 placeholder={placeholder}
@@ -85,7 +101,7 @@ export function NewsletterBlock({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="flex-1 rounded-lg px-4 py-2.5 text-sm text-black outline-none"
+                className="nl-input rounded-lg px-4 py-2.5 text-sm text-black outline-none"
               />
               <input
                 type="text"
@@ -100,7 +116,7 @@ export function NewsletterBlock({
               <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="rounded-lg bg-[var(--color-brand)] px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
+                className="nl-button rounded-lg bg-[var(--color-brand)] px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
               >
                 {status === 'sending' ? '…' : buttonLabel}
               </button>
