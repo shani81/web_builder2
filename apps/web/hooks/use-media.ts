@@ -1,7 +1,13 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deleteMedia, listMedia, uploadMedia } from '@/lib/media';
+import {
+  cleanupMedia,
+  deleteMedia,
+  listMedia,
+  listUnusedMedia,
+  uploadMedia,
+} from '@/lib/media';
 import type { StockProviderName, StockSearchParams } from '@buildr/types';
 import { importStock, searchStock, stockStatus } from '@/lib/stock';
 
@@ -21,7 +27,25 @@ export function useDeleteMedia() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteMedia,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['media'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['media'] });
+      queryClient.invalidateQueries({ queryKey: ['media-unused'] });
+    },
+  });
+}
+
+export function useUnusedMedia() {
+  return useQuery({ queryKey: ['media-unused'], queryFn: listUnusedMedia });
+}
+
+export function useCleanupMedia() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: cleanupMedia,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['media'] });
+      queryClient.invalidateQueries({ queryKey: ['media-unused'] });
+    },
   });
 }
 

@@ -12,11 +12,13 @@ import type {
 import { Button } from '@/components/ui/button';
 import { ApiClientError } from '@/lib/api-client';
 import {
+  useCleanupMedia,
   useDeleteMedia,
   useMedia,
   useStockImport,
   useStockSearch,
   useStockStatus,
+  useUnusedMedia,
   useUploadMedia,
 } from '@/hooks/use-media';
 
@@ -118,6 +120,9 @@ export function MediaPicker({
   const media = useMedia();
   const upload = useUploadMedia();
   const del = useDeleteMedia();
+  const unused = useUnusedMedia();
+  const cleanup = useCleanupMedia();
+  const [confirmCleanup, setConfirmCleanup] = useState(false);
   const stockStatusQuery = useStockStatus();
   const stockSearch = useStockSearch();
   const stockImport = useStockImport();
@@ -195,6 +200,17 @@ export function MediaPicker({
   const stockResults: StockPhoto[] = stockSearch.data ?? [];
   const stockEnabled = stockStatusQuery.data?.[provider] ?? true;
 
+  const unusedIds = new Set(unused.data?.ids ?? []);
+  const unusedCount = unused.data?.count ?? 0;
+
+  const removeUnused = () => {
+    if (!confirmCleanup) {
+      setConfirmCleanup(true);
+      return;
+    }
+    cleanup.mutate(undefined, { onSettled: () => setConfirmCleanup(false) });
+  };
+
   const TABS: { id: Tab; label: string }[] = [
     { id: 'library', label: 'My media' },
     { id: 'stock', label: 'Stock photos' },
@@ -263,6 +279,38 @@ export function MediaPicker({
               </Button>
             </div>
 
+            {unusedCount > 0 ? (
+              <div className="mb-3 flex items-center justify-between gap-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+                <span>
+                  {unusedCount} image{unusedCount === 1 ? '' : 's'} not used on
+                  any page.
+                </span>
+                <div className="flex items-center gap-2">
+                  {confirmCleanup ? (
+                    <button
+                      type="button"
+                      onClick={() => setConfirmCleanup(false)}
+                      className="text-amber-700 hover:underline"
+                    >
+                      Cancel
+                    </button>
+                  ) : null}
+                  <Button
+                    variant={confirmCleanup ? 'danger' : 'outline'}
+                    size="sm"
+                    disabled={cleanup.isPending}
+                    onClick={removeUnused}
+                  >
+                    {cleanup.isPending
+                      ? 'Removing…'
+                      : confirmCleanup
+                        ? `Delete ${unusedCount}?`
+                        : 'Remove unused'}
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+
             <div className="grid flex-1 grid-cols-3 gap-3 overflow-y-auto sm:grid-cols-4">
               {media.data && media.data.length > 0 ? (
                 media.data.map((asset) => (
@@ -279,6 +327,11 @@ export function MediaPicker({
                         className="size-full object-cover"
                       />
                     </button>
+                    {unusedIds.has(asset.id) ? (
+                      <span className="pointer-events-none absolute left-1 top-1 rounded bg-amber-500/90 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                        Unused
+                      </span>
+                    ) : null}
                     <button
                       type="button"
                       aria-label="Delete image"

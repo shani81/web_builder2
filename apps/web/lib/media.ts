@@ -28,3 +28,11 @@ export function listMedia(): Promise<MediaAsset[]> {
 export function deleteMedia(id: string): Promise<{ deleted: boolean }> {
   return apiFetch(`/media/${id}`, { method: 'DELETE' });
 }
+
+export function listUnusedMedia(): Promise<{ count: number; ids: string[] }> {
+  return apiFetch('/media/unused');
+}
+
+export function cleanupMedia(): Promise<{ deleted: number }> {
+  return apiFetch('/media/cleanup', { method: 'POST' });
+}

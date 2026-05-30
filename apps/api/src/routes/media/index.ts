@@ -66,6 +66,17 @@ export async function mediaRoutes(app: FastifyInstance): Promise<void> {
     return ok(items, { page, limit, total });
   });
 
+  // Assets not referenced by any draft or published page.
+  app.get('/media/unused', async (request) => {
+    const items = await mediaService.findUnused(request.user!.sub);
+    return ok({ count: items.length, ids: items.map((i) => i.id) });
+  });
+
+  // Delete every unused asset for this user.
+  app.post('/media/cleanup', async (request) => {
+    return ok(await mediaService.cleanup(request.user!.sub));
+  });
+
   app.delete('/media/:id', async (request) => {
     const { id } = idParamSchema.parse(request.params);
     await mediaService.remove(id, request.user!.sub);

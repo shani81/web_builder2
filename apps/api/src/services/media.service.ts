@@ -3,6 +3,8 @@ import sharp from 'sharp';
 import { shortId } from '@buildr/utils';
 import type { MediaAsset, MediaProvenance } from '@buildr/types';
 import { mediaRepository } from '../repositories/media.repository.js';
+import { siteRepository } from '../repositories/site.repository.js';
+import { publishedRepository } from '../repositories/published.repository.js';
 import { MAX_IMAGE_WIDTH } from '../config/media.js';
 import { storage } from '../config/storage.js';
 import { aiService, resolveUserApiKey } from './ai.service.js';
@@ -130,6 +132,42 @@ export class MediaService {
     if (!asset || asset.userId !== userId) throw AppError.notFound('media');
     await storage.delete(asset.filename);
     await mediaRepository.delete(id);
+  }
+
+  /**
+   * Text of every place an image URL could appear for this user: all draft
+   * pages plus every published snapshot. An asset is "in use" if its stored
+   * URL appears here — robust to whichever block/prop holds the image.
+   */
+  private async usageHaystack(userId: string): Promise<string> {
+    const [sites, published] = await Promise.all([
+      siteRepository.findByUser(userId),
+      publishedRepository.findMany({ userId }),
+    ]);
+    const draft = sites.map((s) => JSON.stringify(s.pages)).join('');
+    const live = published
+      .map((p) => p.versions.map((v) => JSON.stringify(v.pages)).join(''))
+      .join('');
+    return draft + live;
+  }
+
+  /** Assets not referenced by any draft or published page. */
+  async findUnused(userId: string): Promise<MediaAsset[]> {
+    const [assets, haystack] = await Promise.all([
+      mediaRepository.findByUser(userId),
+      this.usageHaystack(userId),
+    ]);
+    return assets.filter((a) => a.url && !haystack.includes(a.url));
+  }
+
+  /** Delete every unused asset (file + record). Returns how many were removed. */
+  async cleanup(userId: string): Promise<{ deleted: number }> {
+    const unused = await this.findUnused(userId);
+    for (const asset of unused) {
+      await storage.delete(asset.filename);
+      await mediaRepository.delete(asset.id);
+    }
+    return { deleted: unused.length };
   }
 }
 
