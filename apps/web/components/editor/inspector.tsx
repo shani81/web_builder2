@@ -1,6 +1,7 @@
 'use client';
 
 import { Trash2 } from 'lucide-react';
+import { slugify } from '@buildr/utils';
 import { useEditorStore } from '@/stores/editor.store';
 import { getBlockDefinition } from '@/components/blocks/registry';
 import { bool, num, str, type InspectorField } from '@/components/blocks/types';
@@ -216,6 +217,30 @@ export function Inspector() {
             />
           ),
         )}
+
+        <div className="flex flex-col gap-1.5 border-t border-black/10 pt-4">
+          <label
+            htmlFor="field-anchorId"
+            className="text-xs font-medium text-black/60"
+          >
+            Anchor ID
+          </label>
+          <input
+            id="field-anchorId"
+            type="text"
+            value={str(block.props.anchorId)}
+            onChange={(e) =>
+              updateBlockProps(block.id, { anchorId: slugify(e.target.value) })
+            }
+            placeholder="e.g. pricing"
+            className={inputClass}
+          />
+          <p className="text-[11px] text-black/40">
+            {str(block.props.anchorId)
+              ? `Link to this section with #${str(block.props.anchorId)}`
+              : 'Give this block an id so nav links can scroll to it (e.g. #pricing).'}
+          </p>
+        </div>
       </div>
 
       <div className="mt-auto border-t border-black/10 p-4">
