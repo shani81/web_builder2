@@ -4,8 +4,9 @@ import { useId, useState, type CSSProperties } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { menuLinkAttrs, parseMenu } from '@buildr/utils';
 import type { MenuItem } from '@buildr/types';
-import { bool, linkAttrs, str, type BlockComponentProps } from './types';
+import { bool, linkAttrs, num, str, type BlockComponentProps } from './types';
 import { MENU_ICONS } from './menu-icons';
+import { brandFontStack } from './navbar-fonts';
 
 /**
  * Responsive navbar. Below a 768px **container** width the inline links collapse
@@ -20,6 +21,30 @@ export function NavbarBlock({ props, linkBase = '' }: BlockComponentProps) {
   const [open, setOpen] = useState(false);
 
   const brand = str(props.brand, 'Brand');
+  const logo = str(props.logo);
+  const logoHeight = Math.min(Math.max(num(props.logoHeight, 32), 16), 96);
+  const brandColor = str(props.brandColor);
+  const brandBg = str(props.brandBg);
+  const decoration = [
+    bool(props.brandUnderline) && 'underline',
+    bool(props.brandStrike) && 'line-through',
+  ]
+    .filter(Boolean)
+    .join(' ');
+  const brandStyle: CSSProperties = {
+    ...(brandFontStack(str(props.brandFont)) && {
+      fontFamily: brandFontStack(str(props.brandFont)),
+    }),
+    ...(bool(props.brandBold) && { fontWeight: 700 }),
+    ...(bool(props.brandItalic) && { fontStyle: 'italic' }),
+    ...(decoration && { textDecoration: decoration }),
+    ...(brandColor && { color: brandColor }),
+    ...(brandBg && {
+      background: brandBg,
+      padding: '0.1em 0.4em',
+      borderRadius: '0.375rem',
+    }),
+  };
   const cta = str(props.ctaLabel, 'Get started');
   const ctaHref = str(props.ctaHref, '#');
   const sticky = bool(props.sticky, false);
@@ -54,7 +79,19 @@ export function NavbarBlock({ props, linkBase = '' }: BlockComponentProps) {
       <style dangerouslySetInnerHTML={{ __html: css }} />
 
       <div className="flex items-center justify-between px-8 py-4">
-        <span className="text-lg font-semibold">{brand}</span>
+        {logo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={logo}
+            alt={brand}
+            style={{ height: `${logoHeight}px`, width: 'auto' }}
+            className="block max-w-[60cqw] object-contain"
+          />
+        ) : (
+          <span className="text-lg font-semibold" style={brandStyle}>
+            {brand}
+          </span>
+        )}
 
         {/* Desktop: inline links + CTA */}
         <div className="nav-desktop items-center gap-6 text-sm opacity-80">

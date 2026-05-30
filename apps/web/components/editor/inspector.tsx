@@ -8,6 +8,7 @@ import { bool, num, str, type InspectorField } from '@/components/blocks/types';
 import { Button } from '@/components/ui/button';
 import { MediaField } from '@/components/media/media-field';
 import { MenuEditor } from '@/components/editor/menu-editor';
+import { BrandField } from '@/components/editor/brand-field';
 import { SectionColumnsField } from '@/components/editor/section-columns-field';
 import { SectionLayoutField } from '@/components/editor/section-layout-field';
 import { ColumnActions } from '@/components/editor/column-actions-field';
@@ -183,6 +184,8 @@ export function Inspector() {
   const renderControl = (field: InspectorField) => {
     if (field.type === 'menu')
       return <MenuEditor key={field.key} block={block} />;
+    if (field.type === 'navbar-brand')
+      return <BrandField key={field.key} block={block} />;
     if (field.type === 'section-layout')
       return <SectionLayoutField key={field.key} block={block} />;
     if (field.type === 'section-columns')

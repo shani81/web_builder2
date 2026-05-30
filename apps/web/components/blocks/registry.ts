@@ -141,6 +141,15 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     icon: Navigation,
     defaultProps: {
       brand: 'Brand',
+      logo: '',
+      logoHeight: 32,
+      brandFont: '',
+      brandBold: false,
+      brandItalic: false,
+      brandUnderline: false,
+      brandStrike: false,
+      brandColor: '',
+      brandBg: '',
       links: 'Home | #\nFeatures | #features\nPricing | #pricing',
       ctaLabel: 'Get started',
       ctaHref: '#',
@@ -149,7 +158,7 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
       sticky: false,
     },
     fields: [
-      { key: 'brand', label: 'Brand name', type: 'text' },
+      { key: 'brand', label: 'Brand & logo', type: 'navbar-brand' },
       { key: 'menu', label: 'Menu links', type: 'menu' },
       { key: 'ctaLabel', label: 'Button label', type: 'text' },
       {
