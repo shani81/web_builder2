@@ -16,6 +16,7 @@ export interface InspectorField {
     | 'date'
     | 'menu'
     | 'navbar-brand'
+    | 'navbar-buttons'
     | 'section-columns'
     | 'section-layout'
     | 'column-actions';

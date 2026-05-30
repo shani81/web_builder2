@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { MediaField } from '@/components/media/media-field';
 import { MenuEditor } from '@/components/editor/menu-editor';
 import { BrandField } from '@/components/editor/brand-field';
+import { ButtonsField } from '@/components/editor/buttons-field';
 import { SectionColumnsField } from '@/components/editor/section-columns-field';
 import { SectionLayoutField } from '@/components/editor/section-layout-field';
 import { ColumnActions } from '@/components/editor/column-actions-field';
@@ -186,6 +187,8 @@ export function Inspector() {
       return <MenuEditor key={field.key} block={block} />;
     if (field.type === 'navbar-brand')
       return <BrandField key={field.key} block={block} />;
+    if (field.type === 'navbar-buttons')
+      return <ButtonsField key={field.key} block={block} />;
     if (field.type === 'section-layout')
       return <SectionLayoutField key={field.key} block={block} />;
     if (field.type === 'section-columns')

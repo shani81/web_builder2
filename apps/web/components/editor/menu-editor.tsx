@@ -43,6 +43,7 @@ import { newMenuItem, parseMenu, serializeMenuToLinks } from '@buildr/utils';
 import { useEditorStore } from '@/stores/editor.store';
 import { MENU_ICONS, MENU_ICON_KEYS } from '@/components/blocks/menu-icons';
 import { Button } from '@/components/ui/button';
+import { CollapsibleGroup } from '@/components/editor/collapsible-group';
 
 const LINK_TYPES: { value: MenuLinkType; label: string; icon: typeof Hash }[] =
   [
@@ -611,9 +612,10 @@ export function MenuEditor({ block }: { block: Block }) {
   };
 
   return (
-    <div className="flex flex-col gap-3">
-      <p className="text-xs font-medium text-black/60">Menu links</p>
-
+    <CollapsibleGroup
+      title="Menu links"
+      summary={`${items.length} link${items.length === 1 ? '' : 's'}`}
+    >
       {items.length === 0 ? (
         <div className="rounded-xl border border-dashed border-black/15 px-4 py-8 text-center">
           <p className="text-sm font-medium">No menu links yet</p>
@@ -654,6 +656,6 @@ export function MenuEditor({ block }: { block: Block }) {
         <Plus className="size-4" aria-hidden />
         Add menu item
       </Button>
-    </div>
+    </CollapsibleGroup>
   );
 }

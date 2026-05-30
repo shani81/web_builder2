@@ -8,6 +8,38 @@ import { bool, linkAttrs, num, str, type BlockComponentProps } from './types';
 import { MENU_ICONS } from './menu-icons';
 import { brandFontStack } from './navbar-fonts';
 
+/** Resolve a button's variant + colors into className + inline styles. An empty
+ *  color falls back to the theme brand color, so unstyled buttons match the
+ *  inspector's swatch preview. */
+function ctaVisual(
+  variant: string,
+  bg: string,
+  color: string,
+): { className: string; style: CSSProperties } {
+  const accent = bg || 'var(--color-brand)';
+  if (variant === 'outline') {
+    return {
+      className: 'rounded-lg border px-4 py-2 text-sm font-medium transition',
+      style: {
+        borderColor: accent,
+        color: color || accent,
+        background: 'transparent',
+      },
+    };
+  }
+  if (variant === 'ghost') {
+    return {
+      className:
+        'rounded-lg px-4 py-2 text-sm font-medium transition hover:bg-black/5',
+      style: { color: color || accent, background: 'transparent' },
+    };
+  }
+  return {
+    className: 'rounded-lg px-4 py-2 text-sm font-medium transition',
+    style: { background: accent, color: color || '#FFFFFF' },
+  };
+}
+
 /**
  * Responsive navbar. Below a 768px **container** width the inline links collapse
  * into a hamburger menu — using a container query (not a viewport media query)
@@ -47,6 +79,19 @@ export function NavbarBlock({ props, linkBase = '' }: BlockComponentProps) {
   };
   const cta = str(props.ctaLabel, 'Get started');
   const ctaHref = str(props.ctaHref, '#');
+  const primaryCta = ctaVisual(
+    str(props.ctaStyle, 'filled'),
+    str(props.ctaBg),
+    str(props.ctaColor),
+  );
+  const hasSecondary = bool(props.secondaryCtaEnabled);
+  const cta2 = str(props.secondaryCtaLabel, 'Sign in');
+  const cta2Href = str(props.secondaryCtaHref, '#');
+  const secondaryCta = ctaVisual(
+    str(props.secondaryCtaStyle, 'outline'),
+    str(props.secondaryCtaBg),
+    str(props.secondaryCtaColor),
+  );
   const sticky = bool(props.sticky, false);
   const background = str(props.background, '#FFFFFF');
   const textColor = str(props.textColor, '#0F0F12');
@@ -142,12 +187,24 @@ export function NavbarBlock({ props, linkBase = '' }: BlockComponentProps) {
               </div>
             );
           })}
-          <a
-            {...linkAttrs(ctaHref)}
-            className="rounded-lg bg-[var(--color-brand)] px-4 py-2 text-sm font-medium text-white"
-          >
-            {cta}
-          </a>
+          <span className="flex items-center gap-2">
+            {hasSecondary ? (
+              <a
+                {...linkAttrs(cta2Href)}
+                className={secondaryCta.className}
+                style={secondaryCta.style}
+              >
+                {cta2}
+              </a>
+            ) : null}
+            <a
+              {...linkAttrs(ctaHref)}
+              className={primaryCta.className}
+              style={primaryCta.style}
+            >
+              {cta}
+            </a>
+          </span>
         </div>
 
         {/* Mobile: hamburger toggle */}
@@ -194,10 +251,21 @@ export function NavbarBlock({ props, linkBase = '' }: BlockComponentProps) {
                 </div>
               );
             })}
+            {hasSecondary ? (
+              <a
+                {...linkAttrs(cta2Href)}
+                onClick={() => setOpen(false)}
+                className={`mt-2 text-center ${secondaryCta.className}`}
+                style={secondaryCta.style}
+              >
+                {cta2}
+              </a>
+            ) : null}
             <a
               {...linkAttrs(ctaHref)}
               onClick={() => setOpen(false)}
-              className="mt-2 rounded-lg bg-[var(--color-brand)] px-4 py-2 text-center font-medium text-white"
+              className={`${hasSecondary ? 'mt-1.5' : 'mt-2'} text-center ${primaryCta.className}`}
+              style={primaryCta.style}
             >
               {cta}
             </a>
