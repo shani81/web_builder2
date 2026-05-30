@@ -1,11 +1,40 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Trash2 } from 'lucide-react';
-import type { FormType } from '@buildr/types';
-import { timeAgo } from '@buildr/utils';
+import { Download, Mail, Trash2 } from 'lucide-react';
+import type { FormSubmission, FormType } from '@buildr/types';
+import { slugify, timeAgo, toCsv } from '@buildr/utils';
 import { useSites } from '@/hooks/use-sites';
 import { useDeleteSubmission, useSubmissions } from '@/hooks/use-submissions';
+
+const CSV_COLUMNS: Record<FormType, { key: string; label: string }[]> = {
+  contact: [
+    { key: 'date', label: 'Date' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'message', label: 'Message' },
+  ],
+  newsletter: [
+    { key: 'date', label: 'Date' },
+    { key: 'email', label: 'Email' },
+  ],
+};
+
+function exportCsv(
+  items: FormSubmission[],
+  formType: FormType,
+  siteName: string,
+): void {
+  const rows = items.map((s) => ({ date: s.createdAt, ...s.data }));
+  const csv = toCsv(CSV_COLUMNS[formType], rows);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${slugify(siteName) || 'site'}-${formType}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 export default function SubmissionsPage() {
   const { data: sites } = useSites();
@@ -17,6 +46,7 @@ export default function SubmissionsPage() {
   const del = useDeleteSubmission(siteId ?? '');
 
   const items = (submissions ?? []).filter((s) => s.formType === tab);
+  const siteName = sites?.find((s) => s.id === siteId)?.name ?? 'site';
 
   return (
     <div className="mx-auto max-w-4xl px-8 py-10">
@@ -49,21 +79,32 @@ export default function SubmissionsPage() {
         </p>
       ) : (
         <>
-          <div className="mt-6 flex gap-2">
-            {(['contact', 'newsletter'] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setTab(t)}
-                className={`rounded-full px-4 py-1.5 text-sm capitalize transition ${
-                  tab === t
-                    ? 'bg-[var(--color-sidebar)] text-white'
-                    : 'bg-black/5 text-black/60 hover:bg-black/10'
-                }`}
-              >
-                {t === 'contact' ? 'Contact messages' : 'Newsletter signups'}
-              </button>
-            ))}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex gap-2">
+              {(['contact', 'newsletter'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTab(t)}
+                  className={`rounded-full px-4 py-1.5 text-sm capitalize transition ${
+                    tab === t
+                      ? 'bg-[var(--color-sidebar)] text-white'
+                      : 'bg-black/5 text-black/60 hover:bg-black/10'
+                  }`}
+                >
+                  {t === 'contact' ? 'Contact messages' : 'Newsletter signups'}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => exportCsv(items, tab, siteName)}
+              disabled={items.length === 0}
+              className="flex items-center gap-1.5 rounded-lg border border-black/15 px-3 py-1.5 text-sm font-medium text-black/70 hover:bg-black/5 disabled:opacity-40"
+            >
+              <Download className="size-4" aria-hidden />
+              Export CSV
+            </button>
           </div>
 
           <section className="mt-6 space-y-3">
