@@ -13,6 +13,8 @@ export const blockTypeSchema = z.enum([
   'contact',
   'footer',
   'text',
+  'heading',
+  'button',
   'image',
   'video',
   'embed',

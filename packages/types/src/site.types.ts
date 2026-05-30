@@ -16,6 +16,8 @@ export type BlockType =
   | 'contact'
   | 'footer'
   | 'text'
+  | 'heading'
+  | 'button'
   | 'image'
   | 'video'
   | 'embed'

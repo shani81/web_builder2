@@ -25,7 +25,11 @@ import { findParentBlock, useEditorStore } from '@/stores/editor.store';
 import { getBlockDefinition } from '@/components/blocks/registry';
 import { SectionBlock } from '@/components/blocks/section.block';
 import { BlockRenderer } from '@/components/blocks/block-renderer';
-import { BlockToolbar, TOOLBAR_BUTTON } from './block-toolbar';
+import {
+  BlockToolbar,
+  TOOLBAR_BUTTON,
+  toolbarPlacement,
+} from './block-toolbar';
 
 /** A content block nested inside a column — selectable, draggable, with a mini
  *  toolbar (drag, reorder up/down, duplicate, delete). */
@@ -110,6 +114,7 @@ function NestedBlock({
           isFirst={index === 0}
           isLast={index === total - 1}
           dragHandle={dragHandle}
+          placement={toolbarPlacement(block.type)}
           onMoveUp={() => moveBlock(block.id, 'up')}
           onMoveDown={() => moveBlock(block.id, 'down')}
           onDuplicate={() => duplicateBlock(block.id)}

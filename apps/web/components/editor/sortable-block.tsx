@@ -7,7 +7,11 @@ import type { Block } from '@buildr/types';
 import { useEditorStore } from '@/stores/editor.store';
 import { getBlockDefinition } from '@/components/blocks/registry';
 import { BlockRenderer } from '@/components/blocks/block-renderer';
-import { BlockToolbar, TOOLBAR_BUTTON } from './block-toolbar';
+import {
+  BlockToolbar,
+  TOOLBAR_BUTTON,
+  toolbarPlacement,
+} from './block-toolbar';
 import { SectionEditor } from './section-editor';
 
 export function SortableBlock({
@@ -90,7 +94,7 @@ export function SortableBlock({
           isFirst={index === 0}
           isLast={index === total - 1}
           dragHandle={dragHandle}
-          placement={block.type === 'navbar' ? 'below' : 'inside'}
+          placement={toolbarPlacement(block.type)}
           onMoveUp={() => moveBlock(block.id, 'up')}
           onMoveDown={() => moveBlock(block.id, 'down')}
           onDuplicate={() => duplicateBlock(block.id)}

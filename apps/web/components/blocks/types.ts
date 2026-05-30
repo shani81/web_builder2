@@ -25,6 +25,10 @@ export interface InspectorField {
   hint?: string;
   /** Tuck this field into the inspector's collapsible "Advanced" group. */
   advanced?: boolean;
+  /** Place this field inside a named collapsible group in the inspector.
+   *  Fields sharing a group render together under one collapsible header,
+   *  in their registry order. Ungrouped fields render above the groups. */
+  group?: string;
 }
 
 export interface BlockComponentProps {

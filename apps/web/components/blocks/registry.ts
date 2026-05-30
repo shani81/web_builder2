@@ -8,12 +8,15 @@ import {
   Image as ImageIcon,
   Images,
   LayoutGrid,
+  Heading1,
   Mail,
   Megaphone,
+  MousePointerClick,
   Navigation,
   PanelBottom,
   Quote,
   Send,
+  SeparatorHorizontal,
   Square,
   Timer,
   Type,
@@ -31,6 +34,9 @@ import { TestimonialsBlock } from './testimonials.block';
 import { CtaBlock } from './cta.block';
 import { ImageBlock } from './image.block';
 import { TextBlock } from './text.block';
+import { HeadingBlock } from './heading.block';
+import { ButtonBlock } from './button.block';
+import { DividerBlock } from './divider.block';
 import { PricingBlock } from './pricing.block';
 import { FaqBlock } from './faq.block';
 import { ContactBlock } from './contact.block';
@@ -80,6 +86,51 @@ const VALIGN_OPTIONS = [
   { label: 'Top', value: 'top' },
   { label: 'Center', value: 'center' },
   { label: 'Bottom', value: 'bottom' },
+];
+
+const BUTTON_VARIANT_OPTIONS = [
+  { label: 'Filled', value: 'filled' },
+  { label: 'Outline', value: 'outline' },
+  { label: 'Ghost', value: 'ghost' },
+];
+
+const SIZE_OPTIONS = [
+  { label: 'Small', value: 'sm' },
+  { label: 'Medium', value: 'md' },
+  { label: 'Large', value: 'lg' },
+];
+
+const RADIUS_OPTIONS = [
+  { label: 'None', value: 'none' },
+  { label: 'Small', value: 'sm' },
+  { label: 'Medium', value: 'md' },
+  { label: 'Large', value: 'lg' },
+  { label: 'Pill', value: 'full' },
+];
+
+const SHADOW_OPTIONS = [
+  { label: 'None', value: 'none' },
+  { label: 'Subtle', value: 'sm' },
+  { label: 'Medium', value: 'md' },
+  { label: 'Strong', value: 'lg' },
+];
+
+const LINE_STYLE_OPTIONS = [
+  { label: 'Solid', value: 'solid' },
+  { label: 'Dashed', value: 'dashed' },
+  { label: 'Dotted', value: 'dotted' },
+];
+
+const HEADING_LEVEL_OPTIONS = [1, 2, 3, 4, 5, 6].map((n) => ({
+  label: `Heading ${n} (H${n})`,
+  value: `h${n}`,
+}));
+
+const WEIGHT_OPTIONS = [
+  { label: 'Normal', value: 'normal' },
+  { label: 'Medium', value: 'medium' },
+  { label: 'Semibold', value: 'semibold' },
+  { label: 'Bold', value: 'bold' },
 ];
 
 /** Container blocks render their `children` (handled in block-renderer), so
@@ -371,6 +422,179 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
       },
     ],
     Component: TextBlock,
+  },
+  heading: {
+    type: 'heading',
+    label: 'Heading',
+    category: 'content',
+    icon: Heading1,
+    defaultProps: {
+      text: 'Your heading',
+      level: 'h2',
+      align: 'left',
+      weight: 'bold',
+      color: '',
+    },
+    fields: [
+      { key: 'text', label: 'Text', type: 'text', group: 'Content' },
+      {
+        key: 'level',
+        label: 'Level (tag)',
+        type: 'select',
+        options: HEADING_LEVEL_OPTIONS,
+        hint: 'H1–H6 — sets the HTML tag for SEO & accessibility',
+        group: 'Content',
+      },
+      {
+        key: 'align',
+        label: 'Alignment',
+        type: 'select',
+        options: ALIGN3_OPTIONS,
+        group: 'Style',
+      },
+      {
+        key: 'weight',
+        label: 'Weight',
+        type: 'select',
+        options: WEIGHT_OPTIONS,
+        group: 'Style',
+      },
+      {
+        key: 'color',
+        label: 'Color',
+        type: 'color',
+        hint: 'Defaults to your theme text color',
+        group: 'Style',
+      },
+    ],
+    Component: HeadingBlock,
+  },
+  button: {
+    type: 'button',
+    label: 'Button',
+    category: 'content',
+    icon: MousePointerClick,
+    defaultProps: {
+      label: 'Get started',
+      href: '#',
+      newTab: false,
+      variant: 'filled',
+      size: 'md',
+      align: 'left',
+      fullWidth: false,
+      bg: '#4F6EF7',
+      color: '#FFFFFF',
+      radius: 'md',
+      shadow: 'none',
+    },
+    fields: [
+      { key: 'label', label: 'Label', type: 'text', group: 'Content' },
+      {
+        key: 'href',
+        label: 'Link',
+        type: 'text',
+        hint: 'URL or #anchor',
+        group: 'Content',
+      },
+      {
+        key: 'newTab',
+        label: 'Open in new tab',
+        type: 'toggle',
+        group: 'Content',
+      },
+      {
+        key: 'variant',
+        label: 'Style',
+        type: 'select',
+        options: BUTTON_VARIANT_OPTIONS,
+        group: 'Style',
+      },
+      {
+        key: 'size',
+        label: 'Size',
+        type: 'select',
+        options: SIZE_OPTIONS,
+        group: 'Style',
+      },
+      {
+        key: 'align',
+        label: 'Alignment',
+        type: 'select',
+        options: ALIGN3_OPTIONS,
+        group: 'Style',
+      },
+      { key: 'fullWidth', label: 'Full width', type: 'toggle', group: 'Style' },
+      { key: 'bg', label: 'Button color', type: 'color', group: 'Colors' },
+      { key: 'color', label: 'Text color', type: 'color', group: 'Colors' },
+      {
+        key: 'radius',
+        label: 'Rounded corners',
+        type: 'select',
+        options: RADIUS_OPTIONS,
+        group: 'Effects',
+      },
+      {
+        key: 'shadow',
+        label: 'Shadow',
+        type: 'select',
+        options: SHADOW_OPTIONS,
+        group: 'Effects',
+      },
+    ],
+    Component: ButtonBlock,
+  },
+  divider: {
+    type: 'divider',
+    label: 'Divider',
+    category: 'content',
+    icon: SeparatorHorizontal,
+    defaultProps: {
+      text: '',
+      position: 'center',
+      color: '#E5E7EB',
+      textColor: '#6B7280',
+      thickness: 1,
+      lineStyle: 'solid',
+      spacingY: 24,
+    },
+    fields: [
+      {
+        key: 'text',
+        label: 'Label (optional)',
+        type: 'text',
+        hint: 'Leave empty for a plain line',
+        group: 'Label',
+      },
+      {
+        key: 'position',
+        label: 'Label position',
+        type: 'select',
+        options: ALIGN3_OPTIONS,
+        group: 'Label',
+      },
+      { key: 'textColor', label: 'Label color', type: 'color', group: 'Label' },
+      { key: 'color', label: 'Line color', type: 'color', group: 'Line' },
+      {
+        key: 'thickness',
+        label: 'Thickness (px)',
+        type: 'number',
+        group: 'Line',
+      },
+      {
+        key: 'lineStyle',
+        label: 'Line style',
+        type: 'select',
+        options: LINE_STYLE_OPTIONS,
+        group: 'Line',
+      },
+      {
+        key: 'spacingY',
+        label: 'Vertical space (px)',
+        type: 'number',
+        group: 'Spacing',
+      },
+    ],
+    Component: DividerBlock,
   },
   footer: {
     type: 'footer',
@@ -680,7 +904,10 @@ export const PALETTE_BLOCKS: BlockDefinition[] = (
     'countdown',
     'contact',
     'image',
+    'heading',
     'text',
+    'button',
+    'divider',
     'footer',
   ] as BlockType[]
 ).map((type) => BLOCK_REGISTRY[type]!);

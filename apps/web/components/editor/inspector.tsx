@@ -10,6 +10,7 @@ import { MediaField } from '@/components/media/media-field';
 import { MenuEditor } from '@/components/editor/menu-editor';
 import { BrandField } from '@/components/editor/brand-field';
 import { ButtonsField } from '@/components/editor/buttons-field';
+import { CollapsibleGroup } from '@/components/editor/collapsible-group';
 import { SectionColumnsField } from '@/components/editor/section-columns-field';
 import { SectionLayoutField } from '@/components/editor/section-layout-field';
 import { ColumnActions } from '@/components/editor/column-actions-field';
@@ -221,8 +222,13 @@ export function Inspector() {
   };
 
   const fields = def?.fields ?? [];
-  const basicFields = fields.filter((f) => !f.advanced);
-  const advancedFields = fields.filter((f) => f.advanced);
+  const basicFields = fields.filter((f) => !f.advanced && !f.group);
+  const advancedFields = fields.filter((f) => f.advanced && !f.group);
+  // Named collapsible groups, in first-seen registry order.
+  const groupNames = fields.reduce<string[]>((acc, f) => {
+    if (f.group && !acc.includes(f.group)) acc.push(f.group);
+    return acc;
+  }, []);
 
   return (
     <aside className="flex w-72 shrink-0 flex-col overflow-y-auto border-l border-black/10 bg-white">
@@ -240,6 +246,12 @@ export function Inspector() {
 
       <div className="flex flex-col gap-4 p-4">
         {basicFields.map(renderControl)}
+
+        {groupNames.map((name) => (
+          <CollapsibleGroup key={name} title={name}>
+            {fields.filter((f) => f.group === name).map(renderControl)}
+          </CollapsibleGroup>
+        ))}
 
         {advancedFields.length > 0 ? (
           <details className="border-t border-black/10 pt-3">
