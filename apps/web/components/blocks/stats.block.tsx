@@ -1,10 +1,5 @@
 import { num, parseLines, str, type BlockComponentProps } from './types';
-
-const COLS: Record<number, string> = {
-  2: 'sm:grid-cols-2',
-  3: 'sm:grid-cols-3',
-  4: 'sm:grid-cols-2 lg:grid-cols-4',
-};
+import { autoGridColumns } from './responsive-grid';
 
 export function StatsBlock({ props }: BlockComponentProps) {
   const heading = str(props.heading, '');
@@ -18,9 +13,14 @@ export function StatsBlock({ props }: BlockComponentProps) {
     <section className="px-8 py-20">
       <div className="mx-auto max-w-5xl">
         {heading ? (
-          <h2 className="mb-12 text-center text-3xl font-semibold">{heading}</h2>
+          <h2 className="mb-12 text-center text-3xl font-semibold">
+            {heading}
+          </h2>
         ) : null}
-        <div className={`grid gap-8 text-center ${COLS[columns] ?? COLS[4]}`}>
+        <div
+          className="grid gap-8 text-center"
+          style={{ gridTemplateColumns: autoGridColumns(columns) }}
+        >
           {items.map(([value, label], i) => (
             <div key={i}>
               <p className="text-4xl font-bold text-[var(--color-brand)]">
