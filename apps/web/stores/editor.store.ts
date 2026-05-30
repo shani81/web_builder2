@@ -143,6 +143,8 @@ interface EditorState {
   moveBlock: (id: string, direction: 'up' | 'down') => void;
   duplicateBlock: (id: string) => void;
   reorderBlocks: (orderedIds: string[]) => void;
+  /** Reorder a container block's children to match `orderedIds`. */
+  reorderChildren: (parentId: string, orderedIds: string[]) => void;
   /** Apply an AI-proposed action to the page. */
   applyAiAction: (action: EditorAction) => void;
   /** Update the active page's title and/or SEO metadata. */
@@ -346,6 +348,16 @@ export const useEditorStore = create<EditorState>((set, get) => {
       commit((page) => {
         const byId = new Map(page.blocks.map((b) => [b.id, b]));
         page.blocks = orderedIds
+          .map((id) => byId.get(id))
+          .filter((b): b is Block => Boolean(b));
+      }),
+
+    reorderChildren: (parentId, orderedIds) =>
+      commit((page) => {
+        const parent = findBlockInTree(page.blocks, parentId);
+        if (!parent?.children) return;
+        const byId = new Map(parent.children.map((b) => [b.id, b]));
+        parent.children = orderedIds
           .map((id) => byId.get(id))
           .filter((b): b is Block => Boolean(b));
       }),
