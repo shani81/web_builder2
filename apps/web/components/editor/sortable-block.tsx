@@ -90,6 +90,7 @@ export function SortableBlock({
           isFirst={index === 0}
           isLast={index === total - 1}
           dragHandle={dragHandle}
+          placement={block.type === 'navbar' ? 'below' : 'inside'}
           onMoveUp={() => moveBlock(block.id, 'up')}
           onMoveDown={() => moveBlock(block.id, 'down')}
           onDuplicate={() => duplicateBlock(block.id)}

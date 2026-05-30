@@ -22,6 +22,7 @@ export function BlockToolbar({
   isFirst,
   isLast,
   dragHandle,
+  placement = 'inside',
   onMoveUp,
   onMoveDown,
   onDuplicate,
@@ -31,6 +32,10 @@ export function BlockToolbar({
   isFirst: boolean;
   isLast: boolean;
   dragHandle?: ReactNode;
+  /** Where the bar sits relative to the block. `below` drops it just under the
+   *  block — used for the navbar, whose own z-index would otherwise hide an
+   *  overlapping bar. */
+  placement?: 'inside' | 'below';
   onMoveUp: () => void;
   onMoveDown: () => void;
   onDuplicate: () => void;
@@ -40,7 +45,9 @@ export function BlockToolbar({
     // Stop propagation so toolbar clicks don't toggle block selection.
     <div
       onClick={(e) => e.stopPropagation()}
-      className="absolute right-2 top-2 z-20 flex items-center gap-0.5 rounded-lg border border-black/10 bg-white/95 p-0.5 shadow-md backdrop-blur"
+      className={`absolute right-2 z-30 flex items-center gap-0.5 rounded-lg border border-black/10 bg-white/95 p-0.5 shadow-md backdrop-blur ${
+        placement === 'below' ? 'top-full mt-2' : 'top-2'
+      }`}
     >
       <span className="select-none px-1.5 text-[11px] font-medium text-black/45">
         {label}
