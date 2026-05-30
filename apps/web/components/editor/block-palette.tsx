@@ -2,6 +2,15 @@
 
 import { useEditorStore } from '@/stores/editor.store';
 import { PALETTE_BLOCKS } from '@/components/blocks/registry';
+import type { BlockDefinition } from '@/components/blocks/types';
+
+/** Category groups shown in the palette, in display order. */
+const GROUPS: { category: BlockDefinition['category']; label: string }[] = [
+  { category: 'layout', label: 'Layout' },
+  { category: 'content', label: 'Content' },
+  { category: 'media', label: 'Media' },
+  { category: 'advanced', label: 'Advanced' },
+];
 
 /** Left panel: click a block to append it to the page (after the selection). */
 export function BlockPalette() {
@@ -12,22 +21,37 @@ export function BlockPalette() {
       <h2 className="px-1 text-xs font-semibold uppercase tracking-wide text-black/40">
         Blocks
       </h2>
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        {PALETTE_BLOCKS.map(({ type, label, icon: Icon }) => (
-          <button
-            key={type}
-            type="button"
-            onClick={() => addBlock(type)}
-            className="flex flex-col items-center gap-2 rounded-lg border border-black/10 p-3 text-sm transition hover:border-[var(--color-brand)] hover:bg-[var(--color-brand)]/5"
-          >
-            <Icon className="size-5 text-black/60" aria-hidden />
-            {label}
-          </button>
-        ))}
-      </div>
-      <p className="mt-4 px-1 text-xs text-black/40">
+      <p className="mt-1 px-1 text-xs text-black/40">
         Click a block to add it to the page.
       </p>
+
+      <div className="mt-4 flex flex-col gap-5">
+        {GROUPS.map(({ category, label }) => {
+          const items = PALETTE_BLOCKS.filter((b) => b.category === category);
+          if (items.length === 0) return null;
+          return (
+            <div key={category}>
+              <h3 className="px-1 text-[11px] font-semibold uppercase tracking-wide text-black/35">
+                {label}
+              </h3>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                {items.map(({ type, label: blockLabel, icon: Icon }) => (
+                  <button
+                    key={type}
+                    type="button"
+                    title={`Add ${blockLabel}`}
+                    onClick={() => addBlock(type)}
+                    className="flex flex-col items-center gap-2 rounded-lg border border-black/10 p-3 text-center text-xs font-medium text-black/70 transition hover:border-[var(--color-brand)] hover:bg-[var(--color-brand)]/5 hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-brand)]"
+                  >
+                    <Icon className="size-5 text-black/55" aria-hidden />
+                    {blockLabel}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </aside>
   );
 }

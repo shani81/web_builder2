@@ -98,6 +98,7 @@ export function Toolbar() {
             key={id}
             type="button"
             aria-label={label}
+            title={`${label} preview`}
             aria-pressed={devicePreview === id}
             onClick={() => setDevicePreview(id)}
             className={`grid size-7 place-items-center rounded-md transition ${
@@ -116,6 +117,7 @@ export function Toolbar() {
           <button
             type="button"
             aria-label="Zoom out"
+            title="Zoom out"
             onClick={() => setZoom(zoom - 0.1)}
             className="grid size-7 place-items-center rounded-md text-black/60 transition hover:bg-black/5"
           >
@@ -127,6 +129,7 @@ export function Toolbar() {
           <button
             type="button"
             aria-label="Zoom in"
+            title="Zoom in"
             onClick={() => setZoom(zoom + 0.1)}
             className="grid size-7 place-items-center rounded-md text-black/60 transition hover:bg-black/5"
           >
@@ -139,6 +142,7 @@ export function Toolbar() {
         <button
           type="button"
           aria-label="Undo"
+          title="Undo (Ctrl+Z)"
           disabled={!canUndo}
           onClick={undo}
           className="grid size-7 place-items-center rounded-md text-black/60 transition hover:bg-black/5 disabled:opacity-30"
@@ -148,6 +152,7 @@ export function Toolbar() {
         <button
           type="button"
           aria-label="Redo"
+          title="Redo (Ctrl+Shift+Z)"
           disabled={!canRedo}
           onClick={redo}
           className="grid size-7 place-items-center rounded-md text-black/60 transition hover:bg-black/5 disabled:opacity-30"

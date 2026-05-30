@@ -61,8 +61,7 @@ export function Canvas() {
         {blocks.length === 0 ? (
           <div className="grid h-80 place-items-center px-8 text-center text-sm text-black/40">
             <p>
-              Drag a block here, or click a block on the left to start
-              building.
+              Drag a block here, or click a block on the left to start building.
             </p>
           </div>
         ) : (
@@ -75,8 +74,13 @@ export function Canvas() {
               items={blocks.map((b) => b.id)}
               strategy={verticalListSortingStrategy}
             >
-              {blocks.map((block) => (
-                <SortableBlock key={block.id} block={block} />
+              {blocks.map((block, index) => (
+                <SortableBlock
+                  key={block.id}
+                  block={block}
+                  index={index}
+                  total={blocks.length}
+                />
               ))}
             </SortableContext>
           </DndContext>
