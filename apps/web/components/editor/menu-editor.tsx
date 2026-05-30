@@ -44,11 +44,12 @@ import { useEditorStore } from '@/stores/editor.store';
 import { MENU_ICONS, MENU_ICON_KEYS } from '@/components/blocks/menu-icons';
 import { Button } from '@/components/ui/button';
 
-const LINK_TYPES: { value: MenuLinkType; label: string; icon: typeof Hash }[] = [
-  { value: 'page', label: 'A page', icon: FileText },
-  { value: 'url', label: 'A web address', icon: Link2 },
-  { value: 'anchor', label: 'A section', icon: Hash },
-];
+const LINK_TYPES: { value: MenuLinkType; label: string; icon: typeof Hash }[] =
+  [
+    { value: 'page', label: 'A page', icon: FileText },
+    { value: 'url', label: 'A web address', icon: Link2 },
+    { value: 'anchor', label: 'A section', icon: Hash },
+  ];
 
 const OPEN_INS: { value: MenuOpenIn; label: string; icon: typeof Hash }[] = [
   { value: 'same', label: 'This window', icon: ArrowRight },
@@ -110,6 +111,165 @@ function Segmented<T extends string>({
 const inputCls =
   'w-full rounded-lg border border-black/15 px-3 py-2 text-sm outline-none focus:border-[var(--color-brand)]';
 
+/** The link-target input (page / url / anchor) for the chosen link type. */
+function LinkTargetField({
+  item,
+  pages,
+  onChange,
+}: {
+  item: MenuItem;
+  pages: Page[];
+  onChange: (patch: Partial<MenuItem>) => void;
+}) {
+  const urlMissing = item.linkType === 'url' && !item.url?.trim();
+
+  if (item.linkType === 'page') {
+    return (
+      <label className="flex flex-col gap-1 text-xs font-medium text-black/60">
+        Page
+        <select
+          value={item.pageId ?? ''}
+          onChange={(e) => {
+            const page = pages.find((p) => p.id === e.target.value);
+            onChange({ pageId: page?.id, pageSlug: page?.slug });
+          }}
+          className={inputCls}
+        >
+          {pages.length === 0 ? <option value="">No pages yet</option> : null}
+          {pages.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.title}
+              {p.isHome ? ' (home)' : ''}
+            </option>
+          ))}
+        </select>
+      </label>
+    );
+  }
+
+  if (item.linkType === 'url') {
+    return (
+      <label className="flex flex-col gap-1 text-xs font-medium text-black/60">
+        Web address
+        <input
+          value={item.url ?? ''}
+          onChange={(e) => onChange({ url: e.target.value })}
+          placeholder="example.com"
+          className={inputCls}
+        />
+        <span
+          className={`text-[11px] font-normal ${
+            urlMissing ? 'text-red-600' : 'text-black/40'
+          }`}
+        >
+          {urlMissing
+            ? 'Add a web address (e.g. example.com)'
+            : 'We’ll add https:// for you if needed.'}
+        </span>
+      </label>
+    );
+  }
+
+  return (
+    <label className="flex flex-col gap-1 text-xs font-medium text-black/60">
+      Section name
+      <input
+        value={item.anchor ?? ''}
+        onChange={(e) => onChange({ anchor: e.target.value.replace(/^#/, '') })}
+        placeholder="features"
+        className={inputCls}
+      />
+      <span className="text-[11px] font-normal text-black/40">
+        Jumps to a section with this name on the page.
+      </span>
+    </label>
+  );
+}
+
+/** A compact editor row for a single sub-menu (child) item. */
+function ChildItemRow({
+  item,
+  index,
+  total,
+  pages,
+  onChange,
+  onRemove,
+  onMove,
+}: {
+  item: MenuItem;
+  index: number;
+  total: number;
+  pages: Page[];
+  onChange: (patch: Partial<MenuItem>) => void;
+  onRemove: () => void;
+  onMove: (dir: 'up' | 'down') => void;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-lg border border-black/10 bg-black/[0.02]">
+      <div className="flex items-center gap-1 p-1.5">
+        <input
+          aria-label="Sub-item label"
+          value={item.label}
+          onChange={(e) => onChange({ label: e.target.value })}
+          placeholder="Sub-item label"
+          className="min-w-0 flex-1 rounded-md px-2 py-1 text-sm outline-none focus:bg-white"
+        />
+        <div className="flex flex-col">
+          <button
+            type="button"
+            aria-label="Move up"
+            disabled={index === 0}
+            onClick={() => onMove('up')}
+            className="grid size-4 place-items-center rounded text-black/40 hover:bg-black/5 disabled:opacity-30"
+          >
+            <ChevronUp className="size-3" aria-hidden />
+          </button>
+          <button
+            type="button"
+            aria-label="Move down"
+            disabled={index === total - 1}
+            onClick={() => onMove('down')}
+            className="grid size-4 place-items-center rounded text-black/40 hover:bg-black/5 disabled:opacity-30"
+          >
+            <ChevronDown className="size-3" aria-hidden />
+          </button>
+        </div>
+        <button
+          type="button"
+          aria-label={open ? 'Collapse' : 'Edit link'}
+          onClick={() => setOpen((v) => !v)}
+          className="grid size-7 place-items-center rounded-md text-black/45 hover:bg-black/5"
+        >
+          <ChevronDown
+            className={`size-3.5 transition ${open ? 'rotate-180' : ''}`}
+            aria-hidden
+          />
+        </button>
+        <button
+          type="button"
+          aria-label="Delete sub-item"
+          onClick={onRemove}
+          className="grid size-7 place-items-center rounded-md text-red-500 hover:bg-red-50"
+        >
+          <Trash2 className="size-3.5" aria-hidden />
+        </button>
+      </div>
+      {open ? (
+        <div className="flex flex-col gap-2 border-t border-black/10 p-2">
+          <Segmented
+            ariaLabel="Link target"
+            value={item.linkType}
+            options={LINK_TYPES}
+            onChange={(linkType) => onChange({ linkType })}
+          />
+          <LinkTargetField item={item} pages={pages} onChange={onChange} />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function MenuItemCard({
   item,
   index,
@@ -127,12 +287,35 @@ function MenuItemCard({
   onRemove: () => void;
   onMove: (dir: 'up' | 'down') => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: item.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
   const [confirming, setConfirming] = useState(false);
   const [advanced, setAdvanced] = useState(false);
 
-  const urlMissing = item.linkType === 'url' && !item.url?.trim();
+  const children = item.children ?? [];
+  const setChildren = (next: MenuItem[]) =>
+    onChange({ children: next.length ? next : undefined });
+  const addChild = () =>
+    setChildren([...children, newMenuItem({ label: 'Sub-item' })]);
+  const updateChild = (cid: string, patch: Partial<MenuItem>) =>
+    setChildren(children.map((c) => (c.id === cid ? { ...c, ...patch } : c)));
+  const removeChild = (cid: string) =>
+    setChildren(children.filter((c) => c.id !== cid));
+  const moveChild = (cid: string, dir: 'up' | 'down') => {
+    const from = children.findIndex((c) => c.id === cid);
+    const to = dir === 'up' ? from - 1 : from + 1;
+    if (to < 0 || to >= children.length) return;
+    const next = [...children];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved!);
+    setChildren(next);
+  };
 
   return (
     <div
@@ -143,7 +326,9 @@ function MenuItemCard({
         opacity: isDragging ? 0.6 : 1,
       }}
       className={`rounded-xl border bg-white ${
-        item.visible === false ? 'border-dashed border-black/15' : 'border-black/10'
+        item.visible === false
+          ? 'border-dashed border-black/15'
+          : 'border-black/10'
       }`}
     >
       {/* Header: drag, label, visibility, reorder, delete */}
@@ -215,7 +400,11 @@ function MenuItemCard({
         <div className="flex items-center justify-between gap-2 border-t border-black/10 bg-red-50/60 px-3 py-2 text-sm">
           <span className="text-red-700">Delete this item?</span>
           <div className="flex gap-2">
-            <Button size="sm" variant="ghost" onClick={() => setConfirming(false)}>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setConfirming(false)}
+            >
               Cancel
             </Button>
             <Button size="sm" variant="danger" onClick={onRemove}>
@@ -237,63 +426,7 @@ function MenuItemCard({
             />
           </div>
 
-          {item.linkType === 'page' ? (
-            <label className="flex flex-col gap-1 text-xs font-medium text-black/60">
-              Page
-              <select
-                value={item.pageId ?? ''}
-                onChange={(e) => {
-                  const page = pages.find((p) => p.id === e.target.value);
-                  onChange({ pageId: page?.id, pageSlug: page?.slug });
-                }}
-                className={inputCls}
-              >
-                {pages.length === 0 ? (
-                  <option value="">No pages yet</option>
-                ) : null}
-                {pages.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.title}
-                    {p.isHome ? ' (home)' : ''}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ) : item.linkType === 'url' ? (
-            <label className="flex flex-col gap-1 text-xs font-medium text-black/60">
-              Web address
-              <input
-                value={item.url ?? ''}
-                onChange={(e) => onChange({ url: e.target.value })}
-                placeholder="example.com"
-                className={inputCls}
-              />
-              <span
-                className={`text-[11px] font-normal ${
-                  urlMissing ? 'text-red-600' : 'text-black/40'
-                }`}
-              >
-                {urlMissing
-                  ? 'Add a web address (e.g. example.com)'
-                  : 'We’ll add https:// for you if needed.'}
-              </span>
-            </label>
-          ) : (
-            <label className="flex flex-col gap-1 text-xs font-medium text-black/60">
-              Section name
-              <input
-                value={item.anchor ?? ''}
-                onChange={(e) =>
-                  onChange({ anchor: e.target.value.replace(/^#/, '') })
-                }
-                placeholder="features"
-                className={inputCls}
-              />
-              <span className="text-[11px] font-normal text-black/40">
-                Jumps to a section with this name on the page.
-              </span>
-            </label>
-          )}
+          <LinkTargetField item={item} pages={pages} onChange={onChange} />
 
           <div>
             <p className="mb-1.5 text-xs font-medium text-black/60">Open in</p>
@@ -303,6 +436,40 @@ function MenuItemCard({
               options={OPEN_INS}
               onChange={(openIn) => onChange({ openIn })}
             />
+          </div>
+
+          <div className="border-t border-black/10 pt-3">
+            <p className="mb-1.5 text-xs font-medium text-black/60">
+              Sub-menu items
+            </p>
+            {children.length > 0 ? (
+              <div className="flex flex-col gap-1.5">
+                {children.map((child, ci) => (
+                  <ChildItemRow
+                    key={child.id}
+                    item={child}
+                    index={ci}
+                    total={children.length}
+                    pages={pages}
+                    onChange={(patch) => updateChild(child.id, patch)}
+                    onRemove={() => removeChild(child.id)}
+                    onMove={(dir) => moveChild(child.id, dir)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-[11px] text-black/40">
+                No sub-items. Add one to turn this into a dropdown.
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={addChild}
+              className="mt-2 flex items-center gap-1 text-xs font-medium text-[var(--color-brand)]"
+            >
+              <Plus className="size-3.5" aria-hidden />
+              Add sub-item
+            </button>
           </div>
 
           <button
@@ -371,7 +538,9 @@ export function MenuEditor({ block }: { block: Block }) {
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
 
   // Persist to both `menu` (structured) and `links` (legacy string) for compat.
