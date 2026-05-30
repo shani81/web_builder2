@@ -2,11 +2,7 @@
 
 import { ArrowLeft, ArrowRight, Trash2 } from 'lucide-react';
 import type { Block } from '@buildr/types';
-import {
-  blockSiblings,
-  findParentBlock,
-  useEditorStore,
-} from '@/stores/editor.store';
+import { findParentBlock, useEditorStore } from '@/stores/editor.store';
 
 /** Structural actions for a column: reorder within its section, or remove it. */
 export function ColumnActions({ block }: { block: Block }) {
@@ -15,11 +11,12 @@ export function ColumnActions({ block }: { block: Block }) {
   const section = useEditorStore((s) =>
     s.activePage ? findParentBlock(s.activePage.blocks, block.id) : null,
   );
-  const siblings = useEditorStore((s) =>
-    s.activePage ? blockSiblings(s.activePage.blocks, block.id) : null,
-  );
-  const index = siblings?.index ?? 0;
-  const total = siblings?.total ?? 1;
+  // Derive position from the (stable) section node. Selecting a freshly-built
+  // { index, total } object instead changes identity every render and trips
+  // useSyncExternalStore's snapshot caching → infinite update loop.
+  const children = section?.children ?? [];
+  const index = children.findIndex((c) => c.id === block.id);
+  const total = children.length;
 
   const btn =
     'flex flex-1 items-center justify-center gap-1 rounded-md border border-black/15 py-1.5 text-xs font-medium text-black/60 transition hover:bg-black/5 disabled:opacity-30 disabled:hover:bg-transparent';
