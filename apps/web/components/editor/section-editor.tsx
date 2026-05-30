@@ -1,8 +1,9 @@
 'use client';
 
-import { Plus } from 'lucide-react';
+import { EyeOff, Plus } from 'lucide-react';
 import type { Block } from '@buildr/types';
 import { useEditorStore } from '@/stores/editor.store';
+import { bool } from '@/components/blocks/types';
 import { getBlockDefinition } from '@/components/blocks/registry';
 import { SectionBlock } from '@/components/blocks/section.block';
 import { BlockRenderer } from '@/components/blocks/block-renderer';
@@ -83,6 +84,7 @@ function ColumnEditor({ column }: { column: Block }) {
   const addTargetColumnId = useEditorStore((s) => s.addTargetColumnId);
   const selected = selectedId === column.id;
   const isTarget = addTargetColumnId === column.id;
+  const hiddenMobile = bool(column.props.hiddenMobile, false);
   const children = column.children ?? [];
 
   return (
@@ -91,7 +93,7 @@ function ColumnEditor({ column }: { column: Block }) {
         e.stopPropagation();
         selectBlock(column.id);
       }}
-      className={`flex min-w-0 flex-col gap-3 rounded-md p-2 transition ${
+      className={`relative flex min-w-0 flex-col gap-3 rounded-md p-2 transition ${
         isTarget
           ? 'bg-[var(--color-brand)]/5 outline outline-2 outline-[var(--color-brand)]'
           : selected
@@ -99,6 +101,12 @@ function ColumnEditor({ column }: { column: Block }) {
             : 'outline-dashed outline-1 outline-black/10 hover:outline-[var(--color-brand)]/40'
       }`}
     >
+      {hiddenMobile ? (
+        <span className="pointer-events-none absolute right-1 top-1 z-10 inline-flex items-center gap-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
+          <EyeOff className="size-3" aria-hidden />
+          Hidden on mobile
+        </span>
+      ) : null}
       {children.map((child, i) => (
         <NestedBlock
           key={child.id}

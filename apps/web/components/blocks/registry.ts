@@ -95,6 +95,7 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     icon: Columns3,
     defaultProps: {},
     fields: [
+      { key: 'layout', label: 'Layout', type: 'section-layout' },
       {
         key: 'width',
         label: 'Width',
@@ -120,12 +121,14 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     icon: Square,
     defaultProps: {},
     fields: [
+      { key: 'columnActions', label: 'Column', type: 'column-actions' },
       {
         key: 'verticalAlign',
         label: 'Vertical align',
         type: 'select',
         options: VALIGN_OPTIONS,
       },
+      { key: 'hiddenMobile', label: 'Hide on mobile', type: 'toggle' },
       { key: 'padding', label: 'Padding (px)', type: 'number', advanced: true },
       { key: 'background', label: 'Background', type: 'color', advanced: true },
     ],

@@ -12,7 +12,12 @@ import type {
   Site,
 } from '@buildr/types';
 import { shortId } from '@buildr/utils';
-import { createBlock, createSection } from '@/components/blocks/registry';
+import {
+  createBlock,
+  createColumn,
+  createSection,
+} from '@/components/blocks/registry';
+import { layoutById } from '@/components/blocks/section-layouts';
 import { savePage } from '@/lib/pages';
 
 const MAX_HISTORY = 50;
@@ -45,6 +50,27 @@ export function findBlockInTree(
     }
   }
   return undefined;
+}
+
+/** The block whose `children` contains `id`, or null if `id` is top-level. */
+export function findParentBlock(blocks: Block[], id: string): Block | null {
+  for (const block of blocks) {
+    if (block.children?.some((c) => c.id === id)) return block;
+    if (block.children) {
+      const found = findParentBlock(block.children, id);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+/** A block's position among its siblings (for edge-aware move controls). */
+export function blockSiblings(
+  blocks: Block[],
+  id: string,
+): { index: number; total: number } | null {
+  const loc = locateBlock(blocks, id);
+  return loc ? { index: loc.index, total: loc.parent.length } : null;
 }
 
 /** Index of the top-level block that is, or contains, `id` (else -1). */
@@ -106,6 +132,12 @@ interface EditorState {
   addSection: (layoutId: string) => void;
   /** Target a column for the next palette insertion (null clears it). */
   setAddTarget: (columnId: string | null) => void;
+  /** Append an empty column to a section. */
+  addColumn: (sectionId: string) => void;
+  /** Remove a column; its content moves to a neighbour so nothing is lost. */
+  removeColumn: (sectionId: string, columnId: string) => void;
+  /** Switch a section to a layout preset, preserving content where possible. */
+  switchSectionLayout: (sectionId: string, layoutId: string) => void;
   removeBlock: (id: string) => void;
   updateBlockProps: (id: string, props: BlockProps) => void;
   moveBlock: (id: string, direction: 'up' | 'down') => void;
@@ -211,6 +243,69 @@ export const useEditorStore = create<EditorState>((set, get) => {
     },
 
     setAddTarget: (columnId) => set({ addTargetColumnId: columnId }),
+
+    addColumn: (sectionId) =>
+      commit((page) => {
+        const sec = findBlockInTree(page.blocks, sectionId);
+        if (!sec || sec.type !== 'section') return;
+        sec.children ??= [];
+        sec.children.push(createColumn());
+        const cols = Array.isArray(sec.props.columns)
+          ? [...(sec.props.columns as number[])]
+          : sec.children.slice(0, -1).map(() => 1);
+        cols.push(1);
+        sec.props = { ...sec.props, columns: cols };
+      }),
+
+    removeColumn: (sectionId, columnId) =>
+      commit((page) => {
+        const sec = findBlockInTree(page.blocks, sectionId);
+        if (!sec?.children || sec.children.length <= 1) return;
+        const idx = sec.children.findIndex((c) => c.id === columnId);
+        if (idx < 0) return;
+        // Move the removed column's content to a neighbour (prev, or next if first).
+        const removed = sec.children[idx]!;
+        const target = sec.children[idx > 0 ? idx - 1 : 1];
+        if (removed.children?.length && target) {
+          target.children = [...(target.children ?? []), ...removed.children];
+        }
+        sec.children.splice(idx, 1);
+        const cols = Array.isArray(sec.props.columns)
+          ? (sec.props.columns as number[]).filter((_, i) => i !== idx)
+          : sec.children.map(() => 1);
+        sec.props = { ...sec.props, columns: cols };
+      }),
+
+    switchSectionLayout: (sectionId, layoutId) => {
+      const layout = layoutById(layoutId);
+      if (!layout) return;
+      commit((page) => {
+        const sec = findBlockInTree(page.blocks, sectionId);
+        if (!sec?.children) return;
+        const target = layout.columns.length;
+        const current = sec.children.length;
+        if (target > current) {
+          for (let k = 0; k < target - current; k++) {
+            sec.children.push(createColumn());
+          }
+        } else if (target < current) {
+          // Fold removed columns' content into the last kept column.
+          const last = sec.children[target - 1]!;
+          for (let k = target; k < current; k++) {
+            const col = sec.children[k]!;
+            if (col.children?.length) {
+              last.children = [...(last.children ?? []), ...col.children];
+            }
+          }
+          sec.children.splice(target, current - target);
+        }
+        sec.props = {
+          ...sec.props,
+          layout: layout.id,
+          columns: layout.columns,
+        };
+      });
+    },
 
     removeBlock: (id) => {
       commit((page) => {

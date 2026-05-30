@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { MediaField } from '@/components/media/media-field';
 import { MenuEditor } from '@/components/editor/menu-editor';
 import { SectionColumnsField } from '@/components/editor/section-columns-field';
+import { SectionLayoutField } from '@/components/editor/section-layout-field';
+import { ColumnActions } from '@/components/editor/column-actions-field';
 
 const inputClass =
   'rounded-lg border border-black/15 px-3 py-2 text-sm outline-none focus:border-[var(--color-brand)]';
@@ -181,8 +183,12 @@ export function Inspector() {
   const renderControl = (field: InspectorField) => {
     if (field.type === 'menu')
       return <MenuEditor key={field.key} block={block} />;
+    if (field.type === 'section-layout')
+      return <SectionLayoutField key={field.key} block={block} />;
     if (field.type === 'section-columns')
       return <SectionColumnsField key={field.key} block={block} />;
+    if (field.type === 'column-actions')
+      return <ColumnActions key={field.key} block={block} />;
     if (field.type === 'image')
       return (
         <MediaField

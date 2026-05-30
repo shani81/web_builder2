@@ -15,7 +15,9 @@ export interface InspectorField {
     | 'image'
     | 'date'
     | 'menu'
-    | 'section-columns';
+    | 'section-columns'
+    | 'section-layout'
+    | 'column-actions';
   options?: { label: string; value: string }[];
   /** Helper text shown under the control (e.g. a line format). */
   hint?: string;
