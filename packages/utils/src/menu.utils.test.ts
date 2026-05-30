@@ -92,6 +92,29 @@ describe('parseMenu', () => {
     expect(items[0]!.visible).toBe(true);
     expect(typeof items[0]!.id).toBe('string');
   });
+
+  it('keeps and recursively sanitizes nested sub-menu children', () => {
+    const items = parseMenu({
+      menu: [
+        {
+          label: 'Products',
+          linkType: 'url',
+          url: '#products',
+          openIn: 'same',
+          visible: true,
+          children: [
+            { label: 'Web', linkType: 'url', url: '/web', openIn: 'same' },
+            { label: 'Bad', linkType: 'nope', openIn: 'huh' },
+            null,
+          ],
+        },
+      ],
+    });
+    expect(items).toHaveLength(1);
+    const kids = items[0]!.children!;
+    expect(kids.map((c) => c.label)).toEqual(['Web', 'Bad']); // null dropped
+    expect(kids[1]!.linkType).toBe('url'); // invalid type sanitized to default
+  });
 });
 
 describe('normalizeUrl', () => {
