@@ -1,0 +1,43 @@
+@import 'tailwindcss';
+
+/*
+ * BUILDR design tokens.
+ * Palette: dark sidebar, white canvas, electric blue accent, green success.
+ * Exposed to Tailwind via @theme so utilities like `bg-brand` work.
+ */
+@theme {
+  --color-sidebar: #0f0f12;
+  --color-canvas: #ffffff;
+  --color-brand: #4f6ef7;
+  --color-brand-foreground: #ffffff;
+  --color-success: #22c55e;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-content: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* 8px spacing grid */
+  --spacing: 0.25rem;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-canvas);
+  color: #0f0f12;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Always-visible focus indicator (accessibility rule from the spec). */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
