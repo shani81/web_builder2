@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import Anthropic from '@anthropic-ai/sdk';
 import { now, shortId, slugify } from '@buildr/utils';
 import type {
@@ -17,8 +19,37 @@ import { AppError } from '../utils/response.js';
 import { decryptSecret } from '../utils/crypto.js';
 import { authService } from './auth.service.js';
 
-/** Block types the generator/chat are allowed to emit (the implemented set). */
-const ALLOWED_BLOCKS = [
+/**
+ * The assistant's emittable block set + token enums come from the builder's
+ * capability manifest (builder-capabilities.json) so the AI stays in lockstep
+ * with the real registry. If the manifest can't be read, fall back to the
+ * known implemented set so generation still works.
+ */
+interface CapManifest {
+  components: { type: string }[];
+  tokens?: { borderRadius?: string[]; spacing?: string[] };
+}
+
+function loadCapabilities(): CapManifest | null {
+  const candidates = [
+    resolve(import.meta.dirname, '../../../../builder-capabilities.json'),
+    resolve(process.cwd(), 'builder-capabilities.json'),
+  ];
+  for (const p of candidates) {
+    try {
+      if (existsSync(p))
+        return JSON.parse(readFileSync(p, 'utf8')) as CapManifest;
+    } catch {
+      /* fall through to the next candidate */
+    }
+  }
+  return null;
+}
+
+const CAPS = loadCapabilities();
+// Containers/child-only types the flat generator shouldn't emit directly.
+const STRUCTURAL = new Set(['section', 'column', 'feature-item']);
+const FALLBACK_EMITTABLE = [
   'navbar',
   'hero',
   'features',
@@ -26,6 +57,9 @@ const ALLOWED_BLOCKS = [
   'cta',
   'image',
   'text',
+  'heading',
+  'button',
+  'divider',
   'footer',
   'pricing',
   'faq',
@@ -37,8 +71,19 @@ const ALLOWED_BLOCKS = [
   'video',
   'countdown',
   'logos',
-] as const;
-type AllowedBlock = (typeof ALLOWED_BLOCKS)[number];
+];
+const EMITTABLE = new Set<string>(
+  CAPS
+    ? CAPS.components.map((c) => c.type).filter((t) => !STRUCTURAL.has(t))
+    : FALLBACK_EMITTABLE,
+);
+
+/** A hard constraint line derived from the manifest, appended to prompts. */
+const CAPS_CONSTRAINT = `You may use ONLY these block types: ${[...EMITTABLE].join(', ')}.${
+  CAPS?.tokens
+    ? ` Theme borderRadius ∈ {${(CAPS.tokens.borderRadius ?? []).join(', ')}}, spacing ∈ {${(CAPS.tokens.spacing ?? []).join(', ')}}.`
+    : ''
+}`;
 
 const BLOCK_GUIDE = `Available block types and their props:
 - navbar: { brand, links (lines of "Label | URL"), ctaLabel, ctaHref }
@@ -58,6 +103,9 @@ const BLOCK_GUIDE = `Available block types and their props:
 - countdown: { heading, targetDate ("YYYY-MM-DD"), expiredText }
 - image: { src (url), alt, caption, link }
 - text: { heading, content, align ("left"|"center") }
+- heading: { text, level ("h1"|"h2"|"h3"|"h4"|"h5"|"h6"), align ("left"|"center"|"right"), weight ("normal"|"medium"|"semibold"|"bold") }
+- button: { label, href, variant ("filled"|"outline"|"ghost"), size ("sm"|"md"|"lg"), align ("left"|"center"|"right") }
+- divider: { text (optional label), position ("left"|"center"|"right") }
 - footer: { brand, tagline, links (lines of "Label | URL"), social (lines of "Label | URL"), text }
 
 Always give links and buttons working hrefs: in-page anchors like "#features", site paths like "/pricing", or full https URLs.`;
@@ -152,10 +200,7 @@ function sanitizeBlock(raw: unknown): Block | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const record = raw as Record<string, unknown>;
   const type = record.type;
-  if (
-    typeof type !== 'string' ||
-    !ALLOWED_BLOCKS.includes(type as AllowedBlock)
-  ) {
+  if (typeof type !== 'string' || !EMITTABLE.has(type)) {
     return null;
   }
   const props =
@@ -194,6 +239,8 @@ export class AIService {
 
 ${BLOCK_GUIDE}
 
+${CAPS_CONSTRAINT}
+
 Output ONLY a JSON object of this shape (no prose, no markdown fence):
 {
   "name": "Site name",
@@ -202,7 +249,9 @@ Output ONLY a JSON object of this shape (no prose, no markdown fence):
   "pages": [ { "title": "Home", "blocks": [ { "type": "navbar", "props": { ... } }, ... ] } ]
 }
 Build one rich "Home" page that starts with a navbar and ends with a footer, with a hero and several content blocks in between. Write real, specific copy — never lorem ipsum.${
-      options.language ? ` Write all copy in language code "${options.language}".` : ''
+      options.language
+        ? ` Write all copy in language code "${options.language}".`
+        : ''
     }`;
 
     const text = await streamText(apiKey, {
@@ -351,9 +400,11 @@ Build one rich "Home" page that starts with a navbar and ends with a footer, wit
 
 ${BLOCK_GUIDE}
 
-Current page blocks (id:type): ${context.blocks
-      .map((b) => `${b.id}:${b.type}`)
-      .join(', ') || '(empty)'}.
+${CAPS_CONSTRAINT}
+
+Current page blocks (id:type): ${
+      context.blocks.map((b) => `${b.id}:${b.type}`).join(', ') || '(empty)'
+    }.
 
 Reply conversationally and briefly. If — and only if — the user asks you to change the page, append a single fenced block at the very end:
 \`\`\`action

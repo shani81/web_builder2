@@ -1,0 +1,1603 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-05-30T23:03:07.801Z",
+  "hash": "bbbd0f784b0286e2",
+  "components": [
+    {
+      "type": "section",
+      "label": "Section",
+      "category": "layout",
+      "inPalette": false,
+      "container": true,
+      "childType": "column",
+      "props": [
+        {
+          "name": "layout",
+          "control": "section-layout",
+          "required": false
+        },
+        {
+          "name": "width",
+          "control": "select",
+          "required": false,
+          "enum": ["contained", "wide", "full"]
+        },
+        {
+          "name": "columns",
+          "control": "section-columns",
+          "required": false
+        },
+        {
+          "name": "gap",
+          "control": "number",
+          "required": false
+        },
+        {
+          "name": "paddingY",
+          "control": "number",
+          "required": false,
+          "advanced": true
+        },
+        {
+          "name": "background",
+          "control": "color",
+          "required": false,
+          "advanced": true
+        }
+      ]
+    },
+    {
+      "type": "column",
+      "label": "Column",
+      "category": "layout",
+      "inPalette": false,
+      "container": true,
+      "childType": "any content block",
+      "props": [
+        {
+          "name": "columnActions",
+          "control": "column-actions",
+          "required": false
+        },
+        {
+          "name": "verticalAlign",
+          "control": "select",
+          "required": false,
+          "enum": ["top", "center", "bottom"]
+        },
+        {
+          "name": "hiddenMobile",
+          "control": "toggle",
+          "required": false
+        },
+        {
+          "name": "padding",
+          "control": "number",
+          "required": false,
+          "advanced": true
+        },
+        {
+          "name": "background",
+          "control": "color",
+          "required": false,
+          "advanced": true
+        }
+      ]
+    },
+    {
+      "type": "navbar",
+      "label": "Navbar",
+      "category": "layout",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "brand",
+          "control": "navbar-brand",
+          "required": false,
+          "default": "Brand"
+        },
+        {
+          "name": "menu",
+          "control": "menu",
+          "required": false
+        },
+        {
+          "name": "cta",
+          "control": "navbar-buttons",
+          "required": false
+        },
+        {
+          "name": "background",
+          "control": "color",
+          "required": false,
+          "default": "#FFFFFF"
+        },
+        {
+          "name": "textColor",
+          "control": "color",
+          "required": false,
+          "default": "#0F0F12"
+        },
+        {
+          "name": "sticky",
+          "control": "toggle",
+          "required": false,
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "hero",
+      "label": "Hero",
+      "category": "layout",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "headline",
+          "control": "text",
+          "required": false,
+          "default": "Your big idea starts here"
+        },
+        {
+          "name": "subtext",
+          "control": "textarea",
+          "required": false,
+          "default": "A clear, compelling subheading that explains what you offer."
+        },
+        {
+          "name": "ctaLabel",
+          "control": "text",
+          "required": false,
+          "default": "Get started"
+        },
+        {
+          "name": "ctaHref",
+          "control": "text",
+          "required": false,
+          "default": "#",
+          "hint": "URL or #anchor"
+        },
+        {
+          "name": "secondaryCtaLabel",
+          "control": "text",
+          "required": false,
+          "default": ""
+        },
+        {
+          "name": "secondaryCtaHref",
+          "control": "text",
+          "required": false,
+          "default": "#"
+        },
+        {
+          "name": "align",
+          "control": "select",
+          "required": false,
+          "default": "center",
+          "enum": ["left", "center"]
+        },
+        {
+          "name": "background",
+          "control": "color",
+          "required": false,
+          "default": "#0F0F12"
+        },
+        {
+          "name": "backgroundImage",
+          "control": "text",
+          "required": false,
+          "default": "",
+          "hint": "Image URL — overrides color when set"
+        },
+        {
+          "name": "textColor",
+          "control": "color",
+          "required": false,
+          "default": "#FFFFFF"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "features",
+      "label": "Features",
+      "category": "content",
+      "inPalette": true,
+      "container": true,
+      "childType": "feature-item",
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": "Everything you need"
+        },
+        {
+          "name": "subtext",
+          "control": "textarea",
+          "required": false,
+          "default": ""
+        },
+        {
+          "name": "columns",
+          "control": "select",
+          "required": false,
+          "default": "3",
+          "enum": ["2", "3", "4"]
+        },
+        {
+          "name": "featureItems",
+          "control": "feature-items",
+          "required": false
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "testimonials",
+      "label": "Testimonials",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": "Loved by teams everywhere"
+        },
+        {
+          "name": "items",
+          "control": "textarea",
+          "required": false,
+          "default": "This product changed how we work. | Jane Doe | CEO, Acme\nThe best tool we have adopted in years. | John Smith | CTO, Globex",
+          "hint": "One per line: Quote | Author | Role"
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "cta",
+      "label": "CTA Banner",
+      "category": "layout",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "headline",
+          "control": "text",
+          "required": false,
+          "default": "Ready to get started?"
+        },
+        {
+          "name": "subtext",
+          "control": "textarea",
+          "required": false,
+          "default": "Join thousands of teams building with us."
+        },
+        {
+          "name": "ctaLabel",
+          "control": "text",
+          "required": false,
+          "default": "Start free"
+        },
+        {
+          "name": "ctaHref",
+          "control": "text",
+          "required": false,
+          "default": "#",
+          "hint": "URL or #anchor"
+        },
+        {
+          "name": "background",
+          "control": "color",
+          "required": false,
+          "default": "#4F6EF7"
+        },
+        {
+          "name": "backgroundImage",
+          "control": "text",
+          "required": false,
+          "default": "",
+          "hint": "Image URL — overrides color when set"
+        },
+        {
+          "name": "textColor",
+          "control": "color",
+          "required": false,
+          "default": "#FFFFFF"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "label": "Image",
+      "category": "media",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "src",
+          "control": "image",
+          "required": false,
+          "default": ""
+        },
+        {
+          "name": "alt",
+          "control": "text",
+          "required": false,
+          "default": "",
+          "hint": "Describe the image for accessibility"
+        },
+        {
+          "name": "caption",
+          "control": "text",
+          "required": false,
+          "default": ""
+        },
+        {
+          "name": "link",
+          "control": "text",
+          "required": false,
+          "default": "",
+          "hint": "Wrap image in a link"
+        },
+        {
+          "name": "width",
+          "control": "select",
+          "required": false,
+          "default": "contained",
+          "enum": ["contained", "full"]
+        },
+        {
+          "name": "rounded",
+          "control": "toggle",
+          "required": false,
+          "default": true
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "label": "Text",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": ""
+        },
+        {
+          "name": "content",
+          "control": "textarea",
+          "required": false,
+          "default": "Write something meaningful here. Click to edit this text block."
+        },
+        {
+          "name": "align",
+          "control": "select",
+          "required": false,
+          "default": "left",
+          "enum": ["left", "center"]
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "label": "Heading",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "text",
+          "control": "text",
+          "required": false,
+          "default": "Your heading",
+          "group": "Content"
+        },
+        {
+          "name": "level",
+          "control": "select",
+          "required": false,
+          "default": "h2",
+          "enum": ["h1", "h2", "h3", "h4", "h5", "h6"],
+          "hint": "H1–H6 — sets the HTML tag for SEO & accessibility",
+          "group": "Content"
+        },
+        {
+          "name": "align",
+          "control": "select",
+          "required": false,
+          "default": "left",
+          "enum": ["left", "center", "right"],
+          "group": "Style"
+        },
+        {
+          "name": "weight",
+          "control": "select",
+          "required": false,
+          "default": "bold",
+          "enum": ["normal", "medium", "semibold", "bold"],
+          "group": "Style"
+        },
+        {
+          "name": "color",
+          "control": "color",
+          "required": false,
+          "default": "",
+          "hint": "Defaults to your theme text color",
+          "group": "Style"
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "label": "Button",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "label",
+          "control": "text",
+          "required": false,
+          "default": "Get started",
+          "group": "Content"
+        },
+        {
+          "name": "href",
+          "control": "text",
+          "required": false,
+          "default": "#",
+          "hint": "URL or #anchor",
+          "group": "Content"
+        },
+        {
+          "name": "newTab",
+          "control": "toggle",
+          "required": false,
+          "default": false,
+          "group": "Content"
+        },
+        {
+          "name": "variant",
+          "control": "select",
+          "required": false,
+          "default": "filled",
+          "enum": ["filled", "outline", "ghost"],
+          "group": "Style"
+        },
+        {
+          "name": "size",
+          "control": "select",
+          "required": false,
+          "default": "md",
+          "enum": ["sm", "md", "lg"],
+          "group": "Style"
+        },
+        {
+          "name": "align",
+          "control": "select",
+          "required": false,
+          "default": "left",
+          "enum": ["left", "center", "right"],
+          "group": "Style"
+        },
+        {
+          "name": "fullWidth",
+          "control": "toggle",
+          "required": false,
+          "default": false,
+          "group": "Style"
+        },
+        {
+          "name": "bg",
+          "control": "color",
+          "required": false,
+          "default": "#4F6EF7",
+          "group": "Colors"
+        },
+        {
+          "name": "color",
+          "control": "color",
+          "required": false,
+          "default": "#FFFFFF",
+          "group": "Colors"
+        },
+        {
+          "name": "radius",
+          "control": "select",
+          "required": false,
+          "default": "md",
+          "enum": ["none", "sm", "md", "lg", "full"],
+          "group": "Effects"
+        },
+        {
+          "name": "shadow",
+          "control": "select",
+          "required": false,
+          "default": "none",
+          "enum": ["none", "sm", "md", "lg"],
+          "group": "Effects"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "divider",
+      "label": "Divider",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "text",
+          "control": "text",
+          "required": false,
+          "default": "",
+          "hint": "Leave empty for a plain line",
+          "group": "Label"
+        },
+        {
+          "name": "position",
+          "control": "select",
+          "required": false,
+          "default": "center",
+          "enum": ["left", "center", "right"],
+          "group": "Label"
+        },
+        {
+          "name": "textColor",
+          "control": "color",
+          "required": false,
+          "default": "#6B7280",
+          "group": "Label"
+        },
+        {
+          "name": "color",
+          "control": "color",
+          "required": false,
+          "default": "#E5E7EB",
+          "group": "Line"
+        },
+        {
+          "name": "thickness",
+          "control": "number",
+          "required": false,
+          "default": 1,
+          "group": "Line"
+        },
+        {
+          "name": "lineStyle",
+          "control": "select",
+          "required": false,
+          "default": "solid",
+          "enum": ["solid", "dashed", "dotted"],
+          "group": "Line"
+        },
+        {
+          "name": "spacingY",
+          "control": "number",
+          "required": false,
+          "default": 24,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "footer",
+      "label": "Footer",
+      "category": "layout",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "brand",
+          "control": "text",
+          "required": false,
+          "default": "Brand"
+        },
+        {
+          "name": "tagline",
+          "control": "text",
+          "required": false,
+          "default": "Building the web, one block at a time."
+        },
+        {
+          "name": "links",
+          "control": "textarea",
+          "required": false,
+          "default": "Privacy, Terms, Contact",
+          "hint": "One per line: Label | URL"
+        },
+        {
+          "name": "social",
+          "control": "textarea",
+          "required": false,
+          "default": "Twitter, GitHub, LinkedIn",
+          "hint": "One per line: Label | URL"
+        },
+        {
+          "name": "text",
+          "control": "text",
+          "required": false,
+          "default": "© 2026 All rights reserved."
+        },
+        {
+          "name": "columns",
+          "control": "select",
+          "required": false,
+          "default": "3",
+          "enum": ["1", "2", "3", "4", "5", "6"]
+        },
+        {
+          "name": "columnsMobile",
+          "control": "select",
+          "required": false,
+          "default": "2",
+          "enum": ["1", "2"]
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "pricing",
+      "label": "Pricing",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": "Simple, transparent pricing"
+        },
+        {
+          "name": "subtext",
+          "control": "textarea",
+          "required": false,
+          "default": ""
+        },
+        {
+          "name": "highlightIndex",
+          "control": "number",
+          "required": false,
+          "default": 1
+        },
+        {
+          "name": "items",
+          "control": "textarea",
+          "required": false,
+          "default": "Starter | $9 | /mo | 1 project; Email support; 1 GB storage\nPro | $29 | /mo | Unlimited projects; Priority support; 50 GB\nTeam | $99 | /mo | Everything in Pro; SSO; 500 GB",
+          "hint": "Per line: Name | Price | Period | feat1; feat2 | buttonURL"
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "label": "FAQ",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": "Frequently asked questions"
+        },
+        {
+          "name": "items",
+          "control": "textarea",
+          "required": false,
+          "default": "How does the free trial work? | Full access for 14 days, no card required.\nCan I cancel anytime? | Yes — cancel in one click.\nDo you offer refunds? | 30-day money-back guarantee.",
+          "hint": "Per line: Question | Answer"
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "stats",
+      "label": "Stats",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": ""
+        },
+        {
+          "name": "columns",
+          "control": "select",
+          "required": false,
+          "default": "4",
+          "enum": ["2", "3", "4"]
+        },
+        {
+          "name": "items",
+          "control": "textarea",
+          "required": false,
+          "default": "10k+ | Active users\n99.9% | Uptime\n4.9/5 | Rating\n24/7 | Support",
+          "hint": "Per line: Value | Label"
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "team",
+      "label": "Team",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": "Meet the team"
+        },
+        {
+          "name": "items",
+          "control": "textarea",
+          "required": false,
+          "default": "Alex Rivera | Founder & CEO |\nSam Chen | Head of Product |\nJordan Lee | Lead Engineer |",
+          "hint": "Per line: Name | Role | Image URL (optional)"
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "label": "Contact",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": "Get in touch"
+        },
+        {
+          "name": "subtext",
+          "control": "textarea",
+          "required": false,
+          "default": "We usually reply within one business day."
+        },
+        {
+          "name": "buttonLabel",
+          "control": "text",
+          "required": false,
+          "default": "Send message"
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "label": "Newsletter",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": "Stay in the loop"
+        },
+        {
+          "name": "subtext",
+          "control": "textarea",
+          "required": false,
+          "default": "Get product updates and tips in your inbox."
+        },
+        {
+          "name": "placeholder",
+          "control": "text",
+          "required": false,
+          "default": "you@example.com"
+        },
+        {
+          "name": "buttonLabel",
+          "control": "text",
+          "required": false,
+          "default": "Subscribe"
+        },
+        {
+          "name": "background",
+          "control": "color",
+          "required": false,
+          "default": "#0F0F12"
+        },
+        {
+          "name": "textColor",
+          "control": "color",
+          "required": false,
+          "default": "#FFFFFF"
+        },
+        {
+          "name": "align",
+          "control": "select",
+          "required": false,
+          "default": "center",
+          "enum": ["left", "center", "right"]
+        },
+        {
+          "name": "alignMobile",
+          "control": "select",
+          "required": false,
+          "default": "center",
+          "enum": ["left", "center", "right"]
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "gallery",
+      "label": "Gallery",
+      "category": "media",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": ""
+        },
+        {
+          "name": "columns",
+          "control": "select",
+          "required": false,
+          "default": "3",
+          "enum": ["2", "3", "4"]
+        },
+        {
+          "name": "columnsMobile",
+          "control": "select",
+          "required": false,
+          "default": "2",
+          "enum": ["1", "2"]
+        },
+        {
+          "name": "images",
+          "control": "textarea",
+          "required": false,
+          "default": "",
+          "hint": "One URL per line"
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "label": "Video",
+      "category": "media",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "url",
+          "control": "text",
+          "required": false,
+          "default": "",
+          "hint": "YouTube or Vimeo link"
+        },
+        {
+          "name": "caption",
+          "control": "text",
+          "required": false,
+          "default": ""
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "countdown",
+      "label": "Countdown",
+      "category": "advanced",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": "Launching soon"
+        },
+        {
+          "name": "targetDate",
+          "control": "date",
+          "required": false,
+          "default": "2026-12-31"
+        },
+        {
+          "name": "expiredText",
+          "control": "text",
+          "required": false,
+          "default": "We're live!"
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    },
+    {
+      "type": "logos",
+      "label": "Logo Cloud",
+      "category": "content",
+      "inPalette": true,
+      "container": false,
+      "props": [
+        {
+          "name": "heading",
+          "control": "text",
+          "required": false,
+          "default": "Trusted by leading teams"
+        },
+        {
+          "name": "items",
+          "control": "textarea",
+          "required": false,
+          "default": "Acme, Globex, Initech, Umbrella, Hooli, Vehement",
+          "hint": "Names or image URLs, comma- or line-separated"
+        },
+        {
+          "name": "bxBg",
+          "control": "color",
+          "required": false,
+          "group": "Appearance"
+        },
+        {
+          "name": "bxRadius",
+          "control": "select",
+          "required": false,
+          "enum": ["", "sm", "md", "lg", "full"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxWidth",
+          "control": "select",
+          "required": false,
+          "enum": ["", "contained", "wide"],
+          "group": "Appearance"
+        },
+        {
+          "name": "bxPadTop",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        },
+        {
+          "name": "bxPadBottom",
+          "control": "number",
+          "required": false,
+          "group": "Spacing"
+        }
+      ]
+    }
+  ],
+  "tokens": {
+    "colors": {
+      "fields": [
+        "primaryColor",
+        "secondaryColor",
+        "accentColor",
+        "backgroundColor",
+        "textColor"
+      ],
+      "format": "hex (#rgb or #rrggbb)"
+    },
+    "fonts": {
+      "fields": ["fontHeading", "fontBody"],
+      "note": "font family name"
+    },
+    "borderRadius": ["none", "sm", "md", "lg", "full"],
+    "spacing": ["compact", "normal", "relaxed"],
+    "defaults": {
+      "primaryColor": "#4F6EF7",
+      "secondaryColor": "#0F0F12",
+      "accentColor": "#22C55E",
+      "backgroundColor": "#FFFFFF",
+      "textColor": "#0F0F12",
+      "fontHeading": "Inter",
+      "fontBody": "Inter",
+      "borderRadius": "md",
+      "spacing": "normal"
+    },
+    "breakpoints": {
+      "note": "container-query based",
+      "mobile": "<768px (1 column)",
+      "tablet": "768–1023px",
+      "desktop": "≥1024px"
+    }
+  },
+  "pageSchema": {
+    "page": {
+      "title": "string",
+      "blocks": "Block[]",
+      "seo": "optional"
+    },
+    "block": {
+      "id": "string",
+      "type": "one of allowedBlockTypes",
+      "props": "object (per component)",
+      "styles": "Record<string, string|number>",
+      "children": "Block[] (containers only)",
+      "locked": "boolean",
+      "visible": "boolean",
+      "responsive": "{ desktop:{}, tablet:{}, mobile:{} }"
+    },
+    "allowedBlockTypes": [
+      "section",
+      "column",
+      "hero",
+      "navbar",
+      "features",
+      "feature-item",
+      "pricing",
+      "testimonials",
+      "cta",
+      "gallery",
+      "contact",
+      "footer",
+      "text",
+      "heading",
+      "button",
+      "image",
+      "video",
+      "embed",
+      "spacer",
+      "divider",
+      "countdown",
+      "form",
+      "map",
+      "social",
+      "code",
+      "faq",
+      "stats",
+      "team",
+      "newsletter",
+      "logos",
+      "ai-generated"
+    ]
+  },
+  "limits": {
+    "maxNesting": "section → column → content (1 level of columns)",
+    "appearanceProps": "bx* (bxBg, bxRadius, bxWidth, bxPadTop, bxPadBottom)",
+    "textFormatProps": "fmt_<field> = { bold, italic, underline, color, align }"
+  }
+}
