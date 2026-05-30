@@ -1,6 +1,10 @@
 import { parseLines, str, type BlockComponentProps } from './types';
+import { gridColumnsCss } from './responsive-grid';
 
-export function TestimonialsBlock({ props }: BlockComponentProps) {
+export function TestimonialsBlock({
+  props,
+  blockId = 'testimonials',
+}: BlockComponentProps) {
   const heading = str(props.heading, 'Loved by teams everywhere');
   const items = parseLines(
     props.items ||
@@ -8,10 +12,18 @@ export function TestimonialsBlock({ props }: BlockComponentProps) {
   );
 
   return (
-    <section className="bg-black/[0.02] px-8 py-20">
+    <section
+      className="bg-black/[0.02] px-8 py-20"
+      style={{ containerType: 'inline-size' }}
+    >
+      <style
+        dangerouslySetInnerHTML={{
+          __html: gridColumnsCss(blockId, { mobile: 1, desktop: 2 }),
+        }}
+      />
       <div className="mx-auto max-w-5xl">
         <h2 className="text-center text-3xl font-semibold">{heading}</h2>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
+        <div data-grid={blockId} className="mt-12 grid gap-6">
           {items.map(([quote, author, role], i) => (
             <figure
               key={`${author}-${i}`}

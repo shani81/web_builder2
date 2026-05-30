@@ -5,8 +5,12 @@ import {
   str,
   type BlockComponentProps,
 } from './types';
+import { gridColumnsCss } from './responsive-grid';
 
-export function PricingBlock({ props }: BlockComponentProps) {
+export function PricingBlock({
+  props,
+  blockId = 'pricing',
+}: BlockComponentProps) {
   const heading = str(props.heading, 'Simple, transparent pricing');
   const subtext = str(props.subtext, '');
   const highlight = num(props.highlightIndex, 1);
@@ -14,15 +18,22 @@ export function PricingBlock({ props }: BlockComponentProps) {
     props.items ||
       'Starter | $9 | /mo | 1 project; Email support; 1 GB storage\nPro | $29 | /mo | Unlimited projects; Priority support; 50 GB\nTeam | $99 | /mo | Everything in Pro; SSO; 500 GB',
   );
+  // One tier per row on mobile (readable); all tiers across on desktop.
+  const desktop = Math.min(6, Math.max(1, tiers.length || 3));
 
   return (
-    <section className="px-8 py-20">
+    <section className="px-8 py-20" style={{ containerType: 'inline-size' }}>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: gridColumnsCss(blockId, { mobile: 1, desktop }),
+        }}
+      />
       <div className="mx-auto max-w-5xl">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-semibold">{heading}</h2>
           {subtext ? <p className="mt-3 text-black/60">{subtext}</p> : null}
         </div>
-        <div className="mt-12 grid gap-6 sm:grid-cols-3">
+        <div data-grid={blockId} className="mt-12 grid gap-6">
           {tiers.map(([name, price, period, features, ctaHref], i) => {
             const feats = (features ?? '')
               .split(';')

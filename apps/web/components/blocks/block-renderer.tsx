@@ -35,7 +35,9 @@ export function BlockRenderer({
       );
     }
     const { Component } = def;
-    rendered = <Component props={block.props} linkBase={linkBase} />;
+    rendered = (
+      <Component props={block.props} linkBase={linkBase} blockId={block.id} />
+    );
   }
 
   // An optional anchor id makes the block a target for in-page "#id" links.

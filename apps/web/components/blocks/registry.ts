@@ -54,6 +54,22 @@ const COLUMN_OPTIONS = [
   { label: '4 columns', value: '4' },
 ];
 
+const ALIGN3_OPTIONS = [
+  { label: 'Left', value: 'left' },
+  { label: 'Center', value: 'center' },
+  { label: 'Right', value: 'right' },
+];
+
+const MOBILE_COLUMN_OPTIONS = [
+  { label: '1 column', value: '1' },
+  { label: '2 columns', value: '2' },
+];
+
+const COLUMNS_1_6_OPTIONS = [1, 2, 3, 4, 5, 6].map((n) => ({
+  label: `${n} column${n > 1 ? 's' : ''}`,
+  value: String(n),
+}));
+
 /** Container blocks render their `children` (handled in block-renderer), so
  * their Component is a no-op placeholder kept only for registry metadata. */
 const ContainerPlaceholder = () => null;
@@ -315,6 +331,8 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
       links: 'Privacy, Terms, Contact',
       social: 'Twitter, GitHub, LinkedIn',
       text: `© ${new Date().getFullYear()} All rights reserved.`,
+      columns: '3',
+      columnsMobile: '2',
     },
     fields: [
       { key: 'brand', label: 'Brand name', type: 'text' },
@@ -332,6 +350,18 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
         hint: 'One per line: Label | URL',
       },
       { key: 'text', label: 'Copyright text', type: 'text' },
+      {
+        key: 'columns',
+        label: 'Columns (desktop)',
+        type: 'select',
+        options: COLUMNS_1_6_OPTIONS,
+      },
+      {
+        key: 'columnsMobile',
+        label: 'Columns (mobile)',
+        type: 'select',
+        options: MOBILE_COLUMN_OPTIONS,
+      },
     ],
     Component: FooterBlock,
   },
@@ -464,6 +494,8 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
       buttonLabel: 'Subscribe',
       background: '#0F0F12',
       textColor: '#FFFFFF',
+      align: 'center',
+      alignMobile: 'center',
     },
     fields: [
       { key: 'heading', label: 'Heading', type: 'text' },
@@ -472,6 +504,18 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
       { key: 'buttonLabel', label: 'Button label', type: 'text' },
       { key: 'background', label: 'Background', type: 'color' },
       { key: 'textColor', label: 'Text color', type: 'color' },
+      {
+        key: 'align',
+        label: 'Alignment (desktop)',
+        type: 'select',
+        options: ALIGN3_OPTIONS,
+      },
+      {
+        key: 'alignMobile',
+        label: 'Alignment (mobile)',
+        type: 'select',
+        options: ALIGN3_OPTIONS,
+      },
     ],
     Component: NewsletterBlock,
   },
@@ -480,14 +524,25 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     label: 'Gallery',
     category: 'media',
     icon: Images,
-    defaultProps: { heading: '', columns: '3', images: '' },
+    defaultProps: {
+      heading: '',
+      columns: '3',
+      columnsMobile: '2',
+      images: '',
+    },
     fields: [
       { key: 'heading', label: 'Heading (optional)', type: 'text' },
       {
         key: 'columns',
-        label: 'Columns',
+        label: 'Columns (desktop)',
         type: 'select',
         options: COLUMN_OPTIONS,
+      },
+      {
+        key: 'columnsMobile',
+        label: 'Columns (mobile)',
+        type: 'select',
+        options: MOBILE_COLUMN_OPTIONS,
       },
       {
         key: 'images',

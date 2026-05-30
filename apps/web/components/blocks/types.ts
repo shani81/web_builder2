@@ -27,6 +27,8 @@ export interface BlockComponentProps {
    * Empty in the editor/preview, where links aren't navigated anyway.
    */
   linkBase?: string;
+  /** The block's id — used to scope per-instance responsive CSS. */
+  blockId?: string;
 }
 
 export interface BlockDefinition {

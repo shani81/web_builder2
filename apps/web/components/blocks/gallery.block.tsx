@@ -1,27 +1,34 @@
 import { num, str, type BlockComponentProps } from './types';
+import { gridColumnsCss } from './responsive-grid';
 
-const COLS: Record<number, string> = {
-  2: 'grid-cols-2',
-  3: 'grid-cols-2 sm:grid-cols-3',
-  4: 'grid-cols-2 sm:grid-cols-4',
-};
-
-export function GalleryBlock({ props }: BlockComponentProps) {
+export function GalleryBlock({
+  props,
+  blockId = 'gallery',
+}: BlockComponentProps) {
   const heading = str(props.heading, '');
   const columns = num(props.columns, 3);
+  const columnsMobile = num(props.columnsMobile, 2);
   const images = str(props.images)
     .split('\n')
     .map((s) => s.trim())
     .filter(Boolean);
 
   return (
-    <section className="px-8 py-16">
+    <section className="px-8 py-16" style={{ containerType: 'inline-size' }}>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: gridColumnsCss(blockId, {
+            mobile: columnsMobile,
+            desktop: columns,
+          }),
+        }}
+      />
       <div className="mx-auto max-w-5xl">
         {heading ? (
           <h2 className="mb-8 text-center text-3xl font-semibold">{heading}</h2>
         ) : null}
         {images.length > 0 ? (
-          <div className={`grid gap-3 ${COLS[columns] ?? COLS[3]}`}>
+          <div data-grid={blockId} className="grid gap-3">
             {images.map((src, i) => (
               // eslint-disable-next-line @next/next/no-img-element -- arbitrary gallery URLs
               <img
