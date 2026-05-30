@@ -1,5 +1,7 @@
 import { now } from '@buildr/utils';
 import type {
+  ImageCredit,
+  Page,
   PublicSite,
   PublishedSite,
   PublishedSnapshot,
@@ -8,10 +10,41 @@ import type {
 } from '@buildr/types';
 import { siteRepository } from '../repositories/site.repository.js';
 import { publishedRepository } from '../repositories/published.repository.js';
+import { mediaRepository } from '../repositories/media.repository.js';
 import { siteService } from './site.service.js';
 import { AppError } from '../utils/response.js';
 
 const MAX_VERSIONS = 5;
+
+/**
+ * Collect stock-photo attributions for every imported image used anywhere in
+ * the pages. Matches by the asset's stored URL appearing in the page JSON, so
+ * it works regardless of which block/prop holds the image (src, background,
+ * gallery, etc.). Only assets with provenance + an author are credited.
+ */
+async function collectCredits(
+  userId: string,
+  pages: Page[],
+): Promise<ImageCredit[]> {
+  const assets = await mediaRepository.findByUser(userId);
+  const haystack = JSON.stringify(pages);
+  const credits = new Map<string, ImageCredit>();
+  for (const a of assets) {
+    const p = a.provenance;
+    if (!p?.author || p.source === 'upload') continue;
+    if (!a.url || !haystack.includes(a.url)) continue;
+    const key = `${p.source}:${p.author}:${p.sourceUrl ?? ''}`;
+    if (credits.has(key)) continue;
+    credits.set(key, {
+      author: p.author,
+      source: p.source,
+      sourceUrl: p.sourceUrl ?? p.licenseUrl ?? '',
+      license: p.license ?? '',
+      licenseUrl: p.licenseUrl ?? '',
+    });
+  }
+  return [...credits.values()];
+}
 
 function meta(record: PublishedSite | null): PublishedVersionMeta[] {
   return (record?.versions ?? []).map((v) => ({
@@ -28,12 +61,14 @@ export class PublishService {
     const existing = await publishedRepository.findById(siteId);
     const nextVersion = (existing?.versions[0]?.version ?? 0) + 1;
 
+    const pages = structuredClone(site.pages);
     const snapshot: PublishedSnapshot = {
       version: nextVersion,
       publishedAt: timestamp,
       name: site.name,
       theme: site.theme,
-      pages: structuredClone(site.pages),
+      pages,
+      credits: await collectCredits(userId, pages),
     };
 
     const versions = [snapshot, ...(existing?.versions ?? [])].slice(
@@ -110,6 +145,7 @@ export class PublishService {
       subdomain: record.subdomain,
       theme: current.theme,
       pages: current.pages,
+      credits: current.credits ?? [],
     };
   }
 }

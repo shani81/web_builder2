@@ -45,6 +45,7 @@ export default async function PublishedHome({ params }: { params: Params }) {
         theme={site.theme}
         page={page}
         linkBase={`/s/${subdomain}`}
+        credits={site.credits}
       />
       <AnalyticsBeacon subdomain={subdomain} path="/" />
     </>

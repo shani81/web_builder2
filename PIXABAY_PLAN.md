@@ -97,8 +97,13 @@ returns null for blank, so `enabled` isn't a false positive.)*
   unsplash:false}`; per-provider 503 messages; default provider = pixabay; bad
   provider → 400; unsplash import (no key) → 503. Live download needs a real
   `UNSPLASH_ACCESS_KEY`.
-- *Follow-up:* show photographer attribution on published pages (Unsplash
-  "should"); provenance is already stored, just not yet rendered.
+- ✅ *Follow-up done (2026-05-30):* **photographer attribution on published
+  pages.** At publish time `collectCredits()` matches each used image's stored
+  URL against the user's stock `MediaAsset`s and snapshots an `ImageCredit[]`
+  onto the published version; the renderer shows a "Photos: …" footer linking
+  each author to the provider (Unsplash links carry `utm_source=buildr` per ToS).
+  Verified: collection picks only *used* images (real data), and `credits` flows
+  publish → `getPublic` → renderer.
 
 ### Slice C ✅ COMPLETE (2026-05-30) — rate-limit hardening, metrics, AI query expansion
 - [x] **Rate-limit hardening**: in-memory token-bucket limiter
