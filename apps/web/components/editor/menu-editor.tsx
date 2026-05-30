@@ -275,6 +275,7 @@ function MenuItemCard({
   index,
   total,
   pages,
+  defaultOpen = false,
   onChange,
   onRemove,
   onMove,
@@ -283,6 +284,7 @@ function MenuItemCard({
   index: number;
   total: number;
   pages: Page[];
+  defaultOpen?: boolean;
   onChange: (patch: Partial<MenuItem>) => void;
   onRemove: () => void;
   onMove: (dir: 'up' | 'down') => void;
@@ -297,6 +299,7 @@ function MenuItemCard({
   } = useSortable({ id: item.id });
   const [confirming, setConfirming] = useState(false);
   const [advanced, setAdvanced] = useState(false);
+  const [expanded, setExpanded] = useState(defaultOpen);
 
   const children = item.children ?? [];
   const setChildren = (next: MenuItem[]) =>
@@ -325,7 +328,7 @@ function MenuItemCard({
         transition,
         opacity: isDragging ? 0.6 : 1,
       }}
-      className={`rounded-xl border bg-white ${
+      className={`group rounded-xl border bg-white ${
         item.visible === false
           ? 'border-dashed border-black/15'
           : 'border-black/10'
@@ -343,57 +346,34 @@ function MenuItemCard({
           <GripVertical className="size-4" aria-hidden />
         </button>
 
+        <button
+          type="button"
+          aria-label={expanded ? 'Collapse' : 'Expand'}
+          aria-expanded={expanded}
+          onClick={() => setExpanded((v) => !v)}
+          className="grid size-6 shrink-0 place-items-center rounded text-black/40 hover:bg-black/5"
+        >
+          <ChevronDown
+            className={`size-4 transition ${expanded ? '' : '-rotate-90'}`}
+            aria-hidden
+          />
+        </button>
+
         <input
           aria-label="Menu item label"
           value={item.label}
+          title={item.label}
           onChange={(e) => onChange({ label: e.target.value })}
           placeholder="Menu label"
           className="min-w-0 flex-1 rounded-md px-2 py-1.5 text-sm font-medium outline-none focus:bg-black/[0.03]"
         />
 
-        <button
-          type="button"
-          aria-label={item.visible === false ? 'Show item' : 'Hide item'}
-          aria-pressed={item.visible !== false}
-          onClick={() => onChange({ visible: item.visible === false })}
-          className="grid size-8 place-items-center rounded-md text-black/50 hover:bg-black/5"
-        >
-          {item.visible === false ? (
-            <EyeOff className="size-4" aria-hidden />
-          ) : (
-            <Eye className="size-4" aria-hidden />
-          )}
-        </button>
-
-        <div className="flex flex-col">
-          <button
-            type="button"
-            aria-label="Move up"
-            disabled={index === 0}
-            onClick={() => onMove('up')}
-            className="grid size-5 place-items-center rounded text-black/40 hover:bg-black/5 disabled:opacity-30"
-          >
-            <ChevronUp className="size-3.5" aria-hidden />
-          </button>
-          <button
-            type="button"
-            aria-label="Move down"
-            disabled={index === total - 1}
-            onClick={() => onMove('down')}
-            className="grid size-5 place-items-center rounded text-black/40 hover:bg-black/5 disabled:opacity-30"
-          >
-            <ChevronDown className="size-3.5" aria-hidden />
-          </button>
-        </div>
-
-        <button
-          type="button"
-          aria-label="Delete item"
-          onClick={() => setConfirming(true)}
-          className="grid size-8 place-items-center rounded-md text-red-500 hover:bg-red-50"
-        >
-          <Trash2 className="size-4" aria-hidden />
-        </button>
+        {item.visible === false ? (
+          <EyeOff
+            className="size-4 shrink-0 text-black/40"
+            aria-label="Hidden"
+          />
+        ) : null}
       </div>
 
       {confirming ? (
@@ -412,8 +392,53 @@ function MenuItemCard({
             </Button>
           </div>
         </div>
-      ) : (
+      ) : expanded ? (
         <div className="flex flex-col gap-3 border-t border-black/10 p-3">
+          {/* Item actions: visibility, reorder, delete. */}
+          <div className="flex items-center gap-1 border-b border-black/10 pb-2.5">
+            <button
+              type="button"
+              aria-label={item.visible === false ? 'Show item' : 'Hide item'}
+              aria-pressed={item.visible !== false}
+              onClick={() => onChange({ visible: item.visible === false })}
+              className="flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-black/55 hover:bg-black/5"
+            >
+              {item.visible === false ? (
+                <EyeOff className="size-4" aria-hidden />
+              ) : (
+                <Eye className="size-4" aria-hidden />
+              )}
+              {item.visible === false ? 'Hidden' : 'Visible'}
+            </button>
+            <span className="flex-1" />
+            <button
+              type="button"
+              aria-label="Move up"
+              disabled={index === 0}
+              onClick={() => onMove('up')}
+              className="grid size-7 place-items-center rounded-md text-black/45 hover:bg-black/5 disabled:opacity-30"
+            >
+              <ChevronUp className="size-4" aria-hidden />
+            </button>
+            <button
+              type="button"
+              aria-label="Move down"
+              disabled={index === total - 1}
+              onClick={() => onMove('down')}
+              className="grid size-7 place-items-center rounded-md text-black/45 hover:bg-black/5 disabled:opacity-30"
+            >
+              <ChevronDown className="size-4" aria-hidden />
+            </button>
+            <button
+              type="button"
+              aria-label="Delete item"
+              onClick={() => setConfirming(true)}
+              className="grid size-7 place-items-center rounded-md text-red-500 hover:bg-red-50"
+            >
+              <Trash2 className="size-4" aria-hidden />
+            </button>
+          </div>
+
           <div>
             <p className="mb-1.5 text-xs font-medium text-black/60">
               Where should this link go?
@@ -525,7 +550,7 @@ function MenuItemCard({
             </div>
           ) : null}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -535,6 +560,8 @@ export function MenuEditor({ block }: { block: Block }) {
   const pages = useEditorStore((s) => s.site?.pages ?? []);
   const updateBlockProps = useEditorStore((s) => s.updateBlockProps);
   const items = parseMenu(block.props);
+  // The most recently added item starts expanded so it can be edited at once.
+  const [justAddedId, setJustAddedId] = useState<string | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -555,7 +582,11 @@ export function MenuEditor({ block }: { block: Block }) {
 
   const remove = (id: string) => commit(items.filter((i) => i.id !== id));
 
-  const add = () => commit([...items, makeItem(pages)]);
+  const add = () => {
+    const created = makeItem(pages);
+    setJustAddedId(created.id);
+    commit([...items, created]);
+  };
 
   const move = (id: string, dir: 'up' | 'down') => {
     const from = items.findIndex((i) => i.id === id);
@@ -608,6 +639,7 @@ export function MenuEditor({ block }: { block: Block }) {
                   index={index}
                   total={items.length}
                   pages={pages}
+                  defaultOpen={item.id === justAddedId}
                   onChange={(patch) => update(item.id, patch)}
                   onRemove={() => remove(item.id)}
                   onMove={(dir) => move(item.id, dir)}
