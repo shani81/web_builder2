@@ -1,5 +1,6 @@
 import { parseLines, str, type BlockComponentProps } from './types';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 export function TeamBlock({ props, blockId }: BlockComponentProps) {
   const heading = str(props.heading, 'Meet the team');
@@ -16,6 +17,8 @@ export function TeamBlock({ props, blockId }: BlockComponentProps) {
           blockId={blockId}
           field="heading"
           value={heading}
+          formattable
+          fmt={fmtOf(props, 'heading')}
           className="text-center text-3xl font-semibold"
         />
         <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">

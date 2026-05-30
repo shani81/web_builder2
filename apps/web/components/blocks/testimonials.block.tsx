@@ -1,6 +1,7 @@
 import { parseLines, str, type BlockComponentProps } from './types';
 import { gridColumnsCss } from './responsive-grid';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 export function TestimonialsBlock({
   props,
@@ -28,6 +29,8 @@ export function TestimonialsBlock({
           blockId={blockId}
           field="heading"
           value={heading}
+          formattable
+          fmt={fmtOf(props, 'heading')}
           className="text-center text-3xl font-semibold"
         />
         <div data-grid={blockId} className="mt-12 grid gap-6">

@@ -7,6 +7,7 @@ import {
 } from './types';
 import { gridColumnsCss } from './responsive-grid';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 export function FooterBlock({
   props,
@@ -44,6 +45,8 @@ export function FooterBlock({
               blockId={blockId}
               field="brand"
               value={brand}
+              formattable
+              fmt={fmtOf(props, 'brand')}
               className="text-lg font-semibold"
             />
             {tagline ? (
@@ -52,6 +55,8 @@ export function FooterBlock({
                 blockId={blockId}
                 field="tagline"
                 value={tagline}
+                formattable
+                fmt={fmtOf(props, 'tagline')}
                 className="mt-1 text-sm text-black/50"
               />
             ) : null}
@@ -76,6 +81,8 @@ export function FooterBlock({
           blockId={blockId}
           field="text"
           value={text}
+          formattable
+          fmt={fmtOf(props, 'text')}
           className="mt-8 border-t border-black/10 pt-6 text-sm text-black/40"
         />
       </div>

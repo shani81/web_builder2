@@ -1,6 +1,7 @@
 import { num, parseLines, str, type BlockComponentProps } from './types';
 import { autoGridColumns } from './responsive-grid';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 export function StatsBlock({ props, blockId }: BlockComponentProps) {
   const heading = str(props.heading, '');
@@ -19,6 +20,8 @@ export function StatsBlock({ props, blockId }: BlockComponentProps) {
             blockId={blockId}
             field="heading"
             value={heading}
+            formattable
+            fmt={fmtOf(props, 'heading')}
             className="mb-12 text-center text-3xl font-semibold"
           />
         ) : null}

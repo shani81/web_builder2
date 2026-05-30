@@ -1,6 +1,7 @@
 import { num, parseLines, str, type BlockComponentProps } from './types';
 import { gridColumnsCss } from './responsive-grid';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 export function FeaturesBlock({
   props,
@@ -28,6 +29,8 @@ export function FeaturesBlock({
             blockId={blockId}
             field="heading"
             value={heading}
+            formattable
+            fmt={fmtOf(props, 'heading')}
             className="text-3xl font-semibold"
           />
           {subtext ? (
@@ -37,6 +40,8 @@ export function FeaturesBlock({
               field="subtext"
               value={subtext}
               multiline
+              formattable
+              fmt={fmtOf(props, 'subtext')}
               className="mt-3 text-black/60"
             />
           ) : null}

@@ -1,6 +1,7 @@
 import { Play } from 'lucide-react';
 import { str, type BlockComponentProps } from './types';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 /** Convert a YouTube/Vimeo watch URL to an embeddable URL. */
 function toEmbed(url: string): string | null {
@@ -45,6 +46,8 @@ export function VideoBlock({ props, blockId }: BlockComponentProps) {
             blockId={blockId}
             field="caption"
             value={caption}
+            formattable
+            fmt={fmtOf(props, 'caption')}
             className="mt-3 text-center text-sm text-black/50"
           />
         ) : null}

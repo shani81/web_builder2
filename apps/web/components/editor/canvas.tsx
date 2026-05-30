@@ -14,11 +14,16 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { deviceWidth } from '@buildr/utils';
 import { useEditorStore } from '@/stores/editor.store';
 import { SortableBlock } from './sortable-block';
-import { InlineEditProvider, type InlineEdit } from './inline-edit-context';
+import {
+  InlineEditProvider,
+  type FocusedText,
+  type InlineEdit,
+} from './inline-edit-context';
+import { TextFormatToolbar } from './text-format-toolbar';
 
 export function Canvas() {
   const blocks = useEditorStore((s) => s.activePage?.blocks ?? []);
@@ -27,6 +32,7 @@ export function Canvas() {
   const selectBlock = useEditorStore((s) => s.selectBlock);
   const reorderBlocks = useEditorStore((s) => s.reorderBlocks);
   const updateBlockProps = useEditorStore((s) => s.updateBlockProps);
+  const [focus, setFocus] = useState<FocusedText | null>(null);
 
   // Enable on-canvas inline text editing; commits write straight to the store.
   const inlineEdit = useMemo<InlineEdit>(
@@ -34,6 +40,7 @@ export function Canvas() {
       enabled: true,
       commit: (blockId, field, value) =>
         updateBlockProps(blockId, { [field]: value }),
+      setFocus,
     }),
     [updateBlockProps],
   );
@@ -102,6 +109,7 @@ export function Canvas() {
           )}
         </div>
       </div>
+      <TextFormatToolbar focus={focus} />
     </InlineEditProvider>
   );
 }

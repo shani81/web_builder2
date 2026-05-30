@@ -10,14 +10,25 @@ import { createContext, useContext } from 'react';
  * render their text as-is — so published output never contains contentEditable
  * or stored HTML.
  */
+/** The text element currently being edited, with its on-screen rect so the
+ *  floating format toolbar can position itself above it. */
+export interface FocusedText {
+  blockId: string;
+  field: string;
+  rect: DOMRect;
+}
+
 export interface InlineEdit {
   enabled: boolean;
   commit: (blockId: string, field: string, value: string) => void;
+  /** Whether this field supports the formatting toolbar (section text only). */
+  setFocus: (focus: FocusedText | null) => void;
 }
 
 const InlineEditContext = createContext<InlineEdit>({
   enabled: false,
   commit: () => {},
+  setFocus: () => {},
 });
 
 export const InlineEditProvider = InlineEditContext.Provider;

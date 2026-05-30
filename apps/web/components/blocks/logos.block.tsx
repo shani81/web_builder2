@@ -1,5 +1,6 @@
 import { str, type BlockComponentProps } from './types';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 const isUrl = (s: string) => /^https?:\/\//.test(s);
 
@@ -22,6 +23,8 @@ export function LogosBlock({ props, blockId }: BlockComponentProps) {
             blockId={blockId}
             field="heading"
             value={heading}
+            formattable
+            fmt={fmtOf(props, 'heading')}
             className="text-sm font-medium uppercase tracking-wide text-black/40"
           />
         ) : null}

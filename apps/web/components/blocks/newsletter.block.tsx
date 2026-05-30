@@ -5,6 +5,7 @@ import type { CSSProperties } from 'react';
 import { str, type BlockComponentProps } from './types';
 import { alignCss, toAlign, type AlignValue } from './responsive-grid';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 import { ApiClientError } from '@/lib/api-client';
 import { submitForm, subdomainFromBase } from '@/lib/forms';
 
@@ -88,6 +89,8 @@ export function NewsletterBlock({
           blockId={blockId}
           field="heading"
           value={heading}
+          formattable
+          fmt={fmtOf(props, 'heading')}
           className="text-3xl font-bold"
         />
         <InlineText
@@ -96,6 +99,8 @@ export function NewsletterBlock({
           field="subtext"
           value={subtext}
           multiline
+          formattable
+          fmt={fmtOf(props, 'subtext')}
           className="opacity-80"
         />
         {status === 'done' ? (

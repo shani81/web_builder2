@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { linkAttrs, str, type BlockComponentProps } from './types';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 export function CtaBlock({ props, blockId }: BlockComponentProps) {
   const headline = str(props.headline, 'Ready to get started?');
@@ -29,6 +30,8 @@ export function CtaBlock({ props, blockId }: BlockComponentProps) {
           blockId={blockId}
           field="headline"
           value={headline}
+          formattable
+          fmt={fmtOf(props, 'headline')}
           className="text-3xl font-bold"
         />
         <InlineText
@@ -37,6 +40,8 @@ export function CtaBlock({ props, blockId }: BlockComponentProps) {
           field="subtext"
           value={subtext}
           multiline
+          formattable
+          fmt={fmtOf(props, 'subtext')}
           className="opacity-85"
         />
         <a

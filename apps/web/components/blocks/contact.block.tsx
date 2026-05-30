@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { str, type BlockComponentProps } from './types';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 import { ApiClientError } from '@/lib/api-client';
 import { submitForm, subdomainFromBase } from '@/lib/forms';
 
@@ -73,6 +74,8 @@ export function ContactBlock({
             blockId={blockId}
             field="heading"
             value={heading}
+            formattable
+            fmt={fmtOf(props, 'heading')}
             className="text-3xl font-semibold"
           />
           {subtext ? (
@@ -82,6 +85,8 @@ export function ContactBlock({
               field="subtext"
               value={subtext}
               multiline
+              formattable
+              fmt={fmtOf(props, 'subtext')}
               className="mt-3 text-black/60"
             />
           ) : null}

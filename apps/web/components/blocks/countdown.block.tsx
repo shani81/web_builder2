@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { str, type BlockComponentProps } from './types';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 function remaining(target: number) {
   const diff = Math.max(0, target - Date.now());
@@ -41,6 +42,8 @@ export function CountdownBlock({ props, blockId }: BlockComponentProps) {
         blockId={blockId}
         field="heading"
         value={heading}
+        formattable
+        fmt={fmtOf(props, 'heading')}
         className="text-3xl font-semibold"
       />
       {time.done ? (

@@ -1,6 +1,7 @@
 import { num, str, type BlockComponentProps } from './types';
 import { gridColumnsCss } from './responsive-grid';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 export function GalleryBlock({
   props,
@@ -31,6 +32,8 @@ export function GalleryBlock({
             blockId={blockId}
             field="heading"
             value={heading}
+            formattable
+            fmt={fmtOf(props, 'heading')}
             className="mb-8 text-center text-3xl font-semibold"
           />
         ) : null}

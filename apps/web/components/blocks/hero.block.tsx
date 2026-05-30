@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { linkAttrs, str, type BlockComponentProps } from './types';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 export function HeroBlock({ props, blockId }: BlockComponentProps) {
   const headline = str(props.headline, 'Your big idea starts here');
@@ -37,6 +38,8 @@ export function HeroBlock({ props, blockId }: BlockComponentProps) {
           blockId={blockId}
           field="headline"
           value={headline}
+          formattable
+          fmt={fmtOf(props, 'headline')}
           className="text-balance text-4xl font-bold sm:text-5xl"
         />
         <InlineText
@@ -45,6 +48,8 @@ export function HeroBlock({ props, blockId }: BlockComponentProps) {
           field="subtext"
           value={subtext}
           multiline
+          formattable
+          fmt={fmtOf(props, 'subtext')}
           className="max-w-xl text-lg opacity-80"
         />
         <div className="mt-2 flex flex-wrap gap-3">

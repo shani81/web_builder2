@@ -1,5 +1,6 @@
 import { parseLines, str, type BlockComponentProps } from './types';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 export function FaqBlock({ props, blockId }: BlockComponentProps) {
   const heading = str(props.heading, 'Frequently asked questions');
@@ -16,6 +17,8 @@ export function FaqBlock({ props, blockId }: BlockComponentProps) {
           blockId={blockId}
           field="heading"
           value={heading}
+          formattable
+          fmt={fmtOf(props, 'heading')}
           className="text-center text-3xl font-semibold"
         />
         <div className="mt-10 divide-y divide-black/10 rounded-2xl border border-black/10">

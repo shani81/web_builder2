@@ -7,6 +7,7 @@ import {
 } from './types';
 import { gridColumnsCss } from './responsive-grid';
 import { InlineText } from './inline-text';
+import { fmtOf } from './text-format';
 
 export function PricingBlock({
   props,
@@ -36,6 +37,8 @@ export function PricingBlock({
             blockId={blockId}
             field="heading"
             value={heading}
+            formattable
+            fmt={fmtOf(props, 'heading')}
             className="text-3xl font-semibold"
           />
           {subtext ? (
@@ -45,6 +48,8 @@ export function PricingBlock({
               field="subtext"
               value={subtext}
               multiline
+              formattable
+              fmt={fmtOf(props, 'subtext')}
               className="mt-3 text-black/60"
             />
           ) : null}
