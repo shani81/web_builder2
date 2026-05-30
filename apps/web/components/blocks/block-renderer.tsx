@@ -6,6 +6,7 @@ import { str } from './types';
 import { blockAppearance } from './appearance';
 import { SectionBlock } from './section.block';
 import { ColumnBlock } from './column.block';
+import { FeaturesBlock } from './features.block';
 
 /** Renders a single block from its JSON data. Container blocks (section/column)
  * recurse into their children; everything else uses its registry component. */
@@ -26,6 +27,9 @@ export function BlockRenderer({
     rendered = <SectionBlock block={block}>{children}</SectionBlock>;
   } else if (block.type === 'column') {
     rendered = <ColumnBlock block={block}>{children}</ColumnBlock>;
+  } else if (block.type === 'features') {
+    // Container: renders its own feature-item children as cards.
+    rendered = <FeaturesBlock block={block} linkBase={linkBase} />;
   } else {
     const def = getBlockDefinition(block.type);
     if (!def) {

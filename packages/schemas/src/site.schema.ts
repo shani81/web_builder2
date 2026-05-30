@@ -6,6 +6,7 @@ export const blockTypeSchema = z.enum([
   'hero',
   'navbar',
   'features',
+  'feature-item',
   'pricing',
   'testimonials',
   'cta',

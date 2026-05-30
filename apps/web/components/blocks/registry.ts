@@ -26,10 +26,10 @@ import {
 import type { Block, BlockType } from '@buildr/types';
 import { shortId } from '@buildr/utils';
 import type { BlockDefinition, InspectorField } from './types';
+import { parseLines, str } from './types';
 import { SECTION_LAYOUTS, layoutById } from './section-layouts';
 import { NavbarBlock } from './navbar.block';
 import { HeroBlock } from './hero.block';
-import { FeaturesBlock } from './features.block';
 import { TestimonialsBlock } from './testimonials.block';
 import { CtaBlock } from './cta.block';
 import { ImageBlock } from './image.block';
@@ -359,15 +359,11 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
         type: 'select',
         options: COLUMN_OPTIONS,
       },
-      {
-        key: 'items',
-        label: 'Features',
-        type: 'textarea',
-        hint: 'One per line: Title | Description',
-      },
+      { key: 'featureItems', label: 'Feature cards', type: 'feature-items' },
       ...appearanceFields(['bg', 'radius', 'width', 'space']),
     ],
-    Component: FeaturesBlock,
+    // Container: rendered with its block (and children) by the block renderer.
+    Component: ContainerPlaceholder,
   },
   testimonials: {
     type: 'testimonials',
@@ -1002,10 +998,31 @@ export function getBlockDefinition(
   return BLOCK_REGISTRY[type];
 }
 
+/** A single Features card — a real child block so its title/description are
+ *  inline-editable and reorderable like any other block. */
+export function createFeatureItem(title = '', description = ''): Block {
+  return {
+    id: shortId('fi'),
+    type: 'feature-item',
+    props: { title, description },
+    styles: {},
+    locked: false,
+    visible: true,
+    responsive: { desktop: {}, tablet: {}, mobile: {} },
+  };
+}
+
+/** Parse a legacy "Title | Description" lines string into feature-item cards. */
+export function featureItemsFromString(items: string): Block[] {
+  return parseLines(items).map(([title, description]) =>
+    createFeatureItem(title ?? '', description ?? ''),
+  );
+}
+
 /** Build a fresh block instance from a registered type. */
 export function createBlock(type: BlockType): Block {
   const def = BLOCK_REGISTRY[type];
-  return {
+  const block: Block = {
     id: shortId('blk'),
     type,
     props: { ...(def?.defaultProps ?? {}) },
@@ -1014,6 +1031,13 @@ export function createBlock(type: BlockType): Block {
     visible: true,
     responsive: { desktop: {}, tablet: {}, mobile: {} },
   };
+  // Features is a container: seed its cards as real child blocks and drop the
+  // legacy items string so children are the single source of truth.
+  if (type === 'features') {
+    block.children = featureItemsFromString(str(block.props.items));
+    block.props = { ...block.props, items: '' };
+  }
+  return block;
 }
 
 /** A fresh empty column (a box inside a section). */

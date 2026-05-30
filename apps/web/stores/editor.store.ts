@@ -15,7 +15,9 @@ import { shortId } from '@buildr/utils';
 import {
   createBlock,
   createColumn,
+  createFeatureItem,
   createSection,
+  featureItemsFromString,
 } from '@/components/blocks/registry';
 import { layoutById } from '@/components/blocks/section-layouts';
 import { savePage } from '@/lib/pages';
@@ -97,6 +99,24 @@ function cloneBlock(block: Block): Block {
   reId(copy);
   return copy;
 }
+/** Upgrade legacy Features blocks (which stored cards in an `items` string) to
+ *  real feature-item child blocks so the cards are inline-editable. Runs once
+ *  when a page loads in the editor; published rendering still handles the
+ *  string, so nothing breaks before a save. */
+function migrateFeatureBlocks(blocks: Block[]): void {
+  for (const block of blocks) {
+    if (block.children) migrateFeatureBlocks(block.children);
+    if (block.type === 'features' && !block.children?.length) {
+      const items =
+        typeof block.props.items === 'string' ? block.props.items : '';
+      if (items.trim()) {
+        block.children = featureItemsFromString(items);
+        block.props = { ...block.props, items: '' };
+      }
+    }
+  }
+}
+
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 2;
 
@@ -136,6 +156,8 @@ interface EditorState {
   addColumn: (sectionId: string) => void;
   /** Remove a column; its content moves to a neighbour so nothing is lost. */
   removeColumn: (sectionId: string, columnId: string) => void;
+  /** Append a new card to a Features block. */
+  addFeatureItem: (featuresId: string) => void;
   /** Switch a section to a layout preset, preserving content where possible. */
   switchSectionLayout: (sectionId: string, layoutId: string) => void;
   removeBlock: (id: string) => void;
@@ -188,7 +210,7 @@ export const useEditorStore = create<EditorState>((set, get) => {
     initialize: (site, page) =>
       set({
         site,
-        activePage: page,
+        activePage: produce(page, (p) => migrateFeatureBlocks(p.blocks)),
         selectedBlockId: null,
         hoveredBlockId: null,
         addTargetColumnId: null,
@@ -276,6 +298,16 @@ export const useEditorStore = create<EditorState>((set, get) => {
           ? (sec.props.columns as number[]).filter((_, i) => i !== idx)
           : sec.children.map(() => 1);
         sec.props = { ...sec.props, columns: cols };
+      }),
+
+    addFeatureItem: (featuresId) =>
+      commit((page) => {
+        const feat = findBlockInTree(page.blocks, featuresId);
+        if (!feat || feat.type !== 'features') return;
+        feat.children ??= [];
+        feat.children.push(
+          createFeatureItem('New feature', 'Describe this feature.'),
+        );
       }),
 
     switchSectionLayout: (sectionId, layoutId) => {

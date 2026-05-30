@@ -10,6 +10,7 @@ import { MediaField } from '@/components/media/media-field';
 import { MenuEditor } from '@/components/editor/menu-editor';
 import { BrandField } from '@/components/editor/brand-field';
 import { ButtonsField } from '@/components/editor/buttons-field';
+import { FeatureItemsField } from '@/components/editor/feature-items-field';
 import { CollapsibleGroup } from '@/components/editor/collapsible-group';
 import { SectionColumnsField } from '@/components/editor/section-columns-field';
 import { SectionLayoutField } from '@/components/editor/section-layout-field';
@@ -190,6 +191,8 @@ export function Inspector() {
       return <BrandField key={field.key} block={block} />;
     if (field.type === 'navbar-buttons')
       return <ButtonsField key={field.key} block={block} />;
+    if (field.type === 'feature-items')
+      return <FeatureItemsField key={field.key} block={block} />;
     if (field.type === 'section-layout')
       return <SectionLayoutField key={field.key} block={block} />;
     if (field.type === 'section-columns')

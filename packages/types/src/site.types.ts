@@ -9,6 +9,7 @@ export type BlockType =
   | 'hero'
   | 'navbar'
   | 'features'
+  | 'feature-item'
   | 'pricing'
   | 'testimonials'
   | 'cta'
