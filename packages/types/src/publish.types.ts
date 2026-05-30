@@ -31,7 +31,15 @@ export interface PublishedSite extends Entity {
   live: boolean;
   /** If set and in the future, the site stays hidden publicly until this time. */
   scheduledAt?: ISODateString;
+  /** Argon2 hash of the visitor password, when the site is password-protected. */
+  passwordHash?: string;
   versions: PublishedSnapshot[];
+}
+
+/** Returned to the public renderer when a site needs a password. */
+export interface LockedSite {
+  locked: true;
+  name: string;
 }
 
 /** Publish state for the editor dialog. */
@@ -39,6 +47,8 @@ export interface PublishStatus {
   versions: PublishedVersionMeta[];
   /** A future go-live time, or null when publishing immediately. */
   scheduledAt: ISODateString | null;
+  /** Whether a visitor password is set. */
+  protected: boolean;
 }
 
 /** Public-facing shape served to the renderer (current live version). */

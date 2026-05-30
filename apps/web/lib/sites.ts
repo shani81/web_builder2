@@ -45,6 +45,17 @@ export function getPublishStatus(id: string): Promise<PublishStatus> {
   return apiFetch(`/sites/${id}/publish-status`);
 }
 
+/** Set a visitor password (or pass null to remove it). */
+export function setPublishPassword(
+  id: string,
+  password: string | null,
+): Promise<{ protected: boolean }> {
+  return apiFetch(`/sites/${id}/publish-password`, {
+    method: 'PUT',
+    body: JSON.stringify({ password }),
+  });
+}
+
 export function listSiteVersions(id: string): Promise<PublishedVersionMeta[]> {
   return apiFetch(`/sites/${id}/versions`);
 }

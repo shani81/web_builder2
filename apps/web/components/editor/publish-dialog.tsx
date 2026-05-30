@@ -1,14 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CalendarClock, ExternalLink, RotateCcw } from 'lucide-react';
+import { CalendarClock, ExternalLink, Lock, RotateCcw } from 'lucide-react';
 import type { PublishedVersionMeta } from '@buildr/types';
 import { timeAgo } from '@buildr/utils';
 import { Modal } from '@/components/ui/modal';
 import { Button } from '@/components/ui/button';
 import { useEditorStore } from '@/stores/editor.store';
 import { env } from '@/lib/env';
-import { getPublishStatus, publishSite, rollbackSite } from '@/lib/sites';
+import {
+  getPublishStatus,
+  publishSite,
+  rollbackSite,
+  setPublishPassword,
+} from '@/lib/sites';
 
 /** A `datetime-local` value (local time) → ISO string, or undefined if empty. */
 function toIso(localValue: string): string | undefined {
@@ -41,6 +46,8 @@ export function PublishDialog({
   const [scheduledAt, setScheduledAt] = useState<string | null>(null);
   const [scheduleMode, setScheduleMode] = useState(false);
   const [scheduleValue, setScheduleValue] = useState(defaultScheduleValue);
+  const [isProtected, setIsProtected] = useState(false);
+  const [pwValue, setPwValue] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const liveUrl = site ? `${env.NEXT_PUBLIC_SITE_URL}/s/${site.subdomain}` : '';
@@ -49,6 +56,7 @@ export function PublishDialog({
     const status = await getPublishStatus(siteId);
     setVersions(status.versions);
     setScheduledAt(status.scheduledAt);
+    setIsProtected(status.protected);
   };
 
   useEffect(() => {
@@ -57,11 +65,13 @@ export function PublishDialog({
       .then((status) => {
         setVersions(status.versions);
         setScheduledAt(status.scheduledAt);
+        setIsProtected(status.protected);
         setError(null);
       })
       .catch(() => {
         setVersions([]);
         setScheduledAt(null);
+        setIsProtected(false);
       });
   }, [open, site]);
 
@@ -93,6 +103,37 @@ export function PublishDialog({
       setScheduledAt(null);
     } catch {
       setError('Could not restore that version.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const savePassword = async () => {
+    if (pwValue.length < 4) {
+      setError('Password must be at least 4 characters.');
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const r = await setPublishPassword(site.id, pwValue);
+      setIsProtected(r.protected);
+      setPwValue('');
+    } catch {
+      setError('Could not set the password.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const removePassword = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      const r = await setPublishPassword(site.id, null);
+      setIsProtected(r.protected);
+    } catch {
+      setError('Could not remove the password.');
     } finally {
       setBusy(false);
     }
@@ -177,6 +218,46 @@ export function PublishDialog({
         <Button onClick={doPublish} disabled={busy}>
           {busy ? 'Working…' : publishLabel}
         </Button>
+
+        {isLive ? (
+          <div className="border-t border-black/10 pt-4">
+            <div className="flex items-center gap-2">
+              <Lock className="size-4 text-black/50" aria-hidden />
+              <h3 className="text-sm font-medium">Visitor password</h3>
+            </div>
+            {isProtected ? (
+              <div className="mt-2 flex items-center justify-between gap-2">
+                <span className="text-sm text-green-600">
+                  Password protected.
+                </span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={removePassword}
+                  disabled={busy}
+                >
+                  Remove
+                </Button>
+              </div>
+            ) : (
+              <div className="mt-2 flex gap-2">
+                <input
+                  type="password"
+                  value={pwValue}
+                  onChange={(e) => setPwValue(e.target.value)}
+                  placeholder="Set a password"
+                  className="flex-1 rounded-lg border border-black/15 px-3 py-2 text-sm outline-none focus:border-[var(--color-brand)]"
+                />
+                <Button size="sm" onClick={savePassword} disabled={busy}>
+                  Set
+                </Button>
+              </div>
+            )}
+            <p className="mt-1 text-[11px] text-black/40">
+              Visitors must enter this password to view the site.
+            </p>
+          </div>
+        ) : null}
 
         {isLive ? (
           <div>

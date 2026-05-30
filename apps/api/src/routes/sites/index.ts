@@ -15,6 +15,9 @@ const rollbackSchema = z.object({ version: z.number().int().positive() });
 const publishSchema = z.object({
   scheduledAt: z.string().datetime().optional(),
 });
+const passwordSchema = z.object({
+  password: z.string().min(4).max(128).nullable(),
+});
 
 /**
  * Site CRUD. Every route in this plugin requires authentication and operates
@@ -78,6 +81,14 @@ export async function siteRoutes(app: FastifyInstance): Promise<void> {
   app.get('/sites/:id/publish-status', async (request) => {
     const { id } = idParamSchema.parse(request.params);
     return ok(await publishService.status(id, request.user!.sub));
+  });
+
+  app.put('/sites/:id/publish-password', async (request) => {
+    const { id } = idParamSchema.parse(request.params);
+    const { password } = passwordSchema.parse(request.body);
+    return ok(
+      await publishService.setPassword(id, request.user!.sub, password),
+    );
   });
 
   app.post('/sites/:id/rollback', async (request) => {

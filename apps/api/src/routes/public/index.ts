@@ -12,14 +12,31 @@ const trackSchema = z.object({
   path: z.string().max(256).optional(),
   new: z.boolean().optional(),
 });
+const unlockSchema = z.object({ password: z.string().min(1).max(128) });
 
 /** Public (unauthenticated) read access to published sites. */
 export async function publicRoutes(app: FastifyInstance): Promise<void> {
   app.get('/public/sites/:subdomain', async (request) => {
     const { subdomain } = subdomainParam.parse(request.params);
-    const site = await publishService.getPublic(subdomain.toLowerCase());
-    if (!site) throw AppError.notFound('site');
-    return ok(site);
+    const token = request.headers['x-unlock-token'];
+    const result = await publishService.access(
+      subdomain.toLowerCase(),
+      typeof token === 'string' ? token : undefined,
+    );
+    if (!result) throw AppError.notFound('site');
+    return ok(result);
+  });
+
+  // Verify a visitor password → short-lived unlock token (or 401).
+  app.post('/public/sites/:subdomain/unlock', async (request) => {
+    const { subdomain } = subdomainParam.parse(request.params);
+    const { password } = unlockSchema.parse(request.body);
+    const token = await publishService.unlock(
+      subdomain.toLowerCase(),
+      password,
+    );
+    if (!token) throw AppError.unauthorized('Incorrect password');
+    return ok({ token });
   });
 
   app.get('/public/sites/:subdomain/sitemap.xml', async (request, reply) => {

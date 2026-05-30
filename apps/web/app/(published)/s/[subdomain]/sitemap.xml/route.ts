@@ -1,4 +1,4 @@
-import { fetchPublicSite } from '@/lib/public';
+import { fetchPublicSite, isLocked } from '@/lib/public';
 import { env } from '@/lib/env';
 
 export async function GET(
@@ -7,7 +7,10 @@ export async function GET(
 ) {
   const { subdomain } = await params;
   const site = await fetchPublicSite(subdomain);
-  if (!site) return new Response('Not found', { status: 404 });
+  // No sitemap for missing or password-protected sites.
+  if (!site || isLocked(site)) {
+    return new Response('Not found', { status: 404 });
+  }
 
   const base = `${env.NEXT_PUBLIC_SITE_URL}/s/${site.subdomain}`;
   const urls = site.pages
