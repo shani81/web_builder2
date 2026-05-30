@@ -80,10 +80,25 @@ returns null for blank, so `enabled` isn't a false positive.)*
   color/order → 400, missing q → 400); disabled path → 503; **dedup proven live**
   (same image uploaded twice → one asset reused).
 
-### Slice B — provider-agnostic + Unsplash retrofit (next)
-- [ ] **Provider-agnostic `StockProvider` interface**; fold the existing Unsplash tab
-      in; **retrofit Unsplash to download-on-pick** for consistency (closes the same
-      hotlink/compliance gap fixed for Pixabay; adds provenance + dedup).
+### Slice B ✅ COMPLETE (2026-05-30) — provider-agnostic + Unsplash retrofit
+- [x] **`StockProvider` interface** (`services/stock/provider.ts`) implemented by
+      `pixabay.provider.ts` + `unsplash.provider.ts`; `stock.service` is now a
+      provider registry (`statuses`/`search`/`import` take a provider name).
+- [x] **Unsplash folded in**: one **Stock photos** tab with a Pixabay/Unsplash
+      toggle (the separate Unsplash tab is gone). Unified routes: `GET
+      /media/stock/status` → `{pixabay, unsplash}`; `search`/`import` take a
+      `provider` param. Old `/media/unsplash*` routes removed.
+- [x] **Unsplash now download-on-pick** (no more hotlinking): picks download the
+      image to our storage with provenance (source/author/sourceUrl/Unsplash
+      License) + content-hash dedup, and fire a best-effort **download-tracking
+      ping** (`links.download_location`) per Unsplash ToS. Orientation maps
+      (horizontal→landscape, vertical→portrait); color/sort are Pixabay-only.
+- **Verified 2026-05-30:** typecheck/lint green; `status` → `{pixabay:false,
+  unsplash:false}`; per-provider 503 messages; default provider = pixabay; bad
+  provider → 400; unsplash import (no key) → 503. Live download needs a real
+  `UNSPLASH_ACCESS_KEY`.
+- *Follow-up:* show photographer attribution on published pages (Unsplash
+  "should"); provenance is already stored, just not yet rendered.
 
 ### Slice C — later
 - [ ] **AI upgrades**: query expansion, optional result re-ranking to page theme.

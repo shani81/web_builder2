@@ -2,15 +2,10 @@ import { z } from 'zod';
 import type { FastifyInstance } from 'fastify';
 import { idParamSchema, paginationSchema } from '@buildr/schemas';
 import { mediaService } from '../../services/media.service.js';
-import {
-  searchUnsplash,
-  unsplashEnabled,
-} from '../../services/unsplash.service.js';
 import { stockService } from '../../services/stock.service.js';
 import { ALLOWED_UPLOAD_MIME } from '../../config/media.js';
 import { ok, AppError } from '../../utils/response.js';
 
-const unsplashQuerySchema = z.object({ q: z.string().min(1).max(100) });
 const STOCK_COLORS = [
   'any',
   'grayscale',
@@ -27,13 +22,20 @@ const STOCK_COLORS = [
   'black',
   'brown',
 ] as const;
+const PROVIDERS = ['pixabay', 'unsplash'] as const;
+const providerSchema = z.enum(PROVIDERS).default('pixabay');
 const stockSearchSchema = z.object({
+  provider: providerSchema,
   q: z.string().min(1).max(100),
   orientation: z.enum(['all', 'horizontal', 'vertical']).optional(),
   color: z.enum(STOCK_COLORS).optional(),
   order: z.enum(['popular', 'latest']).optional(),
 });
-const stockImportSchema = z.object({ id: z.string().min(1).max(32) });
+// Provider ids vary (Pixabay numeric, Unsplash slug) — keep this permissive.
+const stockImportSchema = z.object({
+  provider: providerSchema,
+  id: z.string().min(1).max(64),
+});
 
 export async function mediaRoutes(app: FastifyInstance): Promise<void> {
   app.addHook('preHandler', app.authenticate);
@@ -70,28 +72,19 @@ export async function mediaRoutes(app: FastifyInstance): Promise<void> {
     return ok({ deleted: true });
   });
 
-  app.get('/media/unsplash/status', async () =>
-    ok({ enabled: unsplashEnabled() }),
-  );
-
-  app.get('/media/unsplash', async (request) => {
-    const { q } = unsplashQuerySchema.parse(request.query);
-    return ok(await searchUnsplash(q));
-  });
-
-  // ── Pixabay stock photos ───────────────────────────────────────────────
+  // ── Stock photos (Pixabay + Unsplash, download-on-pick) ─────────────────
   app.get('/media/stock/status', async (request) =>
-    ok({ enabled: await stockService.enabled(request.user!.sub) }),
+    ok(await stockService.statuses(request.user!.sub)),
   );
 
   app.get('/media/stock/search', async (request) => {
-    const params = stockSearchSchema.parse(request.query);
-    return ok(await stockService.search(request.user!.sub, params));
+    const { provider, ...params } = stockSearchSchema.parse(request.query);
+    return ok(await stockService.search(request.user!.sub, provider, params));
   });
 
   app.post('/media/stock/import', async (request, reply) => {
-    const { id } = stockImportSchema.parse(request.body);
-    const asset = await stockService.import(request.user!.sub, id);
+    const { provider, id } = stockImportSchema.parse(request.body);
+    const asset = await stockService.import(request.user!.sub, provider, id);
     return reply.code(201).send(ok(asset));
   });
 }

@@ -13,6 +13,9 @@ export interface StockPhoto {
   tags: string;
 }
 
+/** Supported stock-photo providers. */
+export type StockProviderName = 'pixabay' | 'unsplash';
+
 export type StockOrientation = 'all' | 'horizontal' | 'vertical';
 
 /** Pixabay-supported color filters (plus 'any' to skip filtering). */

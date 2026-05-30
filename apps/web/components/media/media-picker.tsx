@@ -7,7 +7,7 @@ import type {
   StockOrder,
   StockOrientation,
   StockPhoto,
-  UnsplashPhoto,
+  StockProviderName,
 } from '@buildr/types';
 import { Button } from '@/components/ui/button';
 import { ApiClientError } from '@/lib/api-client';
@@ -17,7 +17,6 @@ import {
   useStockImport,
   useStockSearch,
   useStockStatus,
-  useUnsplashSearch,
   useUploadMedia,
 } from '@/hooks/use-media';
 
@@ -26,8 +25,12 @@ export interface PickedImage {
   alt?: string;
 }
 
-type Tab = 'library' | 'stock' | 'unsplash';
+type Tab = 'library' | 'stock';
 
+const PROVIDERS: { value: StockProviderName; label: string }[] = [
+  { value: 'pixabay', label: 'Pixabay' },
+  { value: 'unsplash', label: 'Unsplash' },
+];
 const ORIENTATIONS: { value: StockOrientation; label: string }[] = [
   { value: 'all', label: 'Any shape' },
   { value: 'horizontal', label: 'Landscape' },
@@ -54,31 +57,32 @@ const COLORS: { value: StockColor; label: string; swatch: string }[] = [
   { value: 'brown', label: 'Brown', swatch: '#92400e' },
 ];
 
+const LICENSE: Record<StockProviderName, { name: string; url: string }> = {
+  pixabay: {
+    name: 'Pixabay License',
+    url: 'https://pixabay.com/service/license-summary/',
+  },
+  unsplash: { name: 'Unsplash License', url: 'https://unsplash.com/license' },
+};
+
 function errorText(error: unknown): string {
-  if (error instanceof ApiClientError) {
-    if (error.code === 'STOCK_DISABLED') {
-      return 'Stock photos aren’t set up yet. Add your Pixabay API key in Settings.';
-    }
-    if (error.code === 'UNSPLASH_DISABLED') {
-      return 'Unsplash is disabled. Set UNSPLASH_ACCESS_KEY on the API server.';
-    }
-    return error.message;
-  }
+  if (error instanceof ApiClientError) return error.message;
   return 'Something went wrong.';
 }
 
-/** Print-aware licensing notice shown on the stock tab. */
-function StockNotice() {
+/** Print-aware licensing notice; license link follows the active provider. */
+function StockNotice({ provider }: { provider: StockProviderName }) {
+  const license = LICENSE[provider];
   return (
     <p className="m-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
       Photos are free under the{' '}
       <a
-        href="https://pixabay.com/service/license-summary/"
+        href={license.url}
         target="_blank"
         rel="noreferrer"
         className="font-medium underline"
       >
-        Pixabay License
+        {license.name}
       </a>
       , but <strong>you are responsible for how you use each image</strong> —
       especially for printing, merchandise, or products for sale. Some photos
@@ -102,6 +106,7 @@ export function MediaPicker({
   initialQuery?: string;
 }) {
   const [tab, setTab] = useState<Tab>(initialTab);
+  const [provider, setProvider] = useState<StockProviderName>('pixabay');
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState(initialQuery);
   const [orientation, setOrientation] = useState<StockOrientation>('all');
@@ -113,7 +118,6 @@ export function MediaPicker({
   const media = useMedia();
   const upload = useUploadMedia();
   const del = useDeleteMedia();
-  const unsplash = useUnsplashSearch();
   const stockStatusQuery = useStockStatus();
   const stockSearch = useStockSearch();
   const stockImport = useStockImport();
@@ -128,20 +132,26 @@ export function MediaPicker({
   // Auto-run the stock search when opened with a prefilled query (AI flow).
   useEffect(() => {
     if (open && initialTab === 'stock' && initialQuery.trim().length >= 2) {
-      stockSearch.mutate({ q: initialQuery.trim(), orientation: 'all' });
+      stockSearch.mutate({
+        provider: 'pixabay',
+        params: { q: initialQuery.trim(), orientation: 'all' },
+      });
     }
     // mount/open only
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  // Re-run the stock search when a filter changes (only if there's a query).
+  // Re-run when the provider or a filter changes (only if there's a query).
   useEffect(() => {
     if (open && tab === 'stock' && query.trim().length >= 2) {
-      stockSearch.mutate({ q: query.trim(), orientation, color, order });
+      stockSearch.mutate({
+        provider,
+        params: { q: query.trim(), orientation, color, order },
+      });
     }
     // intentionally excludes `query`: typing shouldn't fire a request per keystroke
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orientation, color, order]);
+  }, [provider, orientation, color, order]);
 
   if (!open) return null;
 
@@ -156,21 +166,14 @@ export function MediaPicker({
     }
   };
 
-  const runUnsplash = async () => {
-    if (query.trim().length < 2) return;
-    setError(null);
-    try {
-      await unsplash.mutateAsync(query.trim());
-    } catch (e) {
-      setError(errorText(e));
-    }
-  };
-
   const runStock = async () => {
     if (query.trim().length < 2) return;
     setError(null);
     try {
-      await stockSearch.mutateAsync({ q: query.trim(), orientation, color, order });
+      await stockSearch.mutateAsync({
+        provider,
+        params: { q: query.trim(), orientation, color, order },
+      });
     } catch (e) {
       setError(errorText(e));
     }
@@ -180,7 +183,7 @@ export function MediaPicker({
     setError(null);
     setImportingId(photo.id);
     try {
-      const asset = await stockImport.mutateAsync(photo.id);
+      const asset = await stockImport.mutateAsync({ provider, id: photo.id });
       onSelect({ url: asset.url, alt: asset.alt });
     } catch (e) {
       setError(errorText(e));
@@ -189,14 +192,12 @@ export function MediaPicker({
     }
   };
 
-  const unsplashResults: UnsplashPhoto[] = unsplash.data ?? [];
   const stockResults: StockPhoto[] = stockSearch.data ?? [];
-  const stockEnabled = stockStatusQuery.data?.enabled ?? true;
+  const stockEnabled = stockStatusQuery.data?.[provider] ?? true;
 
   const TABS: { id: Tab; label: string }[] = [
     { id: 'library', label: 'My media' },
     { id: 'stock', label: 'Stock photos' },
-    { id: 'unsplash', label: 'Unsplash' },
   ];
 
   return (
@@ -297,9 +298,25 @@ export function MediaPicker({
               )}
             </div>
           </div>
-        ) : tab === 'stock' ? (
+        ) : (
           <div className="flex min-h-0 flex-1 flex-col">
-            <StockNotice />
+            <div className="flex items-center gap-1 px-4 pt-3 text-sm">
+              {PROVIDERS.map((p) => (
+                <button
+                  key={p.value}
+                  type="button"
+                  onClick={() => setProvider(p.value)}
+                  className={`rounded-md px-3 py-1 ${
+                    provider === p.value
+                      ? 'bg-[var(--color-brand)] text-white'
+                      : 'bg-black/5 text-black/60'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+            <StockNotice provider={provider} />
             {stockEnabled ? (
               <div className="flex min-h-0 flex-1 flex-col px-4 pb-4">
                 <div className="mb-2 flex gap-2">
@@ -307,7 +324,7 @@ export function MediaPicker({
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && void runStock()}
-                    placeholder="Search Pixabay photos…"
+                    placeholder={`Search ${provider === 'pixabay' ? 'Pixabay' : 'Unsplash'} photos…`}
                     className="flex-1 rounded-lg border border-black/15 px-3 py-2 text-sm outline-none focus:border-[var(--color-brand)]"
                   />
                   <Button
@@ -332,38 +349,44 @@ export function MediaPicker({
                       </option>
                     ))}
                   </select>
-                  <select
-                    aria-label="Color"
-                    value={color}
-                    onChange={(e) => setColor(e.target.value as StockColor)}
-                    className="rounded-lg border border-black/15 px-2 py-1.5 outline-none focus:border-[var(--color-brand)]"
-                  >
-                    {COLORS.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {c.label}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    aria-label="Sort order"
-                    value={order}
-                    onChange={(e) => setOrder(e.target.value as StockOrder)}
-                    className="rounded-lg border border-black/15 px-2 py-1.5 outline-none focus:border-[var(--color-brand)]"
-                  >
-                    {ORDERS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                  {color !== 'any' ? (
-                    <span
-                      aria-hidden
-                      className="size-5 rounded-full border border-black/15"
-                      style={{
-                        background: COLORS.find((c) => c.value === color)?.swatch,
-                      }}
-                    />
+                  {/* Color + sort are Pixabay-only filters. */}
+                  {provider === 'pixabay' ? (
+                    <>
+                      <select
+                        aria-label="Color"
+                        value={color}
+                        onChange={(e) => setColor(e.target.value as StockColor)}
+                        className="rounded-lg border border-black/15 px-2 py-1.5 outline-none focus:border-[var(--color-brand)]"
+                      >
+                        {COLORS.map((c) => (
+                          <option key={c.value} value={c.value}>
+                            {c.label}
+                          </option>
+                        ))}
+                      </select>
+                      <select
+                        aria-label="Sort order"
+                        value={order}
+                        onChange={(e) => setOrder(e.target.value as StockOrder)}
+                        className="rounded-lg border border-black/15 px-2 py-1.5 outline-none focus:border-[var(--color-brand)]"
+                      >
+                        {ORDERS.map((o) => (
+                          <option key={o.value} value={o.value}>
+                            {o.label}
+                          </option>
+                        ))}
+                      </select>
+                      {color !== 'any' ? (
+                        <span
+                          aria-hidden
+                          className="size-5 rounded-full border border-black/15"
+                          style={{
+                            background: COLORS.find((c) => c.value === color)
+                              ?.swatch,
+                          }}
+                        />
+                      ) : null}
+                    </>
                   ) : null}
                 </div>
                 <div className="grid flex-1 grid-cols-3 gap-3 overflow-y-auto sm:grid-cols-4">
@@ -394,58 +417,19 @@ export function MediaPicker({
                   ))}
                   {stockResults.length === 0 ? (
                     <p className="col-span-full py-10 text-center text-sm text-black/40">
-                      Search Pixabay for free photos — picking one saves a copy
-                      to your media.
+                      Search for free photos — picking one saves a copy to your
+                      media.
                     </p>
                   ) : null}
                 </div>
               </div>
             ) : (
               <p className="px-4 py-10 text-center text-sm text-black/40">
-                Stock photos aren’t set up yet.
+                {provider === 'pixabay'
+                  ? 'Pixabay isn’t set up yet. Add your Pixabay API key in Settings.'
+                  : 'Unsplash isn’t set up yet (no UNSPLASH_ACCESS_KEY on the server).'}
               </p>
             )}
-          </div>
-        ) : (
-          <div className="flex min-h-0 flex-1 flex-col p-4">
-            <div className="mb-3 flex gap-2">
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && void runUnsplash()}
-                placeholder="Search free photos…"
-                className="flex-1 rounded-lg border border-black/15 px-3 py-2 text-sm outline-none focus:border-[var(--color-brand)]"
-              />
-              <Button
-                onClick={() => void runUnsplash()}
-                disabled={unsplash.isPending}
-              >
-                {unsplash.isPending ? 'Searching…' : 'Search'}
-              </Button>
-            </div>
-            <div className="grid flex-1 grid-cols-3 gap-3 overflow-y-auto sm:grid-cols-4">
-              {unsplashResults.map((photo) => (
-                <button
-                  key={photo.id}
-                  type="button"
-                  title={`Photo by ${photo.author}`}
-                  onClick={() => onSelect({ url: photo.url, alt: photo.alt })}
-                  className="block aspect-square w-full overflow-hidden rounded-lg border border-black/10"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element -- remote Unsplash thumbnails */}
-                  <img
-                    src={photo.thumbUrl}
-                    alt={photo.alt}
-                    className="size-full object-cover"
-                  />
-                </button>
-              ))}
-              {unsplashResults.length === 0 ? (
-                <p className="col-span-full py-10 text-center text-sm text-black/40">
-                  Search Unsplash for free, high-quality photos.
-                </p>
-              ) : null}
-            </div>
           </div>
         )}
       </div>

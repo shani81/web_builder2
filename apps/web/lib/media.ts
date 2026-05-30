@@ -1,4 +1,4 @@
-import type { MediaAsset, UnsplashPhoto } from '@buildr/types';
+import type { MediaAsset } from '@buildr/types';
 import { apiFetch, ApiClientError } from './api-client';
 import { env } from './env';
 
@@ -27,8 +27,4 @@ export function listMedia(): Promise<MediaAsset[]> {
 
 export function deleteMedia(id: string): Promise<{ deleted: boolean }> {
   return apiFetch(`/media/${id}`, { method: 'DELETE' });
-}
-
-export function searchUnsplash(query: string): Promise<UnsplashPhoto[]> {
-  return apiFetch(`/media/unsplash?q=${encodeURIComponent(query)}`);
 }

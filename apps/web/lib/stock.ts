@@ -1,15 +1,25 @@
-import type { MediaAsset, StockPhoto, StockSearchParams } from '@buildr/types';
+import type {
+  MediaAsset,
+  StockPhoto,
+  StockProviderName,
+  StockSearchParams,
+} from '@buildr/types';
 import { apiFetch } from './api-client';
 
-export type { StockSearchParams } from '@buildr/types';
+export type { StockProviderName, StockSearchParams } from '@buildr/types';
 export type StockOrientation = 'all' | 'horizontal' | 'vertical';
 
-export function stockStatus(): Promise<{ enabled: boolean }> {
+export type StockStatus = Record<StockProviderName, boolean>;
+
+export function stockStatus(): Promise<StockStatus> {
   return apiFetch('/media/stock/status');
 }
 
-export function searchStock(params: StockSearchParams): Promise<StockPhoto[]> {
-  const query = new URLSearchParams({ q: params.q });
+export function searchStock(
+  provider: StockProviderName,
+  params: StockSearchParams,
+): Promise<StockPhoto[]> {
+  const query = new URLSearchParams({ provider, q: params.q });
   if (params.orientation && params.orientation !== 'all') {
     query.set('orientation', params.orientation);
   }
@@ -19,9 +29,12 @@ export function searchStock(params: StockSearchParams): Promise<StockPhoto[]> {
 }
 
 /** Download + store a chosen stock photo; returns the new media asset. */
-export function importStock(id: string): Promise<MediaAsset> {
+export function importStock(
+  provider: StockProviderName,
+  id: string,
+): Promise<MediaAsset> {
   return apiFetch('/media/stock/import', {
     method: 'POST',
-    body: JSON.stringify({ id }),
+    body: JSON.stringify({ provider, id }),
   });
 }

@@ -28,13 +28,3 @@ export interface MediaAsset extends Entity {
   /** Provenance for stock imports (absent ⇒ user upload). */
   provenance?: MediaProvenance;
 }
-
-/** Simplified Unsplash photo result returned to the client. */
-export interface UnsplashPhoto {
-  id: string;
-  thumbUrl: string;
-  url: string;
-  alt: string;
-  author: string;
-  authorUrl: string;
-}

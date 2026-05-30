@@ -1,13 +1,8 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  deleteMedia,
-  listMedia,
-  searchUnsplash,
-  uploadMedia,
-} from '@/lib/media';
-import type { StockSearchParams } from '@buildr/types';
+import { deleteMedia, listMedia, uploadMedia } from '@/lib/media';
+import type { StockProviderName, StockSearchParams } from '@buildr/types';
 import { importStock, searchStock, stockStatus } from '@/lib/stock';
 
 export function useMedia() {
@@ -30,24 +25,24 @@ export function useDeleteMedia() {
   });
 }
 
-export function useUnsplashSearch() {
-  return useMutation({ mutationFn: searchUnsplash });
-}
-
 export function useStockStatus() {
   return useQuery({ queryKey: ['stock-status'], queryFn: stockStatus });
 }
 
 export function useStockSearch() {
   return useMutation({
-    mutationFn: (params: StockSearchParams) => searchStock(params),
+    mutationFn: (vars: {
+      provider: StockProviderName;
+      params: StockSearchParams;
+    }) => searchStock(vars.provider, vars.params),
   });
 }
 
 export function useStockImport() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: importStock,
+    mutationFn: (vars: { provider: StockProviderName; id: string }) =>
+      importStock(vars.provider, vars.id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['media'] }),
   });
 }
