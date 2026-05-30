@@ -12,10 +12,65 @@ import type {
   Site,
 } from '@buildr/types';
 import { shortId } from '@buildr/utils';
-import { createBlock } from '@/components/blocks/registry';
+import { createBlock, createSection } from '@/components/blocks/registry';
 import { savePage } from '@/lib/pages';
 
 const MAX_HISTORY = 50;
+
+type BlockLocation = { parent: Block[]; index: number };
+
+/** Find the array + index holding `id`, searching nested children. */
+function locateBlock(blocks: Block[], id: string): BlockLocation | null {
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i]!;
+    if (block.id === id) return { parent: blocks, index: i };
+    if (block.children) {
+      const found = locateBlock(block.children, id);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+/** Find a block by id anywhere in the tree. */
+export function findBlockInTree(
+  blocks: Block[],
+  id: string,
+): Block | undefined {
+  for (const block of blocks) {
+    if (block.id === id) return block;
+    if (block.children) {
+      const found = findBlockInTree(block.children, id);
+      if (found) return found;
+    }
+  }
+  return undefined;
+}
+
+/** Index of the top-level block that is, or contains, `id` (else -1). */
+function topLevelIndexOf(blocks: Block[], id: string): number {
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i]!;
+    if (block.id === id) return i;
+    if (block.children && findBlockInTree(block.children, id)) return i;
+  }
+  return -1;
+}
+
+function idPrefix(type: Block['type']): string {
+  return type === 'section' ? 'sec' : type === 'column' ? 'col' : 'blk';
+}
+
+/** Deep-clone a block subtree with fresh ids at every level. */
+function cloneBlock(block: Block): Block {
+  const copy = structuredClone(block);
+  const reId = (b: Block) => {
+    b.id = shortId(idPrefix(b.type));
+    b.children?.forEach(reId);
+  };
+  reId(copy);
+  return copy;
+}
 const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 2;
 
@@ -25,6 +80,8 @@ interface EditorState {
 
   selectedBlockId: string | null;
   hoveredBlockId: string | null;
+  /** When set, the next palette click inserts content into this column. */
+  addTargetColumnId: string | null;
   devicePreview: DevicePreview;
   zoom: number;
 
@@ -45,6 +102,10 @@ interface EditorState {
   toggleAIPanel: (open?: boolean) => void;
 
   addBlock: (type: Block['type']) => void;
+  /** Insert a Columns/Section preset (with empty columns) at the top level. */
+  addSection: (layoutId: string) => void;
+  /** Target a column for the next palette insertion (null clears it). */
+  setAddTarget: (columnId: string | null) => void;
   removeBlock: (id: string) => void;
   updateBlockProps: (id: string, props: BlockProps) => void;
   moveBlock: (id: string, direction: 'up' | 'down') => void;
@@ -81,6 +142,7 @@ export const useEditorStore = create<EditorState>((set, get) => {
     activePage: null,
     selectedBlockId: null,
     hoveredBlockId: null,
+    addTargetColumnId: null,
     devicePreview: 'desktop',
     zoom: 1,
     isSaving: false,
@@ -95,6 +157,7 @@ export const useEditorStore = create<EditorState>((set, get) => {
         activePage: page,
         selectedBlockId: null,
         hoveredBlockId: null,
+        addTargetColumnId: null,
         past: [],
         future: [],
         isDirty: false,
@@ -113,55 +176,75 @@ export const useEditorStore = create<EditorState>((set, get) => {
 
     addBlock: (type) => {
       const block = createBlock(type);
-      const { selectedBlockId, activePage } = get();
+      const { addTargetColumnId, selectedBlockId } = get();
       commit((page) => {
-        const selectedIndex = activePage?.blocks.findIndex(
-          (b) => b.id === selectedBlockId,
-        );
-        if (selectedIndex !== undefined && selectedIndex >= 0) {
-          page.blocks.splice(selectedIndex + 1, 0, block);
-        } else {
-          page.blocks.push(block);
+        // Targeting a column's "+" inserts the content inside that column.
+        if (addTargetColumnId) {
+          const target = findBlockInTree(page.blocks, addTargetColumnId);
+          if (target) {
+            target.children ??= [];
+            target.children.push(block);
+            return;
+          }
         }
+        // Otherwise insert right after the selection (at its own level), or append.
+        const loc = selectedBlockId
+          ? locateBlock(page.blocks, selectedBlockId)
+          : null;
+        if (loc) loc.parent.splice(loc.index + 1, 0, block);
+        else page.blocks.push(block);
       });
-      set({ selectedBlockId: block.id });
+      set({ selectedBlockId: block.id, addTargetColumnId: null });
     },
+
+    addSection: (layoutId) => {
+      const section = createSection(layoutId);
+      const { selectedBlockId } = get();
+      commit((page) => {
+        const i = selectedBlockId
+          ? topLevelIndexOf(page.blocks, selectedBlockId)
+          : -1;
+        if (i >= 0) page.blocks.splice(i + 1, 0, section);
+        else page.blocks.push(section);
+      });
+      set({ selectedBlockId: section.id, addTargetColumnId: null });
+    },
+
+    setAddTarget: (columnId) => set({ addTargetColumnId: columnId }),
 
     removeBlock: (id) => {
       commit((page) => {
-        page.blocks = page.blocks.filter((b) => b.id !== id);
+        const loc = locateBlock(page.blocks, id);
+        if (loc) loc.parent.splice(loc.index, 1);
       });
       if (get().selectedBlockId === id) set({ selectedBlockId: null });
     },
 
     updateBlockProps: (id, props) =>
       commit((page) => {
-        const block = page.blocks.find((b) => b.id === id);
+        const block = findBlockInTree(page.blocks, id);
         if (block) block.props = { ...block.props, ...props };
       }),
 
     moveBlock: (id, direction) =>
       commit((page) => {
-        const index = page.blocks.findIndex((b) => b.id === id);
-        if (index < 0) return;
-        const target = direction === 'up' ? index - 1 : index + 1;
-        if (target < 0 || target >= page.blocks.length) return;
-        const [moved] = page.blocks.splice(index, 1);
-        page.blocks.splice(target, 0, moved!);
+        const loc = locateBlock(page.blocks, id);
+        if (!loc) return;
+        const target = direction === 'up' ? loc.index - 1 : loc.index + 1;
+        if (target < 0 || target >= loc.parent.length) return;
+        const [moved] = loc.parent.splice(loc.index, 1);
+        loc.parent.splice(target, 0, moved!);
       }),
 
     duplicateBlock: (id) => {
-      const copyId = shortId('blk');
+      const source = findBlockInTree(get().activePage?.blocks ?? [], id);
+      if (!source) return;
+      const clone = cloneBlock(source);
       commit((page) => {
-        const index = page.blocks.findIndex((b) => b.id === id);
-        if (index < 0) return;
-        const source = page.blocks[index]!;
-        page.blocks.splice(index + 1, 0, {
-          ...structuredClone(source),
-          id: copyId,
-        });
+        const loc = locateBlock(page.blocks, id);
+        if (loc) loc.parent.splice(loc.index + 1, 0, clone);
       });
-      set({ selectedBlockId: copyId });
+      set({ selectedBlockId: clone.id });
     },
 
     reorderBlocks: (orderedIds) =>
@@ -196,8 +279,15 @@ export const useEditorStore = create<EditorState>((set, get) => {
       }
 
       // updateBlock / updateText / changeColor all merge props into a block.
-      if (action.targetBlockId && payload.props && typeof payload.props === 'object') {
-        get().updateBlockProps(action.targetBlockId, payload.props as BlockProps);
+      if (
+        action.targetBlockId &&
+        payload.props &&
+        typeof payload.props === 'object'
+      ) {
+        get().updateBlockProps(
+          action.targetBlockId,
+          payload.props as BlockProps,
+        );
       }
     },
 

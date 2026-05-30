@@ -1,6 +1,7 @@
 import {
   BarChart3,
   Building2,
+  Columns3,
   CreditCard,
   Heading,
   HelpCircle,
@@ -13,6 +14,7 @@ import {
   PanelBottom,
   Quote,
   Send,
+  Square,
   Timer,
   Type,
   Users,
@@ -21,6 +23,7 @@ import {
 import type { Block, BlockType } from '@buildr/types';
 import { shortId } from '@buildr/utils';
 import type { BlockDefinition } from './types';
+import { SECTION_LAYOUTS, layoutById } from './section-layouts';
 import { NavbarBlock } from './navbar.block';
 import { HeroBlock } from './hero.block';
 import { FeaturesBlock } from './features.block';
@@ -51,8 +54,30 @@ const COLUMN_OPTIONS = [
   { label: '4 columns', value: '4' },
 ];
 
+/** Container blocks render their `children` (handled in block-renderer), so
+ * their Component is a no-op placeholder kept only for registry metadata. */
+const ContainerPlaceholder = () => null;
+
 /** Blocks implemented through Phase 4 — enough for a full landing page. */
 export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
+  section: {
+    type: 'section',
+    label: 'Section',
+    category: 'layout',
+    icon: Columns3,
+    defaultProps: {},
+    fields: [],
+    Component: ContainerPlaceholder,
+  },
+  column: {
+    type: 'column',
+    label: 'Column',
+    category: 'layout',
+    icon: Square,
+    defaultProps: {},
+    fields: [],
+    Component: ContainerPlaceholder,
+  },
   navbar: {
     type: 'navbar',
     label: 'Navbar',
@@ -71,7 +96,12 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
       { key: 'brand', label: 'Brand name', type: 'text' },
       { key: 'menu', label: 'Menu links', type: 'menu' },
       { key: 'ctaLabel', label: 'Button label', type: 'text' },
-      { key: 'ctaHref', label: 'Button link', type: 'text', hint: 'URL or #anchor' },
+      {
+        key: 'ctaHref',
+        label: 'Button link',
+        type: 'text',
+        hint: 'URL or #anchor',
+      },
       { key: 'background', label: 'Background', type: 'color' },
       { key: 'textColor', label: 'Text color', type: 'color' },
       { key: 'sticky', label: 'Stick to top', type: 'toggle' },
@@ -99,10 +129,20 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
       { key: 'headline', label: 'Headline', type: 'text' },
       { key: 'subtext', label: 'Subtext', type: 'textarea' },
       { key: 'ctaLabel', label: 'Primary button', type: 'text' },
-      { key: 'ctaHref', label: 'Primary button link', type: 'text', hint: 'URL or #anchor' },
+      {
+        key: 'ctaHref',
+        label: 'Primary button link',
+        type: 'text',
+        hint: 'URL or #anchor',
+      },
       { key: 'secondaryCtaLabel', label: 'Secondary button', type: 'text' },
       { key: 'secondaryCtaHref', label: 'Secondary button link', type: 'text' },
-      { key: 'align', label: 'Alignment', type: 'select', options: ALIGN_OPTIONS },
+      {
+        key: 'align',
+        label: 'Alignment',
+        type: 'select',
+        options: ALIGN_OPTIONS,
+      },
       { key: 'background', label: 'Background', type: 'color' },
       {
         key: 'backgroundImage',
@@ -129,7 +169,12 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     fields: [
       { key: 'heading', label: 'Heading', type: 'text' },
       { key: 'subtext', label: 'Subtext', type: 'textarea' },
-      { key: 'columns', label: 'Columns', type: 'select', options: COLUMN_OPTIONS },
+      {
+        key: 'columns',
+        label: 'Columns',
+        type: 'select',
+        options: COLUMN_OPTIONS,
+      },
       {
         key: 'items',
         label: 'Features',
@@ -178,7 +223,12 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
       { key: 'headline', label: 'Headline', type: 'text' },
       { key: 'subtext', label: 'Subtext', type: 'textarea' },
       { key: 'ctaLabel', label: 'Button label', type: 'text' },
-      { key: 'ctaHref', label: 'Button link', type: 'text', hint: 'URL or #anchor' },
+      {
+        key: 'ctaHref',
+        label: 'Button link',
+        type: 'text',
+        hint: 'URL or #anchor',
+      },
       { key: 'background', label: 'Background', type: 'color' },
       {
         key: 'backgroundImage',
@@ -212,7 +262,12 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
         hint: 'Describe the image for accessibility',
       },
       { key: 'caption', label: 'Caption', type: 'text' },
-      { key: 'link', label: 'Link (optional)', type: 'text', hint: 'Wrap image in a link' },
+      {
+        key: 'link',
+        label: 'Link (optional)',
+        type: 'text',
+        hint: 'Wrap image in a link',
+      },
       {
         key: 'width',
         label: 'Width',
@@ -233,13 +288,19 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     icon: Type,
     defaultProps: {
       heading: '',
-      content: 'Write something meaningful here. Click to edit this text block.',
+      content:
+        'Write something meaningful here. Click to edit this text block.',
       align: 'left',
     },
     fields: [
       { key: 'heading', label: 'Heading (optional)', type: 'text' },
       { key: 'content', label: 'Content', type: 'textarea' },
-      { key: 'align', label: 'Alignment', type: 'select', options: ALIGN_OPTIONS },
+      {
+        key: 'align',
+        label: 'Alignment',
+        type: 'select',
+        options: ALIGN_OPTIONS,
+      },
     ],
     Component: TextBlock,
   },
@@ -290,7 +351,11 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     fields: [
       { key: 'heading', label: 'Heading', type: 'text' },
       { key: 'subtext', label: 'Subtext', type: 'textarea' },
-      { key: 'highlightIndex', label: 'Highlight tier (0-based)', type: 'number' },
+      {
+        key: 'highlightIndex',
+        label: 'Highlight tier (0-based)',
+        type: 'number',
+      },
       {
         key: 'items',
         label: 'Tiers',
@@ -329,11 +394,17 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     defaultProps: {
       heading: '',
       columns: '4',
-      items: '10k+ | Active users\n99.9% | Uptime\n4.9/5 | Rating\n24/7 | Support',
+      items:
+        '10k+ | Active users\n99.9% | Uptime\n4.9/5 | Rating\n24/7 | Support',
     },
     fields: [
       { key: 'heading', label: 'Heading (optional)', type: 'text' },
-      { key: 'columns', label: 'Columns', type: 'select', options: COLUMN_OPTIONS },
+      {
+        key: 'columns',
+        label: 'Columns',
+        type: 'select',
+        options: COLUMN_OPTIONS,
+      },
       {
         key: 'items',
         label: 'Stats',
@@ -412,7 +483,12 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     defaultProps: { heading: '', columns: '3', images: '' },
     fields: [
       { key: 'heading', label: 'Heading (optional)', type: 'text' },
-      { key: 'columns', label: 'Columns', type: 'select', options: COLUMN_OPTIONS },
+      {
+        key: 'columns',
+        label: 'Columns',
+        type: 'select',
+        options: COLUMN_OPTIONS,
+      },
       {
         key: 'images',
         label: 'Image URLs',
@@ -519,5 +595,41 @@ export function createBlock(type: BlockType): Block {
     locked: false,
     visible: true,
     responsive: { desktop: {}, tablet: {}, mobile: {} },
+  };
+}
+
+/** A fresh empty column (a box inside a section). */
+export function createColumn(): Block {
+  return {
+    id: shortId('col'),
+    type: 'column',
+    props: {},
+    styles: {},
+    locked: false,
+    visible: true,
+    responsive: { desktop: {}, tablet: {}, mobile: {} },
+    children: [],
+  };
+}
+
+/** A fresh Section pre-seeded with one empty column per box in the layout. */
+export function createSection(layoutId: string): Block {
+  const layout = layoutById(layoutId) ?? SECTION_LAYOUTS[1]!;
+  return {
+    id: shortId('sec'),
+    type: 'section',
+    props: {
+      layout: layout.id,
+      columns: layout.columns,
+      gap: 24,
+      width: 'contained',
+      paddingY: 48,
+      mobile: { mode: 'auto' },
+    },
+    styles: {},
+    locked: false,
+    visible: true,
+    responsive: { desktop: {}, tablet: {}, mobile: {} },
+    children: layout.columns.map(() => createColumn()),
   };
 }

@@ -4,6 +4,8 @@ export type SiteStatus = 'draft' | 'published' | 'archived';
 export type DevicePreview = 'desktop' | 'tablet' | 'mobile';
 
 export type BlockType =
+  | 'section'
+  | 'column'
   | 'hero'
   | 'navbar'
   | 'features'

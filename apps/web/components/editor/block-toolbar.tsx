@@ -30,7 +30,7 @@ export function BlockToolbar({
   label: string;
   isFirst: boolean;
   isLast: boolean;
-  dragHandle: ReactNode;
+  dragHandle?: ReactNode;
   onMoveUp: () => void;
   onMoveDown: () => void;
   onDuplicate: () => void;

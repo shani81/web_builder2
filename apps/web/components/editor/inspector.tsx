@@ -2,7 +2,7 @@
 
 import { Trash2 } from 'lucide-react';
 import { slugify } from '@buildr/utils';
-import { useEditorStore } from '@/stores/editor.store';
+import { findBlockInTree, useEditorStore } from '@/stores/editor.store';
 import { getBlockDefinition } from '@/components/blocks/registry';
 import { bool, num, str, type InspectorField } from '@/components/blocks/types';
 import { Button } from '@/components/ui/button';
@@ -157,8 +157,10 @@ function Field({
 /** Right panel: context-aware property editor for the selected block. */
 export function Inspector() {
   const selectedId = useEditorStore((s) => s.selectedBlockId);
-  const block = useEditorStore(
-    (s) => s.activePage?.blocks.find((b) => b.id === selectedId) ?? null,
+  const block = useEditorStore((s) =>
+    selectedId && s.activePage
+      ? (findBlockInTree(s.activePage.blocks, selectedId) ?? null)
+      : null,
   );
   const updateBlockProps = useEditorStore((s) => s.updateBlockProps);
   const removeBlock = useEditorStore((s) => s.removeBlock);

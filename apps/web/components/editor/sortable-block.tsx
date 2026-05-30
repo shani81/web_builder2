@@ -8,6 +8,7 @@ import { useEditorStore } from '@/stores/editor.store';
 import { getBlockDefinition } from '@/components/blocks/registry';
 import { BlockRenderer } from '@/components/blocks/block-renderer';
 import { BlockToolbar, TOOLBAR_BUTTON } from './block-toolbar';
+import { SectionEditor } from './section-editor';
 
 export function SortableBlock({
   block,
@@ -96,10 +97,15 @@ export function SortableBlock({
         />
       </div>
 
-      {/* Content is inert so clicks select the block rather than its internals. */}
-      <div className="pointer-events-none">
-        <BlockRenderer block={block} />
-      </div>
+      {/* Sections are interactive (nested columns/content are selectable);
+          every other block's content is inert so clicks select the block. */}
+      {block.type === 'section' ? (
+        <SectionEditor block={block} />
+      ) : (
+        <div className="pointer-events-none">
+          <BlockRenderer block={block} />
+        </div>
+      )}
 
       {/* Insertion indicator: new blocks are added right after the selection. */}
       {selected ? (

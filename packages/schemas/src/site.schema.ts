@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 export const blockTypeSchema = z.enum([
+  'section',
+  'column',
   'hero',
   'navbar',
   'features',
