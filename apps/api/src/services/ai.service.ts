@@ -360,7 +360,7 @@ Reply conversationally and briefly. If — and only if — the user asks you to 
 { "type": "addBlock"|"updateBlock"|"removeBlock"|"findImages", "targetBlockId": "<id, when editing/removing>", "payload": { ... }, "description": "what this does" }
 \`\`\`
 For addBlock, payload is { "blockType": "hero", "props": { ... } }. For updateBlock, payload is { "props": { ... } } merged into the block.
-If the user asks to find, search for, or add a photo/image, use type "findImages" with payload { "query": "<concise search terms>" } — this opens a stock-photo picker for them.`;
+If the user asks to find, search for, or add a photo/image, use type "findImages" with payload { "query": "<2-4 concrete visual keywords>" } — this opens a stock-photo picker. Expand vague requests into specific, photographable subjects: prefer nouns for subject + setting/style, drop articles and filler, and use the page's industry/theme for context. E.g. "a nice picture for my barbershop hero" → "barber shop interior, vintage chair, grooming"; "something for the about section" (a bakery site) → "artisan bakery, fresh bread, baker hands".`;
 
     const messages: Anthropic.MessageParam[] = [
       ...history.map((m) => ({ role: m.role, content: m.content })),

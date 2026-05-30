@@ -100,10 +100,25 @@ returns null for blank, so `enabled` isn't a false positive.)*
 - *Follow-up:* show photographer attribution on published pages (Unsplash
   "should"); provenance is already stored, just not yet rendered.
 
-### Slice C — later
-- [ ] **AI upgrades**: query expansion, optional result re-ranking to page theme.
-- [ ] **Rate-limit hardening**: central token-bucket/queue, request higher Pixabay
-      limit, basic metrics.
+### Slice C ✅ COMPLETE (2026-05-30) — rate-limit hardening, metrics, AI query expansion
+- [x] **Rate-limit hardening**: in-memory token-bucket limiter
+      (`utils/rate-limiter.ts`) per `provider:key`, sized below each quota
+      (Pixabay 90/min, Unsplash 45/hr). Guards every upstream call (search
+      cache-miss + import resolve); over-quota → friendly `429 RATE_LIMIT`
+      instead of hammering the provider. Cache hits bypass the limiter.
+- [x] **Basic metrics**: per-provider counters (searches, cacheHits, imports,
+      throttled, errors) exposed at `GET /media/stock/metrics`.
+- [x] **AI query expansion**: tightened the chat `findImages` prompt so the
+      assistant emits 2–4 concrete visual keywords (subject + setting/style,
+      industry-aware) instead of a vague phrase — no extra API call.
+- **Verified 2026-05-30:** typecheck/lint green; metrics endpoint returns the
+  counter shape; disabled paths unaffected (throttle sits after key resolution);
+  token-bucket math checked (burst cap, refill, per-key isolation). Live
+  throttle/cache-hit counters need a real provider key to exercise.
+- *Deferred (genuinely optional):* result re-ranking to page theme (needs an
+  extra vision/LLM pass per search — high cost, low marginal gain over query
+  expansion); requesting a higher Pixabay limit (ops, not code); Redis-backed
+  limiter/cache for multi-instance.
 
 ---
 

@@ -77,6 +77,9 @@ export async function mediaRoutes(app: FastifyInstance): Promise<void> {
     ok(await stockService.statuses(request.user!.sub)),
   );
 
+  // Aggregate, non-sensitive usage counters (calls, cache hits, throttles).
+  app.get('/media/stock/metrics', async () => ok(stockService.getMetrics()));
+
   app.get('/media/stock/search', async (request) => {
     const { provider, ...params } = stockSearchSchema.parse(request.query);
     return ok(await stockService.search(request.user!.sub, provider, params));
