@@ -1,0 +1,280 @@
+{
+  "id": "page_700168973e79",
+  "siteId": "",
+  "title": "Home",
+  "slug": "home",
+  "blocks": [
+    {
+      "id": "blk_0b70b91c891d",
+      "type": "navbar",
+      "props": {
+        "brand": "FlowSpace",
+        "links": "Features | #features\nPricing | #pricing\nTestimonials | #testimonials\nFAQ | #faq",
+        "ctaLabel": "Start Free Trial",
+        "ctaHref": "#get-started"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_b0303f82389a",
+      "type": "hero",
+      "props": {
+        "headline": "Ship Projects Faster. Stress Less. Stay in Flow.",
+        "subtext": "FlowSpace is the modern project-management platform that keeps remote teams aligned, deadlines on track, and work moving — without the chaos of spreadsheets or the bloat of legacy tools.",
+        "ctaLabel": "Start Free — No Credit Card",
+        "ctaHref": "#get-started",
+        "secondaryCtaLabel": "Watch a 2-Min Demo",
+        "secondaryCtaHref": "#demo",
+        "align": "center",
+        "background": "#0F0F12",
+        "textColor": "#FFFFFF"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_562bdfea2c36",
+      "type": "logos",
+      "props": {
+        "heading": "Trusted by fast-moving teams at",
+        "items": "Stripe, Notion, Linear, Vercel, Figma, Loom, Pitch, Descript"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_640b9d77d2a0",
+      "type": "stats",
+      "props": {
+        "heading": "The numbers speak for themselves",
+        "columns": "4",
+        "items": "40% | Faster project delivery\n3× | More tasks completed on time\n12 hrs | Saved per team per week\n98% | Customer satisfaction score"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_959ba503a143",
+      "type": "divider",
+      "props": {
+        "text": "Why FlowSpace",
+        "position": "center"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_b3df9eb63836",
+      "type": "features",
+      "props": {
+        "heading": "Everything your team needs to do great work",
+        "columns": "3",
+        "items": "Visual Kanban Boards | Drag-and-drop cards across fully customizable columns. See your entire workflow at a glance — from backlog to done.\nSmart Deadlines | Set milestones, assign owners, and get AI-powered deadline nudges before tasks slip through the cracks.\nReal-Time Collaboration | Comment, @mention teammates, and co-edit task details simultaneously. No more waiting on email replies.\nAutomated Workflows | Build no-code automation rules that assign tasks, send alerts, and move cards — so your team focuses on real work.\nTime Tracking Built-In | Log hours directly on tasks, generate time reports, and keep billing and budgets perfectly accurate.\nAdvanced Analytics | Interactive dashboards show velocity, blockers, and workload distribution so managers can act — not just observe."
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_11d74e127ead",
+      "type": "image",
+      "props": {
+        "src": "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=1200&q=80",
+        "alt": "FlowSpace project board in action",
+        "caption": "A live FlowSpace board — real teams, real projects, real results.",
+        "link": "#get-started"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_91684ff8f265",
+      "type": "divider",
+      "props": {
+        "text": "How It Works",
+        "position": "center"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_2a6d8645ccb8",
+      "type": "features",
+      "props": {
+        "heading": "Up and running in under 10 minutes",
+        "columns": "3",
+        "items": "1. Create Your Workspace | Sign up, name your workspace, and invite teammates in seconds. No IT setup. No lengthy onboarding.\n2. Build Your First Board | Choose from 50+ project templates or start from scratch. Customize columns, labels, and priority levels to match your process.\n3. Ship Work, Celebrate Wins | Assign tasks, hit deadlines, and watch your project velocity climb week over week."
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_5d03a5d112c5",
+      "type": "testimonials",
+      "props": {
+        "heading": "Teams that switched to FlowSpace never look back",
+        "items": "FlowSpace replaced four separate tools for us. Our sprint planning meetings went from 90 minutes to 20. It's genuinely transformed how we operate. | Sarah Chen | VP of Engineering, Meridian Health\nI've tried Asana, Monday, Jira — nothing stuck. FlowSpace just feels natural. My team adopted it in a day and we've been flying ever since. | Marcus Webb | Founder, Pulsar Studios\nThe automation alone saves us at least half a day a week. We set up rules once and forgot about the busywork entirely. | Priya Nair | Head of Product, Kaizen Labs\nWe manage 30+ client projects simultaneously. FlowSpace's dashboards give me an instant health check on everything without digging through threads. | Tom Gallagher | COO, Brightwave Agency"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_36cfe90959e7",
+      "type": "pricing",
+      "props": {
+        "heading": "Simple, transparent pricing",
+        "items": "Starter | $0 | /month | Up to 5 users; 3 active projects; Kanban boards; Basic integrations | /signup\nGrow | $18 | /user/month | Unlimited projects; Smart deadlines; Time tracking; Automations (50/mo); Priority support | /signup?plan=grow\nScale | $38 | /user/month | Everything in Grow; Advanced analytics; Unlimited automations; SSO & SAML; Dedicated success manager | /signup?plan=scale"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_85716e934b3a",
+      "type": "faq",
+      "props": {
+        "heading": "Frequently asked questions",
+        "items": "Is there really no credit card required for the free plan? | Absolutely. The Starter plan is free forever for up to 5 users. No card, no trial period — just sign up and start working.\nCan I migrate my data from Jira, Asana, or Trello? | Yes. FlowSpace offers one-click imports from Jira, Asana, Trello, Monday.com, and CSV exports from any tool.\nHow does per-user pricing work for larger teams? | You pay only for active users. If a team member goes on leave you can deactivate their seat and stop being charged — simple.\nIs FlowSpace secure? | FlowSpace is SOC 2 Type II certified, GDPR compliant, and uses 256-bit AES encryption at rest and in transit. Enterprise plans include SSO and audit logs.\nDo you offer discounts for nonprofits or startups? | Yes — nonprofits get 50% off any paid plan, and qualified early-stage startups can apply for our Startup Program for 12 months free on Grow."
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_f5fb8a4e3af5",
+      "type": "cta",
+      "props": {
+        "headline": "Your team deserves a better way to work.",
+        "subtext": "Join 25,000+ teams already shipping faster with FlowSpace. Start your free workspace today — no credit card required.",
+        "ctaLabel": "Get Started Free",
+        "ctaHref": "#get-started",
+        "background": "#4F6EF7",
+        "textColor": "#FFFFFF"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_8f702891a887",
+      "type": "newsletter",
+      "props": {
+        "heading": "Get productivity tips straight to your inbox",
+        "subtext": "Weekly strategies, FlowSpace feature updates, and expert advice for high-performing teams. Unsubscribe any time.",
+        "buttonLabel": "Subscribe",
+        "background": "#F8F9FF",
+        "textColor": "#0F0F12"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_3f707e6c63b2",
+      "type": "footer",
+      "props": {
+        "brand": "FlowSpace",
+        "tagline": "Project management that moves at your speed.",
+        "links": "Features | #features\nPricing | #pricing\nTemplates | /templates\nChangelog | /changelog\nStatus | https://status.flowspace.io\nPrivacy Policy | /privacy\nTerms of Service | /terms",
+        "social": "Twitter | https://twitter.com/flowspace\nLinkedIn | https://linkedin.com/company/flowspace\nGitHub | https://github.com/flowspace\nYouTube | https://youtube.com/@flowspace",
+        "text": "© 2024 FlowSpace, Inc. All rights reserved. Made with ❤️ for teams everywhere."
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    }
+  ],
+  "seo": {
+    "metaTitle": "Home",
+    "metaDescription": "Project management that moves at your speed",
+    "noIndex": false
+  },
+  "isHome": true,
+  "createdAt": "2026-05-30T23:18:10.451Z",
+  "updatedAt": "2026-05-30T23:18:10.451Z"
+}

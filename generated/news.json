@@ -1,0 +1,263 @@
+{
+  "id": "page_c00915a19d9e",
+  "siteId": "",
+  "title": "Home",
+  "slug": "home",
+  "blocks": [
+    {
+      "id": "blk_ad67d45f039c",
+      "type": "navbar",
+      "props": {
+        "brand": "The Daily Brief",
+        "links": "Home | /\nWorld | /world\nTechnology | /technology\nBusiness | /business\nScience | /science",
+        "ctaLabel": "Subscribe",
+        "ctaHref": "#newsletter"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_787b4555da03",
+      "type": "hero",
+      "props": {
+        "headline": "Today's Top Stories",
+        "subtext": "Curated news from around the world — politics, technology, science, culture, and more. Updated every hour.",
+        "ctaLabel": "Browse All Articles",
+        "ctaHref": "#articles",
+        "secondaryCtaLabel": "Subscribe for Updates",
+        "secondaryCtaHref": "#newsletter",
+        "align": "center",
+        "background": "#1E2A3B",
+        "textColor": "#FFFFFF"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_a1099769e905",
+      "type": "stats",
+      "props": {
+        "heading": "By the Numbers",
+        "columns": "4",
+        "items": "1,200+ | Articles Published\n48 | Countries Covered\n320K | Monthly Readers\n24/7 | Live Updates"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_cf103eec0e78",
+      "type": "heading",
+      "props": {
+        "text": "Latest Articles",
+        "level": "h2",
+        "align": "center",
+        "weight": "bold"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_55c7ea2a2d18",
+      "type": "features",
+      "props": {
+        "heading": "World & Politics",
+        "columns": "3",
+        "items": "G7 Summit Reaches Historic Climate Agreement | World leaders gathered in Rome this week to sign a landmark climate accord pledging net-zero emissions by 2045. Critics say enforcement mechanisms remain weak. — June 12, 2025 | /articles/g7-climate-agreement\nElections in Southeast Asia Reshape Regional Power | Surprise outcomes in three major Southeast Asian elections are sending ripples through diplomatic circles and trade negotiations. — June 11, 2025 | /articles/southeast-asia-elections\nUN Report Warns of Rising Food Insecurity | A new United Nations report highlights that over 700 million people face acute food insecurity, urging immediate international aid. — June 10, 2025 | /articles/un-food-insecurity"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_bbe1359b2566",
+      "type": "features",
+      "props": {
+        "heading": "Technology",
+        "columns": "3",
+        "items": "OpenAI Releases GPT-5 to General Public | The latest iteration of OpenAI's flagship model arrives with multimodal reasoning and real-time web browsing built in. — June 12, 2025 | /articles/gpt5-release\nApple Announces Mixed-Reality Headset Sequel | Apple's second-generation Vision Pro headset promises a 40% lighter design and a dramatically lower price point for consumers. — June 11, 2025 | /articles/apple-vision-pro-2\nCybersecurity Breach Exposes 50M User Records | A major cloud provider disclosed a data breach affecting tens of millions of users, prompting calls for stricter regulation. — June 9, 2025 | /articles/cybersecurity-breach"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_a042b75122c5",
+      "type": "divider",
+      "props": {
+        "text": "More Stories",
+        "position": "center"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_3ae7748cfa22",
+      "type": "features",
+      "props": {
+        "heading": "Business & Economy",
+        "columns": "3",
+        "items": "Federal Reserve Holds Rates Steady Amid Inflation Fears | The Fed's latest meeting concluded with a unanimous decision to hold the benchmark rate at 5.25%, citing mixed economic signals. — June 12, 2025 | /articles/fed-rate-hold\nTesla Stock Surges on Record Quarterly Deliveries | Tesla reported its highest-ever quarterly vehicle deliveries, sending its share price up more than 12% in after-hours trading. — June 10, 2025 | /articles/tesla-record-deliveries\nStartup Funding Falls for Third Consecutive Quarter | Venture capital investment dropped again in Q2 2025, with investors shifting focus toward profitability over growth. — June 8, 2025 | /articles/startup-funding-decline"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_df720b36d46a",
+      "type": "features",
+      "props": {
+        "heading": "Science & Health",
+        "columns": "3",
+        "items": "NASA Confirms Water Ice Deposits on Mars Surface | A groundbreaking discovery by the Perseverance rover confirms accessible water ice just below the Martian surface. — June 11, 2025 | /articles/nasa-mars-water\nNew Cancer Immunotherapy Shows 90% Remission Rate | Clinical trials for a novel CAR-T cell therapy report unprecedented success rates across multiple cancer types. — June 10, 2025 | /articles/cancer-immunotherapy\nGlobal Temperatures Hit Record High for Third Straight Year | Scientists confirm 2024 was the hottest year ever recorded, with 2025 already tracking to surpass it. — June 9, 2025 | /articles/global-temperature-record"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_15453ecf8792",
+      "type": "testimonials",
+      "props": {
+        "heading": "What Our Readers Say",
+        "items": "The Daily Brief is the only news source I trust to give me the full picture without the spin. I read it every morning with my coffee. | Sarah M. | Educator, Chicago\nIncredibly well-curated. I work in finance and I rely on The Daily Brief to catch anything I might have missed overnight. | James K. | Portfolio Manager, New York\nFinally a news outlet that covers international stories with the same depth as domestic ones. Genuinely impressive journalism. | Priya L. | Policy Analyst, London"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_30a6e4b76a3e",
+      "type": "faq",
+      "props": {
+        "heading": "Frequently Asked Questions",
+        "items": "How often is content updated? | Our editorial team publishes new articles throughout the day, with major updates every hour and breaking news posted in real time.\nIs The Daily Brief free to read? | Yes, most articles are free. A premium subscription unlocks full archive access, ad-free reading, and exclusive in-depth reports.\nCan I submit a news tip? | Absolutely. Use our contact form below to send tips directly to our editorial desk. We review every submission.\nDo you have a mobile app? | Our mobile-optimized website works seamlessly on all devices. A dedicated iOS and Android app is coming later this year."
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_8984d851008f",
+      "type": "newsletter",
+      "props": {
+        "heading": "Get the News in Your Inbox",
+        "subtext": "Subscribe to The Daily Brief newsletter and receive a curated roundup of the day's most important stories every morning at 7 AM.",
+        "buttonLabel": "Subscribe Now",
+        "background": "#1A56DB",
+        "textColor": "#FFFFFF"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_62d4967c6a43",
+      "type": "contact",
+      "props": {
+        "heading": "Contact Our Editorial Team",
+        "subtext": "Have a story tip, correction request, or press inquiry? Reach out to our team and we'll get back to you within 24 hours.",
+        "buttonLabel": "Send a Message"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_08ed79c2c18e",
+      "type": "footer",
+      "props": {
+        "brand": "The Daily Brief",
+        "tagline": "Real journalism. Real impact.",
+        "links": "Home | /\nWorld | /world\nTechnology | /technology\nBusiness | /business\nScience | /science\nAbout Us | /about\nPrivacy Policy | /privacy",
+        "social": "Twitter | https://twitter.com\nLinkedIn | https://linkedin.com\nInstagram | https://instagram.com",
+        "text": "© 2025 The Daily Brief. All rights reserved. Independent journalism you can trust."
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    }
+  ],
+  "seo": {
+    "metaTitle": "Home",
+    "metaDescription": "Stay informed with the latest news",
+    "noIndex": false
+  },
+  "isHome": true,
+  "createdAt": "2026-05-30T23:24:18.070Z",
+  "updatedAt": "2026-05-30T23:24:18.070Z"
+}

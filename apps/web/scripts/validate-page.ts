@@ -36,7 +36,18 @@ export interface Violation {
     | 'illegal-value'
     | 'illegal-child'
     | 'malformed';
+  /**
+   * `error` = page won't render correctly (unknown component, illegal enum
+   * value, illegal nesting). `warning` = harmless (an extra/legacy prop the
+   * renderer simply ignores) — does not fail validation.
+   */
+  severity: 'error' | 'warning';
   message: string;
+}
+
+/** Only errors fail a page; warnings are advisory. */
+export function pageErrors(v: Violation[]): Violation[] {
+  return v.filter((x) => x.severity === 'error');
 }
 
 type Block = {
@@ -71,6 +82,7 @@ export function validatePage(page: { blocks?: unknown }): Violation[] {
       violations.push({
         path,
         code: 'malformed',
+        severity: 'error',
         message: 'block has no type',
       });
       return;
@@ -82,6 +94,7 @@ export function validatePage(page: { blocks?: unknown }): Violation[] {
         violations.push({
           path,
           code: 'unknown-component',
+          severity: 'error',
           message: `unknown component "${type}"`,
         });
         return;
@@ -99,7 +112,8 @@ export function validatePage(page: { blocks?: unknown }): Violation[] {
           violations.push({
             path: `${path}.props.${key}`,
             code: 'unknown-prop',
-            message: `"${type}" has no prop "${key}"`,
+            severity: 'warning',
+            message: `"${type}" has no editor field "${key}" (extra/legacy prop — ignored by the renderer)`,
           });
           continue;
         }
@@ -111,6 +125,7 @@ export function validatePage(page: { blocks?: unknown }): Violation[] {
           violations.push({
             path: `${path}.props.${key}`,
             code: 'illegal-value',
+            severity: 'error',
             message: `"${value}" not in [${pspec.enum.join(', ')}]`,
           });
         }
@@ -133,6 +148,7 @@ export function validatePage(page: { blocks?: unknown }): Violation[] {
           violations.push({
             path: `${path}.children[${i}]`,
             code: 'illegal-child',
+            severity: 'error',
             message: `"${type}" expects "${allowed}" children, got "${child.type}"`,
           });
         }
@@ -156,11 +172,15 @@ if (process.argv[1]?.replace(/\\/g, '/').endsWith('validate-page.ts')) {
   }
   const page = JSON.parse(readFileSync(resolve(file), 'utf8'));
   const v = validatePage(page);
-  if (v.length === 0) {
-    console.log('✓ valid');
+  const errors = pageErrors(v);
+  for (const x of v) {
+    const tag = x.severity === 'error' ? 'ERROR' : 'warn';
+    console.error(`  [${tag}] ${x.code} ${x.path}: ${x.message}`);
+  }
+  if (errors.length === 0) {
+    console.log(`✓ valid${v.length ? ` (${v.length} warning(s))` : ''}`);
   } else {
-    console.error(`✗ ${v.length} violation(s):`);
-    for (const x of v) console.error(`  [${x.code}] ${x.path}: ${x.message}`);
+    console.error(`✗ ${errors.length} error(s)`);
     process.exit(1);
   }
 }

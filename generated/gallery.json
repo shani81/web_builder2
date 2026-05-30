@@ -1,0 +1,418 @@
+{
+  "id": "page_8c76b8824f65",
+  "siteId": "",
+  "title": "Home",
+  "slug": "home",
+  "blocks": [
+    {
+      "id": "blk_6e1490875317",
+      "type": "navbar",
+      "props": {
+        "brand": "Forma Studio",
+        "links": "Work | #gallery\nAbout | #about\nServices | #services\nContact | #contact",
+        "ctaLabel": "Get in Touch",
+        "ctaHref": "#contact"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_990c2f5fc699",
+      "type": "hero",
+      "props": {
+        "headline": "Our Work Speaks for Itself",
+        "subtext": "A curated collection of brand identities, digital experiences, and spatial design projects crafted with intention and precision.",
+        "ctaLabel": "Browse the Gallery",
+        "ctaHref": "#gallery",
+        "secondaryCtaLabel": "Learn About Us",
+        "secondaryCtaHref": "#about",
+        "align": "center",
+        "background": "#1A1A2E",
+        "textColor": "#F9F7F4"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_3c89e3f705fa",
+      "type": "divider",
+      "props": {
+        "text": "Brand Identity",
+        "position": "left"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_24aa3160f34b",
+      "type": "heading",
+      "props": {
+        "text": "Brand Identity Projects",
+        "level": "h2",
+        "align": "left",
+        "weight": "bold"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_b470b49a119f",
+      "type": "text",
+      "props": {
+        "heading": "",
+        "content": "We build visual languages that define how companies present themselves to the world — from logos and color systems to full brand guidelines and launch campaigns.",
+        "align": "left"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_19552e818cd7",
+      "type": "gallery",
+      "props": {
+        "heading": "",
+        "columns": "3",
+        "images": "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&q=80\nhttps://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800&q=80\nhttps://images.unsplash.com/photo-1545665277-5937489579f2?w=800&q=80"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_00155e933bbb",
+      "type": "divider",
+      "props": {
+        "text": "Digital Experiences",
+        "position": "left"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_39db6f5e5a22",
+      "type": "heading",
+      "props": {
+        "text": "Digital & Web Design",
+        "level": "h2",
+        "align": "left",
+        "weight": "bold"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_26375d43c5b0",
+      "type": "text",
+      "props": {
+        "heading": "",
+        "content": "Interfaces that feel intuitive and look stunning. We design websites, apps, and digital products that balance beauty with usability — always centered on the end user.",
+        "align": "left"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_ecf9bdca268b",
+      "type": "gallery",
+      "props": {
+        "heading": "",
+        "columns": "2",
+        "images": "https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&q=80\nhttps://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&q=80\nhttps://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80\nhttps://images.unsplash.com/photo-1555421689-d68471e189f2?w=800&q=80"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_c8e3fa870ebb",
+      "type": "divider",
+      "props": {
+        "text": "Spatial & Print",
+        "position": "left"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_bbd73bcc30f1",
+      "type": "heading",
+      "props": {
+        "text": "Spatial & Print Design",
+        "level": "h2",
+        "align": "left",
+        "weight": "bold"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_54adca81564d",
+      "type": "text",
+      "props": {
+        "heading": "",
+        "content": "From retail environments and exhibition spaces to editorial layouts and packaging — we bring the same rigour and creativity to physical design as we do to digital.",
+        "align": "left"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_22e0293b9feb",
+      "type": "gallery",
+      "props": {
+        "heading": "",
+        "columns": "4",
+        "images": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80\nhttps://images.unsplash.com/photo-1524634126442-357e0eac3c14?w=800&q=80\nhttps://images.unsplash.com/photo-1600132806370-bf17e65e942f?w=800&q=80\nhttps://images.unsplash.com/photo-1519974719765-e6559eac2575?w=800&q=80"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_9e405d3d5a68",
+      "type": "divider",
+      "props": {
+        "text": "Motion & Video",
+        "position": "left"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_ece3f031ca51",
+      "type": "heading",
+      "props": {
+        "text": "Motion & Visual Storytelling",
+        "level": "h2",
+        "align": "left",
+        "weight": "bold"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_54964c471b32",
+      "type": "text",
+      "props": {
+        "heading": "",
+        "content": "Still images only tell half the story. Our motion design and video production work brings brands to life through animation, title sequences, and campaign films.",
+        "align": "left"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_46a237f315e6",
+      "type": "gallery",
+      "props": {
+        "heading": "",
+        "columns": "3",
+        "images": "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80\nhttps://images.unsplash.com/photo-1536240478700-b869ad10e128?w=800&q=80\nhttps://images.unsplash.com/photo-1601506521793-dc748fc80b67?w=800&q=80"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_c80ae83a3072",
+      "type": "stats",
+      "props": {
+        "heading": "Studio at a Glance",
+        "columns": "4",
+        "items": "120+ | Projects Delivered\n14 | Awards Won\n8 | Years in Business\n40+ | Happy Clients"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_e01f2f603dfe",
+      "type": "testimonials",
+      "props": {
+        "heading": "What Our Clients Say",
+        "items": "Forma Studio completely transformed how we present our brand. Every deliverable exceeded our expectations.|Sarah Chen|CEO, Luminary Labs\nWorking with Forma felt like having an in-house creative team that truly cared about our vision.|Marcus Webb|Founder, Verdant Foods\nTheir attention to detail and creative instincts are unmatched. We've seen a 40% increase in engagement since the rebrand.|Priya Nair|Marketing Director, Apex Collective"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_7b94b0012eba",
+      "type": "cta",
+      "props": {
+        "headline": "Ready to Start Your Next Project?",
+        "subtext": "Tell us about your vision and we'll show you how Forma Studio can bring it to life.",
+        "ctaLabel": "Start a Project",
+        "ctaHref": "#contact",
+        "background": "#E94560",
+        "textColor": "#FFFFFF"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_c58d51a6f736",
+      "type": "contact",
+      "props": {
+        "heading": "Get in Touch",
+        "subtext": "Whether you have a brief ready or just an idea, we'd love to hear from you. Reach out and let's start a conversation.",
+        "buttonLabel": "Send Message"
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    {
+      "id": "blk_d197d6f4e178",
+      "type": "footer",
+      "props": {
+        "brand": "Forma Studio",
+        "tagline": "Design that moves people.",
+        "links": "Work | #gallery\nAbout | #about\nServices | #services\nContact | #contact",
+        "social": "Instagram | https://instagram.com\nBehance | https://behance.net\nLinkedIn | https://linkedin.com",
+        "text": "© 2024 Forma Studio. All rights reserved."
+      },
+      "styles": {},
+      "locked": false,
+      "visible": true,
+      "responsive": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    }
+  ],
+  "seo": {
+    "metaTitle": "Home",
+    "metaDescription": "Design that moves people",
+    "noIndex": false
+  },
+  "isHome": true,
+  "createdAt": "2026-05-30T23:21:57.218Z",
+  "updatedAt": "2026-05-30T23:21:57.218Z"
+}
