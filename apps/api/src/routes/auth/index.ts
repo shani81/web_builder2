@@ -11,6 +11,7 @@ import {
 import { z } from 'zod';
 import { authService } from '../../services/auth.service.js';
 import { siteService } from '../../services/site.service.js';
+import { emailService } from '../../services/email.service.js';
 import { AI_MODEL, AI_MODELS, isValidModel } from '../../config/ai.js';
 import { ok, AppError } from '../../utils/response.js';
 import {
@@ -56,7 +57,11 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
       input.password,
     );
     const rememberMe = input.rememberMe ?? false;
-    setAuthCookies(reply, authService.issueTokens(record, rememberMe), rememberMe);
+    setAuthCookies(
+      reply,
+      authService.issueTokens(record, rememberMe),
+      rememberMe,
+    );
     return ok({ user: authService.toPublicUser(record) });
   });
 
@@ -86,6 +91,30 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     const user = await authService.updateProfile(request.user!.sub, input);
     return ok({ user });
   });
+
+  app.get(
+    '/auth/notify-email',
+    { preHandler: app.authenticate },
+    async (request) => {
+      const record = await authService.getUserById(request.user!.sub);
+      return ok({
+        email: record.notifyEmail ?? null,
+        deliveryConfigured: emailService.providerName !== 'log',
+      });
+    },
+  );
+
+  app.put(
+    '/auth/notify-email',
+    { preHandler: app.authenticate },
+    async (request) => {
+      const { email } = z
+        .object({ email: z.string().email().max(200).nullable() })
+        .parse(request.body);
+      const user = await authService.setNotifyEmail(request.user!.sub, email);
+      return ok({ user });
+    },
+  );
 
   app.post(
     '/auth/change-password',

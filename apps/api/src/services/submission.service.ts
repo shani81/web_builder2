@@ -1,8 +1,12 @@
-import type { FormSubmission, FormType } from '@buildr/types';
+import type { FormSubmission, FormType, PublishedSite } from '@buildr/types';
 import type { SubmitFormInput } from '@buildr/schemas';
 import { submissionRepository } from '../repositories/submission.repository.js';
 import { publishedRepository } from '../repositories/published.repository.js';
+import { userRepository } from '../repositories/user.repository.js';
 import { siteService } from './site.service.js';
+import { emailService } from './email.service.js';
+import { buildSubmissionEmail } from './notification-templates.js';
+import { env } from '../config/env.js';
 import { AppError } from '../utils/response.js';
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -19,7 +23,9 @@ function sanitize(
   if (formType === 'newsletter') {
     const email = clean(data.email, 200);
     if (!EMAIL_RE.test(email)) {
-      throw AppError.badRequest('A valid email is required.', { field: 'email' });
+      throw AppError.badRequest('A valid email is required.', {
+        field: 'email',
+      });
     }
     return { email };
   }
@@ -49,6 +55,31 @@ export class SubmissionService {
       formType: input.formType,
       data,
     });
+
+    await this.notifyOwner(published, input.formType, data);
+  }
+
+  /** Email the site owner about a new submission. Best-effort — never throws. */
+  private async notifyOwner(
+    published: PublishedSite,
+    formType: FormType,
+    data: Record<string, string>,
+  ): Promise<void> {
+    try {
+      const owner = await userRepository.findById(published.userId);
+      if (!owner?.notifyEmail) return;
+      await emailService.send(
+        buildSubmissionEmail({
+          to: owner.notifyEmail,
+          siteName: published.versions[0]?.name ?? 'your site',
+          formType,
+          data,
+          inboxUrl: `${env.SITE_URL}/submissions`,
+        }),
+      );
+    } catch (err) {
+      console.error('[submission] owner notification failed', err);
+    }
   }
 
   async list(siteId: string, userId: string): Promise<FormSubmission[]> {

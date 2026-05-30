@@ -11,6 +11,8 @@ export interface User extends Entity {
   plan: PlanTier;
   role: UserRole;
   emailVerified: boolean;
+  /** Where to email form-submission notifications. Empty/unset ⇒ disabled. */
+  notifyEmail?: string;
 }
 
 /** User shape safe to expose to the client (never includes secrets). */

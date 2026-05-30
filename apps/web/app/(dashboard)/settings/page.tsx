@@ -17,6 +17,7 @@ import { useAuthStore } from '@/stores/auth.store';
 import { ApiClientError } from '@/lib/api-client';
 import { AiKeySection } from '@/components/settings/ai-key-section';
 import { StockKeySection } from '@/components/settings/stock-key-section';
+import { NotificationsSection } from '@/components/settings/notifications-section';
 import {
   apiChangePassword,
   apiDeleteAccount,
@@ -56,7 +57,10 @@ function ProfileForm() {
     formState: { errors, isSubmitting },
   } = useForm<UpdateProfileInput>({
     resolver: zodResolver(updateProfileSchema),
-    defaultValues: { name: user?.name ?? '', timezone: user?.timezone ?? 'UTC' },
+    defaultValues: {
+      name: user?.name ?? '',
+      timezone: user?.timezone ?? 'UTC',
+    },
   });
 
   const onSubmit = handleSubmit(async (values) => {
@@ -75,7 +79,11 @@ function ProfileForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
-      <TextField label="Name" error={errors.name?.message} {...register('name')} />
+      <TextField
+        label="Name"
+        error={errors.name?.message}
+        {...register('name')}
+      />
       <TextField
         label="Timezone"
         error={errors.timezone?.message}
@@ -150,7 +158,9 @@ function PasswordForm() {
           {formError}
         </p>
       ) : null}
-      {done ? <p className="text-sm text-green-600">Password updated.</p> : null}
+      {done ? (
+        <p className="text-sm text-green-600">Password updated.</p>
+      ) : null}
       <div>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Updating…' : 'Update password'}
@@ -218,6 +228,7 @@ export default function SettingsPage() {
         <Section title="Password" description="Change your password.">
           <PasswordForm />
         </Section>
+        <NotificationsSection />
         <AiKeySection />
         <StockKeySection />
         <DangerZone />

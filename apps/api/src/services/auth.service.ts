@@ -114,6 +114,15 @@ export class AuthService {
     return this.toPublicUser(record);
   }
 
+  /** Set (or clear, with null) the form-submission notification email. */
+  async setNotifyEmail(id: string, email: string | null): Promise<PublicUser> {
+    const record = await userRepository.update(id, {
+      notifyEmail: email ?? undefined,
+    });
+    if (!record) throw AppError.unauthorized('Account no longer exists');
+    return this.toPublicUser(record);
+  }
+
   async changePassword(
     id: string,
     currentPassword: string,

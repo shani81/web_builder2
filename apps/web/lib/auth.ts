@@ -23,7 +23,9 @@ export function setSessionHint(active: boolean): void {
     : `${SESSION_HINT}=; path=/; max-age=0; samesite=lax`;
 }
 
-export function apiRegister(input: RegisterInput): Promise<{ user: PublicUser }> {
+export function apiRegister(
+  input: RegisterInput,
+): Promise<{ user: PublicUser }> {
   return apiFetch('/auth/register', {
     method: 'POST',
     body: JSON.stringify(input),
@@ -77,6 +79,22 @@ export function apiSetAiKey(apiKey: string): Promise<{ hasKey: boolean }> {
 
 export function apiRemoveAiKey(): Promise<{ hasKey: boolean }> {
   return apiFetch('/auth/ai-key', { method: 'DELETE' });
+}
+
+export function apiGetNotifyEmail(): Promise<{
+  email: string | null;
+  deliveryConfigured: boolean;
+}> {
+  return apiFetch('/auth/notify-email');
+}
+
+export function apiSetNotifyEmail(
+  email: string | null,
+): Promise<{ user: PublicUser }> {
+  return apiFetch('/auth/notify-email', {
+    method: 'PUT',
+    body: JSON.stringify({ email }),
+  });
 }
 
 export function apiGetStockKey(): Promise<{ hasKey: boolean }> {

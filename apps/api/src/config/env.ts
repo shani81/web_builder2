@@ -27,6 +27,10 @@ const envSchema = z.object({
   // Platform-wide Pixabay key (server-only). Without it, stock photos are off.
   PIXABAY_API_KEY: z.string().optional(),
 
+  // Email delivery (Resend). Without a key, notifications are logged, not sent.
+  RESEND_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().default('BUILDR <onboarding@resend.dev>'),
+
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
   DATA_DIR: z.string().default('./data'),
 
