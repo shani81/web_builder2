@@ -8,6 +8,7 @@ import { publishedRepository } from '../repositories/published.repository.js';
 import { MAX_IMAGE_WIDTH } from '../config/media.js';
 import { storage } from '../config/storage.js';
 import { aiService, resolveUserApiKey } from './ai.service.js';
+import { selectUnusedAssets } from './media-usage.js';
 import { AppError } from '../utils/response.js';
 
 interface ProcessedImage {
@@ -157,7 +158,7 @@ export class MediaService {
       mediaRepository.findByUser(userId),
       this.usageHaystack(userId),
     ]);
-    return assets.filter((a) => a.url && !haystack.includes(a.url));
+    return selectUnusedAssets(assets, haystack);
   }
 
   /** Delete every unused asset (file + record). Returns how many were removed. */
