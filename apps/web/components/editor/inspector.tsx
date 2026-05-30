@@ -8,6 +8,7 @@ import { bool, num, str, type InspectorField } from '@/components/blocks/types';
 import { Button } from '@/components/ui/button';
 import { MediaField } from '@/components/media/media-field';
 import { MenuEditor } from '@/components/editor/menu-editor';
+import { SectionColumnsField } from '@/components/editor/section-columns-field';
 
 const inputClass =
   'rounded-lg border border-black/15 px-3 py-2 text-sm outline-none focus:border-[var(--color-brand)]';
@@ -177,6 +178,40 @@ export function Inspector() {
 
   const def = getBlockDefinition(block.type);
 
+  const renderControl = (field: InspectorField) => {
+    if (field.type === 'menu')
+      return <MenuEditor key={field.key} block={block} />;
+    if (field.type === 'section-columns')
+      return <SectionColumnsField key={field.key} block={block} />;
+    if (field.type === 'image')
+      return (
+        <MediaField
+          key={field.key}
+          label={field.label}
+          value={str(block.props[field.key])}
+          onPick={(image) =>
+            updateBlockProps(block.id, {
+              [field.key]: image.url,
+              ...(image.alt ? { alt: image.alt } : {}),
+            })
+          }
+          onClear={() => updateBlockProps(block.id, { [field.key]: '' })}
+        />
+      );
+    return (
+      <Field
+        key={field.key}
+        field={field}
+        value={block.props[field.key]}
+        onChange={(next) => updateBlockProps(block.id, { [field.key]: next })}
+      />
+    );
+  };
+
+  const fields = def?.fields ?? [];
+  const basicFields = fields.filter((f) => !f.advanced);
+  const advancedFields = fields.filter((f) => f.advanced);
+
   return (
     <aside className="flex w-72 shrink-0 flex-col overflow-y-auto border-l border-black/10 bg-white">
       <div className="flex items-center justify-between border-b border-black/10 px-4 py-3">
@@ -192,33 +227,18 @@ export function Inspector() {
       </div>
 
       <div className="flex flex-col gap-4 p-4">
-        {def?.fields.map((field) =>
-          field.type === 'menu' ? (
-            <MenuEditor key={field.key} block={block} />
-          ) : field.type === 'image' ? (
-            <MediaField
-              key={field.key}
-              label={field.label}
-              value={str(block.props[field.key])}
-              onPick={(image) =>
-                updateBlockProps(block.id, {
-                  [field.key]: image.url,
-                  ...(image.alt ? { alt: image.alt } : {}),
-                })
-              }
-              onClear={() => updateBlockProps(block.id, { [field.key]: '' })}
-            />
-          ) : (
-            <Field
-              key={field.key}
-              field={field}
-              value={block.props[field.key]}
-              onChange={(next) =>
-                updateBlockProps(block.id, { [field.key]: next })
-              }
-            />
-          ),
-        )}
+        {basicFields.map(renderControl)}
+
+        {advancedFields.length > 0 ? (
+          <details className="border-t border-black/10 pt-3">
+            <summary className="cursor-pointer select-none text-[11px] font-semibold uppercase tracking-wide text-black/40">
+              Advanced
+            </summary>
+            <div className="mt-3 flex flex-col gap-4">
+              {advancedFields.map(renderControl)}
+            </div>
+          </details>
+        ) : null}
 
         <div className="flex flex-col gap-1.5 border-t border-black/10 pt-4">
           <label

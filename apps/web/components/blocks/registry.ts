@@ -70,6 +70,18 @@ const COLUMNS_1_6_OPTIONS = [1, 2, 3, 4, 5, 6].map((n) => ({
   value: String(n),
 }));
 
+const SECTION_WIDTH_OPTIONS = [
+  { label: 'Contained', value: 'contained' },
+  { label: 'Wide', value: 'wide' },
+  { label: 'Full width', value: 'full' },
+];
+
+const VALIGN_OPTIONS = [
+  { label: 'Top', value: 'top' },
+  { label: 'Center', value: 'center' },
+  { label: 'Bottom', value: 'bottom' },
+];
+
 /** Container blocks render their `children` (handled in block-renderer), so
  * their Component is a no-op placeholder kept only for registry metadata. */
 const ContainerPlaceholder = () => null;
@@ -82,7 +94,23 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     category: 'layout',
     icon: Columns3,
     defaultProps: {},
-    fields: [],
+    fields: [
+      {
+        key: 'width',
+        label: 'Width',
+        type: 'select',
+        options: SECTION_WIDTH_OPTIONS,
+      },
+      { key: 'columns', label: 'Column widths', type: 'section-columns' },
+      { key: 'gap', label: 'Gap between columns (px)', type: 'number' },
+      {
+        key: 'paddingY',
+        label: 'Top & bottom padding (px)',
+        type: 'number',
+        advanced: true,
+      },
+      { key: 'background', label: 'Background', type: 'color', advanced: true },
+    ],
     Component: ContainerPlaceholder,
   },
   column: {
@@ -91,7 +119,16 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
     category: 'layout',
     icon: Square,
     defaultProps: {},
-    fields: [],
+    fields: [
+      {
+        key: 'verticalAlign',
+        label: 'Vertical align',
+        type: 'select',
+        options: VALIGN_OPTIONS,
+      },
+      { key: 'padding', label: 'Padding (px)', type: 'number', advanced: true },
+      { key: 'background', label: 'Background', type: 'color', advanced: true },
+    ],
     Component: ContainerPlaceholder,
   },
   navbar: {

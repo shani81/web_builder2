@@ -14,10 +14,13 @@ export interface InspectorField {
     | 'number'
     | 'image'
     | 'date'
-    | 'menu';
+    | 'menu'
+    | 'section-columns';
   options?: { label: string; value: string }[];
   /** Helper text shown under the control (e.g. a line format). */
   hint?: string;
+  /** Tuck this field into the inspector's collapsible "Advanced" group. */
+  advanced?: boolean;
 }
 
 export interface BlockComponentProps {
