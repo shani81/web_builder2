@@ -2,23 +2,39 @@
 
 import { useState } from 'react';
 import { str, type BlockComponentProps } from './types';
+import { InlineText } from './inline-text';
 import { ApiClientError } from '@/lib/api-client';
 import { submitForm, subdomainFromBase } from '@/lib/forms';
 
 const inputCls =
   'w-full rounded-lg border border-black/15 px-3 py-2 text-sm outline-none focus:border-[var(--color-brand)]';
 
-export function ContactBlock({ props, linkBase = '' }: BlockComponentProps) {
+export function ContactBlock({
+  props,
+  linkBase = '',
+  blockId,
+}: BlockComponentProps) {
   const heading = str(props.heading, 'Get in touch');
-  const subtext = str(props.subtext, 'We usually reply within one business day.');
+  const subtext = str(
+    props.subtext,
+    'We usually reply within one business day.',
+  );
   const buttonLabel = str(props.buttonLabel, 'Send message');
   const subdomain = subdomainFromBase(linkBase);
 
-  const [form, setForm] = useState({ name: '', email: '', message: '', website: '' });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    message: '',
+    website: '',
+  });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>(
+    'idle',
+  );
   const [error, setError] = useState('');
   const set =
-    (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    (key: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -40,7 +56,11 @@ export function ContactBlock({ props, linkBase = '' }: BlockComponentProps) {
       setStatus('done');
     } catch (err) {
       setStatus('error');
-      setError(err instanceof ApiClientError ? err.message : 'Could not send your message.');
+      setError(
+        err instanceof ApiClientError
+          ? err.message
+          : 'Could not send your message.',
+      );
     }
   };
 
@@ -48,8 +68,23 @@ export function ContactBlock({ props, linkBase = '' }: BlockComponentProps) {
     <section className="px-8 py-20">
       <div className="mx-auto max-w-xl">
         <div className="text-center">
-          <h2 className="text-3xl font-semibold">{heading}</h2>
-          {subtext ? <p className="mt-3 text-black/60">{subtext}</p> : null}
+          <InlineText
+            as="h2"
+            blockId={blockId}
+            field="heading"
+            value={heading}
+            className="text-3xl font-semibold"
+          />
+          {subtext ? (
+            <InlineText
+              as="p"
+              blockId={blockId}
+              field="subtext"
+              value={subtext}
+              multiline
+              className="mt-3 text-black/60"
+            />
+          ) : null}
         </div>
 
         {status === 'done' ? (

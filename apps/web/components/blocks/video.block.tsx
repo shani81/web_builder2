@@ -1,5 +1,6 @@
 import { Play } from 'lucide-react';
 import { str, type BlockComponentProps } from './types';
+import { InlineText } from './inline-text';
 
 /** Convert a YouTube/Vimeo watch URL to an embeddable URL. */
 function toEmbed(url: string): string | null {
@@ -12,7 +13,7 @@ function toEmbed(url: string): string | null {
   return null;
 }
 
-export function VideoBlock({ props }: BlockComponentProps) {
+export function VideoBlock({ props, blockId }: BlockComponentProps) {
   const url = str(props.url, '');
   const caption = str(props.caption, '');
   const embed = toEmbed(url);
@@ -39,9 +40,13 @@ export function VideoBlock({ props }: BlockComponentProps) {
           )}
         </div>
         {caption ? (
-          <figcaption className="mt-3 text-center text-sm text-black/50">
-            {caption}
-          </figcaption>
+          <InlineText
+            as="figcaption"
+            blockId={blockId}
+            field="caption"
+            value={caption}
+            className="mt-3 text-center text-sm text-black/50"
+          />
         ) : null}
       </figure>
     </section>

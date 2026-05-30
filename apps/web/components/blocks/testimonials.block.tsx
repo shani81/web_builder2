@@ -1,5 +1,6 @@
 import { parseLines, str, type BlockComponentProps } from './types';
 import { gridColumnsCss } from './responsive-grid';
+import { InlineText } from './inline-text';
 
 export function TestimonialsBlock({
   props,
@@ -22,7 +23,13 @@ export function TestimonialsBlock({
         }}
       />
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-center text-3xl font-semibold">{heading}</h2>
+        <InlineText
+          as="h2"
+          blockId={blockId}
+          field="heading"
+          value={heading}
+          className="text-center text-3xl font-semibold"
+        />
         <div data-grid={blockId} className="mt-12 grid gap-6">
           {items.map(([quote, author, role], i) => (
             <figure

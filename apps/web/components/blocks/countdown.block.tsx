@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { str, type BlockComponentProps } from './types';
+import { InlineText } from './inline-text';
 
 function remaining(target: number) {
   const diff = Math.max(0, target - Date.now());
@@ -15,7 +16,7 @@ function remaining(target: number) {
 }
 
 /** Live countdown — a client component so it ticks in editor and published. */
-export function CountdownBlock({ props }: BlockComponentProps) {
+export function CountdownBlock({ props, blockId }: BlockComponentProps) {
   const heading = str(props.heading, 'Launching soon');
   const expiredText = str(props.expiredText, "We're live!");
   const target = new Date(str(props.targetDate) || '2026-12-31').getTime();
@@ -35,7 +36,13 @@ export function CountdownBlock({ props }: BlockComponentProps) {
 
   return (
     <section className="px-8 py-20 text-center">
-      <h2 className="text-3xl font-semibold">{heading}</h2>
+      <InlineText
+        as="h2"
+        blockId={blockId}
+        field="heading"
+        value={heading}
+        className="text-3xl font-semibold"
+      />
       {time.done ? (
         <p className="mt-6 text-2xl font-bold text-[var(--color-brand)]">
           {expiredText}

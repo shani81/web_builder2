@@ -1,5 +1,6 @@
 import { num, str, type BlockComponentProps } from './types';
 import { gridColumnsCss } from './responsive-grid';
+import { InlineText } from './inline-text';
 
 export function GalleryBlock({
   props,
@@ -25,7 +26,13 @@ export function GalleryBlock({
       />
       <div className="mx-auto max-w-5xl">
         {heading ? (
-          <h2 className="mb-8 text-center text-3xl font-semibold">{heading}</h2>
+          <InlineText
+            as="h2"
+            blockId={blockId}
+            field="heading"
+            value={heading}
+            className="mb-8 text-center text-3xl font-semibold"
+          />
         ) : null}
         {images.length > 0 ? (
           <div data-grid={blockId} className="grid gap-3">

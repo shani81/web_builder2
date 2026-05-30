@@ -1,7 +1,8 @@
 import type { CSSProperties } from 'react';
 import { linkAttrs, str, type BlockComponentProps } from './types';
+import { InlineText } from './inline-text';
 
-export function HeroBlock({ props }: BlockComponentProps) {
+export function HeroBlock({ props, blockId }: BlockComponentProps) {
   const headline = str(props.headline, 'Your big idea starts here');
   const subtext = str(
     props.subtext,
@@ -31,23 +32,44 @@ export function HeroBlock({ props }: BlockComponentProps) {
           align === 'center' ? 'items-center' : 'items-start'
         }`}
       >
-        <h1 className="text-balance text-4xl font-bold sm:text-5xl">
-          {headline}
-        </h1>
-        <p className="max-w-xl text-lg opacity-80">{subtext}</p>
+        <InlineText
+          as="h1"
+          blockId={blockId}
+          field="headline"
+          value={headline}
+          className="text-balance text-4xl font-bold sm:text-5xl"
+        />
+        <InlineText
+          as="p"
+          blockId={blockId}
+          field="subtext"
+          value={subtext}
+          multiline
+          className="max-w-xl text-lg opacity-80"
+        />
         <div className="mt-2 flex flex-wrap gap-3">
           <a
             {...linkAttrs(ctaHref)}
             className="rounded-lg bg-[var(--color-brand)] px-6 py-3 font-medium text-white"
           >
-            {cta}
+            <InlineText
+              as="span"
+              blockId={blockId}
+              field="ctaLabel"
+              value={cta}
+            />
           </a>
           {secondaryCta ? (
             <a
               {...linkAttrs(secondaryCtaHref)}
               className="rounded-lg border border-current px-6 py-3 font-medium opacity-90"
             >
-              {secondaryCta}
+              <InlineText
+                as="span"
+                blockId={blockId}
+                field="secondaryCtaLabel"
+                value={secondaryCta}
+              />
             </a>
           ) : null}
         </div>

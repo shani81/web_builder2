@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { CSSProperties } from 'react';
 import { str, type BlockComponentProps } from './types';
 import { alignCss, toAlign, type AlignValue } from './responsive-grid';
+import { InlineText } from './inline-text';
 import { ApiClientError } from '@/lib/api-client';
 import { submitForm, subdomainFromBase } from '@/lib/forms';
 
@@ -82,8 +83,21 @@ export function NewsletterBlock({
         }}
       />
       <div data-align={blockId} className="flex max-w-xl flex-col gap-4">
-        <h2 className="text-3xl font-bold">{heading}</h2>
-        <p className="opacity-80">{subtext}</p>
+        <InlineText
+          as="h2"
+          blockId={blockId}
+          field="heading"
+          value={heading}
+          className="text-3xl font-bold"
+        />
+        <InlineText
+          as="p"
+          blockId={blockId}
+          field="subtext"
+          value={subtext}
+          multiline
+          className="opacity-80"
+        />
         {status === 'done' ? (
           <p className="mt-2 font-medium opacity-90">
             🎉 You’re subscribed — thanks!
@@ -101,7 +115,7 @@ export function NewsletterBlock({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="nl-input rounded-lg px-4 py-2.5 text-sm text-black outline-none"
+                className="nl-input rounded-lg border border-black/10 bg-white px-4 py-2.5 text-sm text-black outline-none focus:border-[var(--color-brand)]"
               />
               <input
                 type="text"

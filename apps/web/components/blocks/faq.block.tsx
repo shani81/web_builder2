@@ -1,6 +1,7 @@
 import { parseLines, str, type BlockComponentProps } from './types';
+import { InlineText } from './inline-text';
 
-export function FaqBlock({ props }: BlockComponentProps) {
+export function FaqBlock({ props, blockId }: BlockComponentProps) {
   const heading = str(props.heading, 'Frequently asked questions');
   const items = parseLines(
     props.items ||
@@ -10,7 +11,13 @@ export function FaqBlock({ props }: BlockComponentProps) {
   return (
     <section className="px-8 py-20">
       <div className="mx-auto max-w-3xl">
-        <h2 className="text-center text-3xl font-semibold">{heading}</h2>
+        <InlineText
+          as="h2"
+          blockId={blockId}
+          field="heading"
+          value={heading}
+          className="text-center text-3xl font-semibold"
+        />
         <div className="mt-10 divide-y divide-black/10 rounded-2xl border border-black/10">
           {items.map(([question, answer], i) => (
             // Native accordion — no JS, works in published HTML.

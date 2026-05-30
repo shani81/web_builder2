@@ -1,5 +1,6 @@
 import { num, parseLines, str, type BlockComponentProps } from './types';
 import { gridColumnsCss } from './responsive-grid';
+import { InlineText } from './inline-text';
 
 export function FeaturesBlock({
   props,
@@ -22,8 +23,23 @@ export function FeaturesBlock({
       />
       <div className="mx-auto max-w-5xl">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-semibold">{heading}</h2>
-          {subtext ? <p className="mt-3 text-black/60">{subtext}</p> : null}
+          <InlineText
+            as="h2"
+            blockId={blockId}
+            field="heading"
+            value={heading}
+            className="text-3xl font-semibold"
+          />
+          {subtext ? (
+            <InlineText
+              as="p"
+              blockId={blockId}
+              field="subtext"
+              value={subtext}
+              multiline
+              className="mt-3 text-black/60"
+            />
+          ) : null}
         </div>
         <div data-grid={blockId} className="mt-12 grid gap-8">
           {items.map(([title, description], i) => (

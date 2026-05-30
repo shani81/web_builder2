@@ -1,10 +1,14 @@
 import { str, type BlockComponentProps } from './types';
+import { InlineText } from './inline-text';
 
 const isUrl = (s: string) => /^https?:\/\//.test(s);
 
-export function LogosBlock({ props }: BlockComponentProps) {
+export function LogosBlock({ props, blockId }: BlockComponentProps) {
   const heading = str(props.heading, 'Trusted by leading teams');
-  const items = str(props.items, 'Acme, Globex, Initech, Umbrella, Hooli, Vehement')
+  const items = str(
+    props.items,
+    'Acme, Globex, Initech, Umbrella, Hooli, Vehement',
+  )
     .split(/[\n,]/)
     .map((s) => s.trim())
     .filter(Boolean);
@@ -13,9 +17,13 @@ export function LogosBlock({ props }: BlockComponentProps) {
     <section className="border-y border-black/5 bg-black/[0.02] px-8 py-14">
       <div className="mx-auto max-w-5xl text-center">
         {heading ? (
-          <p className="text-sm font-medium uppercase tracking-wide text-black/40">
-            {heading}
-          </p>
+          <InlineText
+            as="p"
+            blockId={blockId}
+            field="heading"
+            value={heading}
+            className="text-sm font-medium uppercase tracking-wide text-black/40"
+          />
         ) : null}
         <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
           {items.map((item, i) =>

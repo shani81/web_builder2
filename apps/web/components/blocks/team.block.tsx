@@ -1,6 +1,7 @@
 import { parseLines, str, type BlockComponentProps } from './types';
+import { InlineText } from './inline-text';
 
-export function TeamBlock({ props }: BlockComponentProps) {
+export function TeamBlock({ props, blockId }: BlockComponentProps) {
   const heading = str(props.heading, 'Meet the team');
   const members = parseLines(
     props.items ||
@@ -10,7 +11,13 @@ export function TeamBlock({ props }: BlockComponentProps) {
   return (
     <section className="px-8 py-20">
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-center text-3xl font-semibold">{heading}</h2>
+        <InlineText
+          as="h2"
+          blockId={blockId}
+          field="heading"
+          value={heading}
+          className="text-center text-3xl font-semibold"
+        />
         <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {members.map(([name, role, image], i) => (
             <div key={i} className="flex flex-col items-center text-center">

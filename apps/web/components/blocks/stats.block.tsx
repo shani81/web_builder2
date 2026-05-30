@@ -1,7 +1,8 @@
 import { num, parseLines, str, type BlockComponentProps } from './types';
 import { autoGridColumns } from './responsive-grid';
+import { InlineText } from './inline-text';
 
-export function StatsBlock({ props }: BlockComponentProps) {
+export function StatsBlock({ props, blockId }: BlockComponentProps) {
   const heading = str(props.heading, '');
   const columns = num(props.columns, 4);
   const items = parseLines(
@@ -13,9 +14,13 @@ export function StatsBlock({ props }: BlockComponentProps) {
     <section className="px-8 py-20">
       <div className="mx-auto max-w-5xl">
         {heading ? (
-          <h2 className="mb-12 text-center text-3xl font-semibold">
-            {heading}
-          </h2>
+          <InlineText
+            as="h2"
+            blockId={blockId}
+            field="heading"
+            value={heading}
+            className="mb-12 text-center text-3xl font-semibold"
+          />
         ) : null}
         <div
           className="grid gap-8 text-center"
