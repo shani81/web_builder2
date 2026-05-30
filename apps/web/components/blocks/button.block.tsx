@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { bool, linkAttrs, str, type BlockComponentProps } from './types';
+import { InlineText } from './inline-text';
 
 const RADIUS: Record<string, string> = {
   none: '0',
@@ -31,7 +32,7 @@ const SHADOW: Record<string, string> = {
  * doubles as the text/border accent unless an explicit (non-white) text color
  * is set. Alignment is handled by a wrapper so it works in any container.
  */
-export function ButtonBlock({ props }: BlockComponentProps) {
+export function ButtonBlock({ props, blockId }: BlockComponentProps) {
   const label = str(props.label, 'Button');
   const href = str(props.href, '#');
   const variant = str(props.variant, 'filled');
@@ -82,7 +83,7 @@ export function ButtonBlock({ props }: BlockComponentProps) {
   return (
     <div style={{ textAlign: align as CSSProperties['textAlign'] }}>
       <a {...attrs} style={{ ...base, ...variantStyle }}>
-        {label}
+        <InlineText as="span" blockId={blockId} field="label" value={label} />
       </a>
     </div>
   );

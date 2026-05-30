@@ -14,9 +14,11 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { useMemo } from 'react';
 import { deviceWidth } from '@buildr/utils';
 import { useEditorStore } from '@/stores/editor.store';
 import { SortableBlock } from './sortable-block';
+import { InlineEditProvider, type InlineEdit } from './inline-edit-context';
 
 export function Canvas() {
   const blocks = useEditorStore((s) => s.activePage?.blocks ?? []);
@@ -24,6 +26,17 @@ export function Canvas() {
   const zoom = useEditorStore((s) => s.zoom);
   const selectBlock = useEditorStore((s) => s.selectBlock);
   const reorderBlocks = useEditorStore((s) => s.reorderBlocks);
+  const updateBlockProps = useEditorStore((s) => s.updateBlockProps);
+
+  // Enable on-canvas inline text editing; commits write straight to the store.
+  const inlineEdit = useMemo<InlineEdit>(
+    () => ({
+      enabled: true,
+      commit: (blockId, field, value) =>
+        updateBlockProps(blockId, { [field]: value }),
+    }),
+    [updateBlockProps],
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -46,46 +59,49 @@ export function Canvas() {
   };
 
   return (
-    <div
-      className="relative flex-1 overflow-auto bg-black/[0.05] p-10"
-      onClick={() => selectBlock(null)}
-    >
+    <InlineEditProvider value={inlineEdit}>
       <div
-        className="mx-auto bg-white shadow-sm"
-        style={{
-          width: deviceWidth(devicePreview),
-          transform: `scale(${zoom})`,
-          transformOrigin: 'top center',
-        }}
+        className="relative flex-1 overflow-auto bg-black/[0.05] p-10"
+        onClick={() => selectBlock(null)}
       >
-        {blocks.length === 0 ? (
-          <div className="grid h-80 place-items-center px-8 text-center text-sm text-black/40">
-            <p>
-              Drag a block here, or click a block on the left to start building.
-            </p>
-          </div>
-        ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={onDragEnd}
-          >
-            <SortableContext
-              items={blocks.map((b) => b.id)}
-              strategy={verticalListSortingStrategy}
+        <div
+          className="mx-auto bg-white shadow-sm"
+          style={{
+            width: deviceWidth(devicePreview),
+            transform: `scale(${zoom})`,
+            transformOrigin: 'top center',
+          }}
+        >
+          {blocks.length === 0 ? (
+            <div className="grid h-80 place-items-center px-8 text-center text-sm text-black/40">
+              <p>
+                Drag a block here, or click a block on the left to start
+                building.
+              </p>
+            </div>
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={onDragEnd}
             >
-              {blocks.map((block, index) => (
-                <SortableBlock
-                  key={block.id}
-                  block={block}
-                  index={index}
-                  total={blocks.length}
-                />
-              ))}
-            </SortableContext>
-          </DndContext>
-        )}
+              <SortableContext
+                items={blocks.map((b) => b.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {blocks.map((block, index) => (
+                  <SortableBlock
+                    key={block.id}
+                    block={block}
+                    index={index}
+                    total={blocks.length}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+          )}
+        </div>
       </div>
-    </div>
+    </InlineEditProvider>
   );
 }

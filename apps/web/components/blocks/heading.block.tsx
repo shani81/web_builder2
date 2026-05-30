@@ -1,5 +1,6 @@
-import { createElement, type CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { str, type BlockComponentProps } from './types';
+import { InlineText } from './inline-text';
 
 /** Font size per heading level. h1/h2 use clamp() so they scale down on small
  *  screens without any per-device config. */
@@ -24,7 +25,7 @@ const WEIGHT: Record<string, number> = {
  * color are adjustable. Color is left to inherit the theme text color unless
  * explicitly set.
  */
-export function HeadingBlock({ props }: BlockComponentProps) {
+export function HeadingBlock({ props, blockId }: BlockComponentProps) {
   const text = str(props.text, 'Your heading');
   const level = str(props.level, 'h2');
   const tag = /^h[1-6]$/.test(level) ? level : 'h2';
@@ -45,7 +46,13 @@ export function HeadingBlock({ props }: BlockComponentProps) {
       className="px-8 py-4"
       style={{ textAlign: align as CSSProperties['textAlign'] }}
     >
-      {createElement(tag, { style }, text)}
+      <InlineText
+        as={tag}
+        blockId={blockId}
+        field="text"
+        value={text}
+        style={style}
+      />
     </div>
   );
 }
