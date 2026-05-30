@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import type { Block, BlockType } from '@buildr/types';
 import { shortId } from '@buildr/utils';
-import type { BlockDefinition } from './types';
+import type { BlockDefinition, InspectorField } from './types';
 import { SECTION_LAYOUTS, layoutById } from './section-layouts';
 import { NavbarBlock } from './navbar.block';
 import { HeroBlock } from './hero.block';
@@ -132,6 +132,70 @@ const WEIGHT_OPTIONS = [
   { label: 'Semibold', value: 'semibold' },
   { label: 'Bold', value: 'bold' },
 ];
+
+const BX_RADIUS_OPTIONS = [
+  { label: 'Default', value: '' },
+  { label: 'Small', value: 'sm' },
+  { label: 'Medium', value: 'md' },
+  { label: 'Large', value: 'lg' },
+  { label: 'Full', value: 'full' },
+];
+
+const BX_WIDTH_OPTIONS = [
+  { label: 'Default', value: '' },
+  { label: 'Contained', value: 'contained' },
+  { label: 'Wide', value: 'wide' },
+];
+
+/**
+ * Shared, opt-in appearance controls (background, radius, width, spacing) for
+ * any block. Uses the `bx*` prop namespace so it never collides with a block's
+ * own settings; the renderer applies them via a wrapper only when set. Each
+ * block opts into the subset that's genuinely new for it (no duplicate
+ * controls). See blockAppearance() in appearance.ts.
+ */
+type AppearanceKey = 'bg' | 'radius' | 'width' | 'space';
+function appearanceFields(keys: AppearanceKey[]): InspectorField[] {
+  const f: InspectorField[] = [];
+  if (keys.includes('bg'))
+    f.push({
+      key: 'bxBg',
+      label: 'Background',
+      type: 'color',
+      group: 'Appearance',
+    });
+  if (keys.includes('radius'))
+    f.push({
+      key: 'bxRadius',
+      label: 'Rounded corners',
+      type: 'select',
+      options: BX_RADIUS_OPTIONS,
+      group: 'Appearance',
+    });
+  if (keys.includes('width'))
+    f.push({
+      key: 'bxWidth',
+      label: 'Width',
+      type: 'select',
+      options: BX_WIDTH_OPTIONS,
+      group: 'Appearance',
+    });
+  if (keys.includes('space')) {
+    f.push({
+      key: 'bxPadTop',
+      label: 'Space top (px)',
+      type: 'number',
+      group: 'Spacing',
+    });
+    f.push({
+      key: 'bxPadBottom',
+      label: 'Space bottom (px)',
+      type: 'number',
+      group: 'Spacing',
+    });
+  }
+  return f;
+}
 
 /** Container blocks render their `children` (handled in block-renderer), so
  * their Component is a no-op placeholder kept only for registry metadata. */
@@ -356,6 +420,7 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
         hint: 'Image URL — overrides color when set',
       },
       { key: 'textColor', label: 'Text color', type: 'color' },
+      ...appearanceFields(['radius', 'width', 'space']),
     ],
     Component: CtaBlock,
   },
@@ -397,6 +462,7 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
         ],
       },
       { key: 'rounded', label: 'Rounded corners', type: 'toggle' },
+      ...appearanceFields(['bg', 'space']),
     ],
     Component: ImageBlock,
   },
@@ -420,6 +486,7 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
         type: 'select',
         options: ALIGN_OPTIONS,
       },
+      ...appearanceFields(['bg', 'radius', 'width', 'space']),
     ],
     Component: TextBlock,
   },
@@ -466,6 +533,7 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
         hint: 'Defaults to your theme text color',
         group: 'Style',
       },
+      ...appearanceFields(['bg', 'radius', 'width', 'space']),
     ],
     Component: HeadingBlock,
   },
@@ -540,6 +608,7 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
         options: SHADOW_OPTIONS,
         group: 'Effects',
       },
+      ...appearanceFields(['space']),
     ],
     Component: ButtonBlock,
   },
@@ -593,6 +662,7 @@ export const BLOCK_REGISTRY: Partial<Record<BlockType, BlockDefinition>> = {
         type: 'number',
         group: 'Spacing',
       },
+      ...appearanceFields(['space']),
     ],
     Component: DividerBlock,
   },

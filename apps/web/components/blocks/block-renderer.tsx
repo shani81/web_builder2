@@ -3,6 +3,7 @@ import type { Block } from '@buildr/types';
 import { slugify } from '@buildr/utils';
 import { getBlockDefinition } from './registry';
 import { str } from './types';
+import { blockAppearance } from './appearance';
 import { SectionBlock } from './section.block';
 import { ColumnBlock } from './column.block';
 
@@ -42,10 +43,20 @@ export function BlockRenderer({
 
   // An optional anchor id makes the block a target for in-page "#id" links.
   // scroll-margin-top keeps it clear of a sticky navbar when scrolled to.
+  // Optional appearance props (background, radius, width, spacing) wrap the
+  // block too. When neither is set the block renders unwrapped, exactly as
+  // before — so existing pages are unaffected.
   const anchorId = slugify(str(block.props.anchorId));
-  if (!anchorId) return <>{rendered}</>;
+  const appearance = blockAppearance(block.props);
+  if (!anchorId && !appearance.hasAny) return <>{rendered}</>;
   return (
-    <div id={anchorId} style={{ scrollMarginTop: '5rem' }}>
+    <div
+      id={anchorId || undefined}
+      style={{
+        ...(anchorId ? { scrollMarginTop: '5rem' } : {}),
+        ...appearance.style,
+      }}
+    >
       {rendered}
     </div>
   );
